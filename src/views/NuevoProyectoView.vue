@@ -2,6 +2,7 @@
 
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
+    import Textfield from '@/components/Textfield.vue';
 
 </script>
 
@@ -15,27 +16,15 @@
         <form>
 
             <div class="space-y-4 mt-8">
-                <div class="flex flex-col gap-4 items-center px-4">
-                    <label class="text-xl px-4 md:text-left text-center">
-                        Nombre del proyecto:
-                    </label>
-                    <input 
-                        type="text" 
-                        name="nombreReunion"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                    >
-                </div>
-    
-                <div class="flex flex-col gap-4 items-center px-4">
-                    <label class="text-xl px-4 md:text-left text-center">
-                        Version o sprint del proyecto:
-                    </label>
-                    <input 
-                        type="text" 
-                        name="lugarReunion"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                    >
-                </div>
+
+                <Textfield 
+                    :label="'Nombre del proyecto: *'"
+                />
+
+                <Textfield
+                    :label="'Version del proyecto: *'"
+                />
+
             </div>
 
             <div class="flex justify-center gap-4 px-4 mt-8">
