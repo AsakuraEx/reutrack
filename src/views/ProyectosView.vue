@@ -1,8 +1,34 @@
 <script setup>
 
+    //imports necesarios del sistema
+    import { onMounted, ref } from 'vue';
     import { RouterLink } from 'vue-router';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
+    import { useProyectoStore } from '@/stores/proyectos';
+
+    //definición de variables
+    const arrayProyectos = ref([]);
+    const store = useProyectoStore();
+    const estados = {
+        Pendiente: 'bg-yellow-200 text-yellow-800',
+        Finalizado: 'bg-blue-200 text-blue-800',
+        Cancelado: 'bg-red-200 text-red-800'
+    }
+
+    const claseEstado = (estado) => {
+        return `${estados[estado]}`
+    }
+
+    const cancelarProyecto = async (id) => {
+        await store.cancelarProyecto(id)
+        arrayProyectos.value = await store.mostrarProyectos();
+    }
+
+
+    onMounted(async ()=>{
+        arrayProyectos.value = await store.mostrarProyectos();
+    })
 
 </script>
 
@@ -29,28 +55,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="border-b">
-                        <td class="py-2 px-3">Tamizaje Metabolico - SIS </td>
-                        <td class="py-2 px-3">Sprint 2</td>
-                        <td class="py-2 px-3">Francisco Josue Escobar Quintanilla</td>
+                    <tr class="border-b" v-if="arrayProyectos" v-for="item in arrayProyectos">
+                        <td class="py-2 px-3">{{ item.nombre }}</td>
+                        <td class="py-2 px-3">{{ item.version }}</td>
+                        <td class="py-2 px-3">{{ item.id_usuario }}</td>
                         <td class="py-2 px-3">
-                            <div class="bg-yellow-100 text-yellow-600 font-bold text-center w-24 rounded">
-                                En curso
+                            <div class="-bold text-center w-24 rounded" :class="claseEstado(item.estado)">
+                                {{ item.estado }}
                             </div>
                         </td>
                         <td class="py-2 w-48">
-                            <button class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300">Finalizar</button>
-                            <button class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300">Cancelar</button>
-                        </td>
-                    </tr>
-                    <tr class="border-b">
-                        <td class="py-2 px-3">SISMED</td>
-                        <td class=" py-2 px-3">Sprint 10</td>
-                        <td class=" py-2 px-3">Ivan Alessandro Mendoza Landaverde</td>
-                        <td class="py-2 px-3">
-                            <div class="bg-blue-100 text-blue-600 font-bold text-center w-24 rounded">
-                                Finalizado
-                            </div>
+                            <button 
+                                v-if="item.estado === 'Pendiente'" 
+                                class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300"
+                            >
+                                Finalizar
+                            </button>
+                            <button 
+                                v-if="item.estado === 'Pendiente'" 
+                                class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300"
+                                @click="cancelarProyecto(item.id)"
+                            >
+                                Cancelar
+                            </button>
                         </td>
                     </tr>
                 </tbody>

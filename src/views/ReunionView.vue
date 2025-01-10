@@ -1,16 +1,28 @@
 <script setup>
-    
+
+    //imports necesarios del sistema
     import { onMounted, ref } from 'vue';
     import { uid } from 'uid';
     import Header from '../../src/components/Header.vue'
     import Footer from '../../src/components/Footer.vue'
     import Stepper from '../../src/components/Stepper.vue'
+    import Textfield from '@/components/Textfield.vue';
+    import Select from '@/components/Select.vue';
+import { useProyectoStore } from '@/stores/proyectos';
 
+    //definición de variables
+    const store = useProyectoStore()
     const codigo = ref("");
+    const arrayProyectos = ref([]);
 
-    onMounted(()=>{
+    //instrucciones que se cargan al mostrar la vista
+    onMounted(async ()=>{
+        //Se genera el codigo aleatorio con la libreria uid
         codigo.value = uid(6);
+        //Se solicita la lista de proyectos "Pendiente" (no cancelados ni finalizados)
+        arrayProyectos.value = await store.mostrarProyectos('Pendiente');
     })
+
 
 </script>
 
@@ -23,7 +35,7 @@
     
     <div class="container mx-auto min-h-[70vh]">
         
-        <Stepper />
+        <Stepper :step="1"/>
 
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Datos Generales de la Reunión</h1> 
         
@@ -31,33 +43,17 @@
         
         <form class="flex flex-col gap-4 md:gap-8">
 
-            <div class="flex flex-col md:flex-row gap-4 items-center px-4">
-                <label class="text-xl px-4 md:text-left w-72 text-center">
-                    Nombre de la reunión:
-                </label>
-                <input 
-                    type="text" 
-                    name="nombreReunion"
-                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                >
-            </div>
+            <Select :label="'Proyecto asociado: *'" :opciones="arrayProyectos" />
 
-            <div class="flex flex-col md:flex-row gap-4 items-center px-4">
-                <label class="text-xl px-4 md:text-left w-72 text-center">
-                    Lugar de la reunión:
-                </label>
-                <input 
-                    type="text" 
-                    name="lugarReunion"
-                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                >
-            </div>
+            <Textfield :label="'Nombre de la reunión: *'" />
+
+            <Textfield :label="'Lugar de la reunión: *'" />
 
             <div class="flex justify-end px-4">
 
                 <RouterLink 
                     :to="{name: 'encargados'}"
-                    class="bg-purple-400 hover:bg-purple-300 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center"
+                    class="animate-pulse hover:animate-none bg-purple-400 hover:bg-purple-300 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center"
                 >
                     Iniciar Reunión
                 </RouterLink>

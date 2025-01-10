@@ -1,11 +1,29 @@
 <script setup>
+    //imports generales del proyecto
+    import { onMounted,ref } from 'vue';
     import Header from '../../src/components/Header.vue'
     import Footer from '../../src/components/Footer.vue'
     import Stepper from '../../src/components/Stepper.vue'
+    import Select from '@/components/Select.vue';
+    import { useUsuarioStore } from '@/stores/usuarios';
+
+    //imports para iconos
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline } from '@mdi/js';
 
     const path = mdiTrashCanOutline;
+
+    //store donde se almacena la logica de la vista
+    const store = useUsuarioStore();
+
+    //variables o statements de la vista
+    const arrayEncargados = ref([]);
+
+    onMounted(async ()=>{
+        arrayEncargados.value = await store.mostrarEncargados()
+    })
+    
+
 </script>
 
 <template>
@@ -18,18 +36,15 @@
     
     <div class="container mx-auto min-h-[70vh]">
         
-        <Stepper />
+        <Stepper :step="2"/>
 
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Encargados de la reunión</h1>     
     
         <div class="flex gap-4 flex-col">
 
             <div class="flex flex-col md:flex-row gap-4">
-                <select class="bg-transparent text-white border rounded p-4 w-full">
-                    <option class="text-gray-900" value="">Seleccione un encargado...</option>
-                    <option class="text-gray-900" value="">Francisco Josue Escobar Quintanilla</option>
-                    <option class="text-gray-900" value="">Ivan Alessandro Mendoza Landaverde</option>
-                </select>
+        
+                <Select :opciones="arrayEncargados"/>
 
                 <button class="bg-purple-500 hover:bg-purple-400 transition-colors duration-300 py-2 rounded w-full lg:w-32">
                     Agregar

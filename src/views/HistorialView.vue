@@ -4,13 +4,7 @@
     import Header from '@/components/Header.vue';
     import DatePicker from '@/components/DatePicker.vue';
     import CardHistorial from '@/components/CardHistorial.vue';
-
-    import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiTrashCanOutline } from '@mdi/js';
-    import { mdiFilePdfBox } from '@mdi/js';
-
-    const path = mdiTrashCanOutline;
-    const path1 = mdiFilePdfBox;
+    import Select2 from '@/components/Select2.vue';
 
 </script>
 
@@ -24,6 +18,8 @@
         </h1>
     
         <div class="flex flex-col lg:flex-row gap-2">
+
+            <Select2 :label="'Proyecto'"/>
 
             <DatePicker 
                 :label="'Desde'" 
@@ -48,21 +44,21 @@
                 :titulo="'Reunión para toma de requerimiento en ISBM'"
                 :lugar="'Oficinas centrales de ISBM'"
                 :fecha="'08-01-2025 11:30 A.M'"
-                :estado="'iniciado'"
+                :estado="'Iniciado'"
             />
 
             <CardHistorial 
                 :titulo="'Reunión de Tamizaje Metabolico SIS'"
                 :lugar="'Megacentro de Vacunación'"
                 :fecha="'08-01-2025 11:30 A.M'"
-                :estado="'finalizado'"
+                :estado="'Finalizado'"
             />
 
             <CardHistorial 
                 :titulo="'Reunión para coordinar implementación nacional de RRI'"
                 :lugar="'MINSAL - Despacho de Ministro'"
                 :fecha="'08-01-2025 11:30 A.M'"
-                :estado="'cancelado'"
+                :estado="'Cancelado'"
             />
     
         </div>

@@ -1,0 +1,53 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nombre": "Francisco Josue Escobar Quintanilla"
+    },
+    {
+      "id": "2",
+      "nombre": "Ivan Alessandro Mendoza Landaverde"
+    },
+    {
+      "id": "3",
+      "nombre": "Walter Alcides Romero"
+    }
+  ],
+  "proyectos": [
+    {
+      "id": "1",
+      "nombre": "SISMED",
+      "version": "Sprint 10",
+      "estado": "Pendiente",
+      "id_usuario": 2
+    },
+    {
+      "id": "2",
+      "nombre": "Hospital de Día",
+      "version": "SPRINT 2 Nefrología",
+      "estado": "Pendiente",
+      "id_usuario": 1
+    },
+    {
+      "id": "3",
+      "nombre": "Mejora - Estratégia canguro",
+      "version": "Version 3",
+      "estado": "Cancelado",
+      "id_usuario": 1
+    },
+    {
+      "id": "4",
+      "nombre": "APOLO OPS",
+      "version": "SPRINT 1",
+      "estado": "Pendiente",
+      "id_usuario": 1
+    },
+    {
+      "id": "5",
+      "nombre": "Transporte",
+      "version": "SPRINT 1",
+      "estado": "Cancelado",
+      "id_usuario": 2
+    }
+  ]
+}

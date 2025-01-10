@@ -22,7 +22,7 @@
     
     <div class="container mx-auto min-h-[70vh]">
         
-        <Stepper />
+        <Stepper :step="4"/>
 
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Descripción de la reunión</h1> 
 
@@ -144,7 +144,7 @@
 
             <RouterLink 
                 :to="{name: 'historial'}"
-                class="bg-purple-500 hover:bg-purple-400 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center"
+                class="bg-purple-500 hover:bg-purple-400 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center animate-pulse hover:animate-none"
             >
                 Finalizar Reunión
             </RouterLink>

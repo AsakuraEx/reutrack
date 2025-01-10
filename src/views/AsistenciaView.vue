@@ -2,6 +2,7 @@
     import Header from '../../src/components/Header.vue'
     import Footer from '../../src/components/Footer.vue'
     import Stepper from '../../src/components/Stepper.vue'
+    import Textfield from '@/components/Textfield.vue';
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline } from '@mdi/js';
 
@@ -18,77 +19,26 @@
     
     <div class="container mx-auto min-h-[70vh]">
         
-        <Stepper />
+        <Stepper :step="3"/>
 
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Lista de Asistencia</h1>  
         
         <form class="flex flex-col gap-8 md:gap-0">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                <div class="flex flex-col w-full px-2 py-2 gap-4 items-center">
-                    <label class="text-xl px-4 text-center">
-                        Participante:
-                    </label>
-                    <input 
-                        type="text" 
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                    >
-                </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <Textfield :label="'Participante: *'" />
     
-                <div class="flex flex-col w-full px-2 py-2 gap-4 items-center">
-                    <label class="text-xl px-4 md:text-left text-center">
-                        Institución o Dependencia:
-                    </label>
-                    <input 
-                        type="text" 
-                        name="lugarReunion"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                    >
-                </div>
+                <Textfield :label="'Institución o Dependencia: *'" />
     
-                <div class="flex flex-col w-full px-2 py-2 gap-4 items-center">
-                    <label class="text-xl px-4 md:text-left text-center">
-                        Cargo:
-                    </label>
-                    <input 
-                        type="text" 
-                        name="lugarReunion"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                    >
-                </div>
+                <Textfield :label="'Cargo: *'" />
     
-                <div class="flex flex-col w-full px-2 py-2 gap-4 items-center">
-                    <label class="text-xl px-4 md:text-left text-center">
-                        DUI:
-                    </label>
-                    <input 
-                        type="text" 
-                        name="lugarReunion"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                    >
-                </div>
+                <Textfield :label="'DUI: *'" />
                 
-                <div class="flex flex-col w-full px-2 py-2 gap-4 items-center">
-                    <label class="text-xl px-4 md:text-left text-center">
-                        Teléfono:
-                    </label>
-                    <input 
-                        type="text" 
-                        name="lugarReunion"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                    >
-                </div>
+                <Textfield :label="'Teléfono: *'" />
                     
-                <div class="flex flex-col w-full px-2 py-2 gap-4 items-center">
-                    <label class="text-xl px-4 md:text-left text-center">
-                        Correo Electronico:
-                    </label>
-                    <input 
-                        type="text" 
-                        name="lugarReunion"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-                    >
-                </div>
+                <Textfield :label="'Correo Electrónico: *'" />
+
             </div>
 
             <div class="px-4 mt-8 mx-auto">
@@ -99,6 +49,7 @@
 
         </form>
 
+        <!-- TABLA DE DATOS DE ASISTENCIA -->
         <div class="overflow-x-auto px-4">
             <table class="w-full mt-8">
                 <thead>

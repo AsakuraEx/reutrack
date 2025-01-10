@@ -5,29 +5,51 @@
             <p class="text-xl font-bold">{{ titulo }}</p>
             <p class="font-light text-slate-300">Lugar de Reunion: <b>{{ lugar }}</b></p>
             <span class="font-light italic">{{ hora }}</span>
-            <div class="bg-blue-500 w-fit px-3 py-1 rounded font-bold">
+            <div 
+                class="w-fit px-3 py-1 rounded font-bold"
+                :class="claseEstado(estado)"
+            >
                 {{ estado }}
             </div>
         </div>
 
         <div class="flex flex-col gap-2 w-full lg:w-fit">
-            <RouterLink :to="{name:'detalle'}" class="border rounded bg-transparent hover:bg-sky-400 hover:border-sky-400 px-3 py-1 transition-colors duration-300 text-center">
-                Ver Detalle de Reunión
+            <RouterLink 
+                :to="{name:'detalle'}" 
+                class="border rounded bg-transparent hover:bg-sky-400 hover:border-sky-400 inline-flex gap-2  px-3 py-1 transition-colors duration-300 text-center"
+                v-if="estado === 'Finalizado'"
+            >
+                <svg-icon type="mdi" :path="path2"></svg-icon>
+                Detalle de Reunión
             </RouterLink>
-            <button class="bg-transparent hover:border-purple-500 hover:bg-purple-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300">
+            <button 
+                class="bg-transparent hover:border-purple-500 hover:bg-purple-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
+                v-if="estado === 'Finalizado'"
+            >
                 <svg-icon type="mdi" :path="path1"></svg-icon>
                 Generar PDF
             </button>
-            <button class="bg-transparent hover:border-red-500 hover:bg-red-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300">
+            <button 
+                class="bg-transparent hover:border-red-500 hover:bg-red-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
+                v-if="estado === 'Iniciado' "    
+            >
                 <svg-icon type="mdi" :path="path"></svg-icon>
-                Eliminar Reunión
+                Cancelar Reunión
             </button>
         </div>
     </div>
 </template>
 
 <script setup>
-    defineProps({
+
+    import SvgIcon from '@jamescoyle/vue-icon';
+    import { mdiTrashCanOutline, mdiFilePdfBox, mdiEyeOutline } from '@mdi/js';
+
+    const path = mdiTrashCanOutline;
+    const path1 = mdiFilePdfBox;
+    const path2 = mdiEyeOutline;
+
+    const props = defineProps({
         titulo: {
             type: String,
             required: true
@@ -45,4 +67,15 @@
             required: true
         }
     })
+
+    const estados = {
+        Iniciado: 'bg-yellow-500',
+        Finalizado: 'bg-blue-500',
+        Cancelado: 'bg-red-500'
+    }
+
+    const claseEstado = (estado) => {
+        return `${estados[estado]}`
+    }
+
 </script>
