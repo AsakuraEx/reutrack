@@ -7,6 +7,9 @@
             type="text" 
             name="nombreReunion"
             class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+            :required="requerido ? 'required':''"
+            @input="$emit('update:campo', $event.target.value)"
+            
         >
     </div>
 </template>
@@ -17,7 +20,13 @@
         label: {
             type: String,
             required: true
+        },
+        requerido: {
+            type: Boolean,
+            required: false
         }
     })
+
+    const emit = defineEmits(['update:campo'])
 
 </script>

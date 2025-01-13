@@ -3,6 +3,8 @@
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
 
+    let minuta = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n"
+    minuta = minuta.replace(/\n/g, ' <br> ')
 </script>
 
 <template>
@@ -59,28 +61,8 @@
             <h3 class="text-2xl font-bold">Desarrollo de la reunión</h3>
 
             <div class="overflow-x-auto">
-                <pre>
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent imperdiet interdum molestie. Fusce libero sem, tempus vel nisl et, feugiat sagittis risus. 
-Etiam id lobortis urna, vel vestibulum sapien. Nullam eleifend maximus orci, vitae convallis dolor dignissim sed. Phasellus eleifend leo lacus. Suspendisse potenti. 
-Pellentesque cursus, quam nec suscipit placerat, neque ex bibendum leo, eu posuere felis arcu quis eros. Nulla facilisi. Fusce iaculis urna vitae dui facilisis, nec 
-finibus felis pulvinar. Fusce et libero enim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer sollicitudin eget 
-ex 
-id posuere. Curabitur elementum ligula a velit porta, in tempus tellus aliquet. Morbi quis sodales mi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-Ut dignissim dignissim molestie. Mauris scelerisque iaculis vehicula. Pellentesque tempus et ex lacinia pellentesque. Fusce pretium justo non orci pharetra, ut 
-consectetur 
-ex accumsan. Sed lobortis leo quis ex sagittis scelerisque. Nam eget quam vitae diam laoreet fringilla. Vivamus id tincidunt nunc. Fusce interdum, ante ut pretium 
-accumsan, 
-lorem leo iaculis leo, eget posuere ex erat ut massa.
-Quisque venenatis sem a enim bibendum placerat. Donec dolor lacus, ultricies eget facilisis vitae, ullamcorper in leo. Vestibulum posuere pulvinar eros, eget 
-iaculis sapien 
-tempor cursus. Duis dui lorem, luctus in augue sed, feugiat blandit mi. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
-Morbi 
-aliquam nisi sem, in maximus magna malesuada eu. Nullam ac metus ac nisi lobortis condimentum vel ac est. Nulla facilisi. Nunc vestibulum pulvinar viverra. Duis ac 
-rutrum elit, 
-vitae tempor libero. Donec sodales turpis sit amet lacinia placerat. Pellentesque et lacus lectus. Vestibulum vitae ullamcorper quam, ut dictum urna. In scelerisque 
-hendrerit 
-felis, non fringilla dui accumsan vel. Curabitur volutpat felis mi, non aliquet sem ullamcorper in.               
-                </pre>
+                <p class="py-4 text-justify" v-html="minuta">
+                </p>
             </div>
 
             <h3 class="text-2xl font-bold">Acuerdos y compromisos</h3>

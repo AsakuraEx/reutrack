@@ -5,10 +5,17 @@
     import { RouterLink } from 'vue-router';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
+    import ModalFinalizar from '@/components/ModalFinalizar.vue';
+    import ModalCancelar from '@/components/ModalCancelar.vue';
     import { useProyectoStore } from '@/stores/proyectos';
 
     //definición de variables
     const arrayProyectos = ref([]);
+    const modalActual = ref({
+        nombre: '',
+        version: '',
+        id: ''
+    });
     const store = useProyectoStore();
     const estados = {
         Pendiente: 'bg-yellow-200 text-yellow-800',
@@ -20,9 +27,8 @@
         return `${estados[estado]}`
     }
 
-    const cancelarProyecto = async (id) => {
-        await store.cancelarProyecto(id)
-        arrayProyectos.value = await store.mostrarProyectos();
+    const mostrarModal = async (id) => {
+        modalActual.value = await store.consultarProyecto(id);
     }
 
 
@@ -65,23 +71,40 @@
                             </div>
                         </td>
                         <td class="py-2 w-48">
-                            <button 
+                            <button
+                                onclick="modalFinalizar.showModal()"
                                 v-if="item.estado === 'Pendiente'" 
                                 class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300"
+                                @click="mostrarModal(item.id)"
                             >
                                 Finalizar
                             </button>
                             <button 
-                                v-if="item.estado === 'Pendiente'" 
+                                v-if="item.estado === 'Pendiente'"
+                                onclick="modalCancelar.showModal()" 
                                 class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300"
-                                @click="cancelarProyecto(item.id)"
+                                @click="mostrarModal(item.id)"
                             >
                                 Cancelar
                             </button>
+
                         </td>
                     </tr>
                 </tbody>
             </table>
+
+            <!-- MODAL PARA FINALIZAR -->
+            <ModalFinalizar 
+                :proyecto="modalActual" 
+                v-model:datos="arrayProyectos"
+            />
+
+            <!-- MODAL PARA CANCELAR -->
+            <ModalCancelar 
+                :proyecto="modalActual"
+                v-model:datos="arrayProyectos"
+            />
+
         </div>
 
     </div>

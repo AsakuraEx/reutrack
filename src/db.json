@@ -18,36 +18,65 @@
       "id": "1",
       "nombre": "SISMED",
       "version": "Sprint 10",
-      "estado": "Pendiente",
-      "id_usuario": 2
+      "estado": "Finalizado",
+      "id_usuario": 2,
+      "acta_aceptacion": "http://hola.com"
     },
     {
       "id": "2",
       "nombre": "Hospital de Día",
       "version": "SPRINT 2 Nefrología",
-      "estado": "Pendiente",
-      "id_usuario": 1
+      "estado": "Finalizado",
+      "id_usuario": 1,
+      "acta_aceptacion": "http://hola.com"
     },
     {
       "id": "3",
       "nombre": "Mejora - Estratégia canguro",
       "version": "Version 3",
-      "estado": "Cancelado",
-      "id_usuario": 1
+      "estado": "Pendiente",
+      "id_usuario": 1,
+      "acta_aceptacion": null
     },
     {
       "id": "4",
       "nombre": "APOLO OPS",
       "version": "SPRINT 1",
       "estado": "Pendiente",
-      "id_usuario": 1
+      "id_usuario": 1,
+      "acta_aceptacion": null
     },
     {
       "id": "5",
       "nombre": "Transporte",
       "version": "SPRINT 1",
       "estado": "Cancelado",
-      "id_usuario": 2
+      "id_usuario": 2,
+      "acta_aceptacion": null
+    },
+    {
+      "id": "89e41372e12",
+      "nombre": "Tamizaje Cardiaco",
+      "version": "Sprint 1",
+      "estado": "Pendiente",
+      "id_usuario": 1,
+      "acta_aceptacion": null
+    },
+    {
+      "id": "592f02cde79",
+      "nombre": "Sesiones Prenatales",
+      "version": "Sprint 1",
+      "estado": "Cancelado",
+      "id_usuario": 1,
+      "acta_aceptacion": null
+    },
+    {
+      "id": "8760afcc8c8",
+      "nombre": "CONAMED",
+      "version": "Sprint 2",
+      "estado": "Cancelado",
+      "id_usuario": 1,
+      "acta_aceptacion": null
     }
   ]
 }

@@ -2,6 +2,7 @@ import apiServiceProyectos from "@/services/apiServiceProyectos";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
+
 export const useProyectoStore = defineStore('proyectos', ()=>{
 
     const message = ref({
@@ -40,9 +41,60 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
+    async function consultarProyecto(id){
+        try {
+            const {status, data} = await apiServiceProyectos.getProyecto(id);
+            if(status === 200){
+                return data;
+            }
+        }catch(e){
+            console.error(e);
+        }
+    }
+
+    async function finalizarProyecto(id, url){
+
+        try{
+            const {status} = await apiServiceProyectos.finalizarProyecto(id, url)
+            if(status === 200){
+                message.value.tipo = 'Exito';
+                message.value.mensaje = '¡El proyecto se finalizó exitosamente!'
+
+                setTimeout(()=>{
+                    message.value.tipo = "",
+                    message.value.mensaje = ""
+                },3000)
+            }
+        }catch(e){
+            console.error(e)
+        }
+    }
+
+    async function crearProyecto(proyecto){
+        try{
+            const {status} = await apiServiceProyectos.crearProyecto(proyecto)
+            if(status === 201){
+                message.value.tipo = 'Exito';
+                message.value.mensaje = '¡El proyecto se creó exitosamente!'
+
+                setTimeout(()=>{
+                    message.value.tipo = "",
+                    message.value.mensaje = ""
+                },3000)
+
+
+            }
+        }catch(e){
+            console.error(e)
+        }
+    }
+
     return {
         message,
         mostrarProyectos,
-        cancelarProyecto
+        cancelarProyecto,
+        consultarProyecto,
+        finalizarProyecto,
+        crearProyecto
     }
 })
