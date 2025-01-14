@@ -51,6 +51,8 @@
 
             </div>
 
+
+
             <div class="flex justify-center gap-4 px-4 mt-8">
 
                 <button class="bg-purple-400 hover:bg-purple-300 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center">

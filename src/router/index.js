@@ -15,17 +15,17 @@ const router = createRouter({
       component: () => import('../views/ReunionView.vue'),
     },
     {
-      path: '/nueva-reunion/encargados',
+      path: '/nueva-reunion/encargados/:id',
       name: 'encargados',
       component: () => import('../views/EncargadosView.vue'),
     },
     {
-      path: '/nueva-reunion/asistencia',
+      path: '/nueva-reunion/asistencia/:id',
       name: 'asistencia',
       component: () => import('../views/AsistenciaView.vue'),
     },
     {
-      path: '/nueva-reunion/minuta',
+      path: '/nueva-reunion/minuta/:id',
       name: 'minuta',
       component: () => import('../views/MinutaView.vue'),
     },

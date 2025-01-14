@@ -4,12 +4,13 @@
             {{ label }}
         </label>
         <input 
-            type="text" 
+            :type="tipo" 
             name="nombreReunion"
             class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
-            :required="requerido ? 'required':''"
+            :required="requerido"
             @input="$emit('update:campo', $event.target.value)"
-            
+            :pattern="pattern"
+            :value="campo"
         >
     </div>
 </template>
@@ -21,10 +22,23 @@
             type: String,
             required: true
         },
+        tipo: {
+            type: String,
+            required: true
+        },
         requerido: {
             type: Boolean,
             required: false
-        }
+        },
+        pattern: {
+            type: String,
+            required: false
+        },
+        campo: {
+            type: String,
+            required: false,
+            default: '',
+        },
     })
 
     const emit = defineEmits(['update:campo'])

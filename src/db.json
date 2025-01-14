@@ -78,5 +78,61 @@
       "id_usuario": 1,
       "acta_aceptacion": null
     }
+  ],
+  "reuniones": [
+    {
+      "id": "05ead72a",
+      "proyecto": "4",
+      "nombre": "Firma de acta de aceptación",
+      "lugar": "Google Meet",
+      "id_usuario": 1,
+      "codigo": "5ead72",
+      "fecha": "14/1/2025, 10:42:51 a.m.",
+      "expiracion": "14/1/2025, 11:12:51 a.m."
+    }
+  ],
+  "encargados": [
+    {
+      "id": "be30cf85a6c",
+      "id_usuario": "2",
+      "id_reunion": "05ead72a"
+    }
+  ],
+  "asistencia": [
+    {
+      "id": "30cf85a6cd0",
+      "participante": "Francisco Escobar",
+      "institucion": "MINSAL/DTIC",
+      "cargo": "Tecnico Informático",
+      "dui": "05482299-1",
+      "telefono": "70086814",
+      "correo": "francisco.escobar@salud.gob.sv",
+      "id_reunion": "05ead72a"
+    }
+  ],
+  "minutareunion": [],
+  "puntoreunion": [
+    {
+      "id": "",
+      "nombre": "Primer punto",
+      "id_reunion": "05ead72a"
+    },
+    {
+      "id": "",
+      "nombre": "Segundo Punto",
+      "id_reunion": "05ead72a"
+    }
+  ],
+  "acuerdocompromiso": [
+    {
+      "id": "",
+      "nombre": "asdasd",
+      "id_reunion": "05ead72a"
+    },
+    {
+      "id": "",
+      "nombre": "Segundo acuerdo",
+      "id_reunion": "05ead72a"
+    }
   ]
 }
