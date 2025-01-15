@@ -9,6 +9,18 @@ export const useReunionStore = defineStore('reuniones', () => {
         mensaje: '' 
     })
 
+    //FUNCION QUE OBTIENE TODAS LAS REUNIONES
+    async function obtenerReuniones(){
+        try{
+            const {status, data} = await apiServiceReunion.consultarReuniones()
+            if(status === 200){
+                return data;
+            }
+        }catch(e){
+            console.error(e)
+        }
+    }
+
     //FUNCION DE GUARDA EN LA TABLA REUNION, GENERA EL CODIGO Y EMPIEZA UNA REUNION
     async function iniciarReunion(data){
 
@@ -29,6 +41,26 @@ export const useReunionStore = defineStore('reuniones', () => {
             console.log(e)
         }
 
+    }
+
+    async function cancelarReunion(id){
+        try{
+            await apiServiceReunion.cancelarReunion(id);
+        }catch(e){
+            console.error(e)
+        }
+
+    }
+
+    async function obtenerReunion(id){
+        try{
+            const {status, data} = await apiServiceReunion.consultarReunion(id)
+            if(status === 200){
+                return data;
+            }
+        }catch(e){
+            console.error(e)
+        }
     }
 
     //OBTIENE LOS ENCARGADOS DE LA REUNION Y LOS CARGA EN LA TABLA
@@ -148,68 +180,89 @@ export const useReunionStore = defineStore('reuniones', () => {
         }
     }
 
-        //MUESTRA LOS ACUERDOS DE LA REUNION
-        async function obtenerAcuerdos(reunion){
-            try{
-                const {status, data} = await apiServiceReunion.consultarAcuerdo(reunion);
-    
-                if(status === 200){
-                    return data;
-                }
-            }catch(e){
-                console.error(e)
+    //MUESTRA LOS ACUERDOS DE LA REUNION
+    async function obtenerAcuerdos(reunion){
+        try{
+            const {status, data} = await apiServiceReunion.consultarAcuerdo(reunion);
+
+            if(status === 200){
+                return data;
             }
+        }catch(e){
+            console.error(e)
         }
+    }
     
-        //  ELIMINA LOS ACUERDOS DE LA REUNION
-        async function eliminarAcuerdos(id){
-            await apiServiceReunion.eliminarAcuerdo(id);
-        }
-    
-        // AGREGA UN ACUERDO A LA REUNION
-        async function agregarAcuerdos(data){
-            try{
-                const {status} = await apiServiceReunion.agregarAcuerdo(data);
-    
-                if(status === 201){
-                    message.value.tipo = 'Exito';
-                    message.value.mensaje = '¡Se agrego el acuerdo a la reunion!'
-    
-    
-                    setTimeout(()=>{
-                        message.value.tipo = "",
-                        message.value.mensaje = ""
-                    },3000)
-                }
-    
-            }catch(e){
-                console.error(e)
+    //  ELIMINA LOS ACUERDOS DE LA REUNION
+    async function eliminarAcuerdos(id){
+        await apiServiceReunion.eliminarAcuerdo(id);
+    }
+
+    // AGREGA UN ACUERDO A LA REUNION
+    async function agregarAcuerdos(data){
+        try{
+            const {status} = await apiServiceReunion.agregarAcuerdo(data);
+
+            if(status === 201){
+                message.value.tipo = 'Exito';
+                message.value.mensaje = '¡Se agrego el acuerdo a la reunion!'
+
+
+                setTimeout(()=>{
+                    message.value.tipo = "",
+                    message.value.mensaje = ""
+                },3000)
             }
+
+        }catch(e){
+            console.error(e)
         }
-        
-        // FINALIZAR LA REUNION
-        async function FinalizarReunion(data){
-            try{
-                const {status} = await apiServiceReunion.agregarMinuta(data);
+    }
     
-                if(status === 201){
-                    message.value.tipo = 'Exito';
-                    message.value.mensaje = '¡Se finalizó la reunión exitosamente!'
-    
-    
-                    setTimeout(()=>{
-                        message.value.tipo = "",
-                        message.value.mensaje = ""
-                    },3000)
-                }
-    
-            }catch(e){
-                console.error(e)
+    // Guarda la minuta
+    async function GuardarMinuta(data){
+        try{
+            const {status} = await apiServiceReunion.agregarMinuta(data);
+
+            if(status === 201){
+                message.value.tipo = 'Exito';
+                message.value.mensaje = '¡Se finalizó la reunión exitosamente!'
+
+
+                setTimeout(()=>{
+                    message.value.tipo = "",
+                    message.value.mensaje = ""
+                },3000)
             }
+
+        }catch(e){
+            console.error(e)
         }
+    }
+
+    // OBTIENE LA MINUTA
+    async function obtenerMinuta(reunion){
+        try{
+            const {status, data} = await apiServiceReunion.consultarMinuta(reunion);
+
+            if(status === 200){
+                return data[0];
+            }
+        }catch(e){
+            console.error(e)
+        }
+    }
+
+    //FINALIZA LA REUNION
+    async function FinalizarReunion(idReunion){
+        await apiServiceReunion.finalizarReunion(idReunion)
+    }
 
     return {
+        obtenerReuniones,
+        obtenerReunion,
         iniciarReunion,
+        cancelarReunion,
         obtenerEncargados,
         agregarEncargado,
         eliminarEncargado,
@@ -222,6 +275,8 @@ export const useReunionStore = defineStore('reuniones', () => {
         obtenerAcuerdos,
         agregarAcuerdos,
         eliminarAcuerdos,
+        GuardarMinuta,
+        obtenerMinuta,
         FinalizarReunion
     }
 }

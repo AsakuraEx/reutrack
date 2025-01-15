@@ -1,29 +1,85 @@
 <script setup>
 
+    import { useRoute } from 'vue-router';
+    import { onMounted, ref } from 'vue';
+    import { useReunionStore } from '@/stores/reuniones';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
 
-    let minuta = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\nSed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\nUt enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n"
-    minuta = minuta.replace(/\n/g, ' <br> ')
+    //LIBRERIA PARA PDF
+    import html2pdf from 'html2pdf.js/dist/html2pdf.bundle.min.js';
+
+    //LIBRERIA DE ICONOS
+    import SvgIcon from '@jamescoyle/vue-icon';
+    import { mdiFilePdfBox } from '@mdi/js';
+    const path1 = mdiFilePdfBox;
+
+
+    const reunion = ref({})
+    const asistencia = ref([])
+    const puntos = ref([])
+    const acuerdos = ref([])
+    const encargados = ref([])
+    const minuta = ref({})
+
+    const store = useReunionStore()
+    const route = useRoute()
+
+    const { id } = route.params
+
+    onMounted(async ()=>{
+        reunion.value = await store.obtenerReunion(id)
+        encargados.value = await store.obtenerEncargados(id)
+        puntos.value = await store.obtenerPuntos(id)
+        acuerdos.value = await store.obtenerAcuerdos(id)
+        asistencia.value = await store.obtenerParticipantes(id)
+        minuta.value = await store.obtenerMinuta(id)
+    })
+
+
+    const generarPDF = async () => {
+        const contenido = document.getElementById("pdf")
+        
+        // Configuración del PDF
+        const opciones = {
+            margin: 1,
+            filename: "minuta-reunion.pdf",
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        };
+
+        // Generar el PDF
+        await html2pdf().set(opciones).from(contenido).save();
+    }
 </script>
 
 <template>
 
     <Header />
 
-    <div class="container mx-auto px-4 mt-16">
+    <div class="container mx-auto text-right">
+        <button 
+            class="bg-transparent hover:border-blue-500 hover:bg-blue-500 focus:scale-95 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
+            @click="generarPDF()"
+        >
+            <svg-icon type="mdi" :path="path1"></svg-icon>
+            Generar PDF
+        </button>
+    </div>
+    <div class="container mx-auto px-4 mt-16" id="pdf">
 
         <h1 class="text-2xl font-bold uppercase text-center">Dirección de tecnologías de Información y Comunicación</h1>
         <h2 class="text-xl font-light text-slate-400 text-center">Minuta de Reunión</h2>
 
         <div class="mt-8">
             <p class="text-2xl text-center font-bold">
-                Reunión para la verificación de la implementación de RRI
+                {{ reunion.nombre }}
             </p>
             <p class="text-xl font-light text-center">
-                Lugar: <b>Megacentro de Vacunación</b>
+                Lugar: <b>{{ reunion.lugar }}</b>
             </p>
-            <p class="text-xl font-light text-center mb-4">Fecha hora inicio de reunión: <b>08/01/2025 11:30 A.M</b></p>
+            <p class="text-xl font-light text-center mb-4">Fecha hora inicio de reunión: <b>{{ reunion.fecha }}</b></p>
 
             <hr>
 
@@ -36,12 +92,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-b">
-                            <td class="py-2">Francisco Josue Escobar Quintanilla</td>
-                        </tr>
-    
-                        <tr class="border-b">
-                            <td class="py-2">Ivan Alessandro Mendoza Landaverde</td>
+                        <tr class="border-b" v-for="e in encargados">
+                            <td class="py-2">{{ e.id_usuario }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -51,17 +103,16 @@
 
             <div class="py-4 space-y-4">
 
-                <p>1. Se realizar el principal...</p>
-                <p>2. Se accede al...</p>
-                <p>3. Se brinda asistencia para realizar...</p>
-                <p>4. ESTA TEMBLANDO FUERTISIMO...</p>
+                <ul class="list-disc">
+                    <li  v-for="p in puntos">{{ p.nombre }}</li>
+                </ul>
 
             </div>
 
             <h3 class="text-2xl font-bold">Desarrollo de la reunión</h3>
 
             <div class="overflow-x-auto">
-                <p class="py-4 text-justify" v-html="minuta">
+                <p class="py-4 text-justify" v-html="minuta.descripcion">
                 </p>
             </div>
 
@@ -69,10 +120,9 @@
 
             <div class="py-4 space-y-4">
 
-                <p>1. Acuerdo: queda como acuerdo realizar...</p>
-                <p>2. Acuerdo: queda como acuerdo realizar...</p>
-                <p>3. Acuerdo: queda como acuerdo realizar...</p>
-                <p>4. Acuerdo: queda como acuerdo realizar...</p>
+                <ul class="list-disc">
+                    <li v-for="a in acuerdos">{{ a.nombre }}</li>
+                </ul>
 
             </div>
 
@@ -91,29 +141,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-b">
-                            <td class="py-2">Francisco Josue Escobar Quintanilla</td>
-                            <td class="py-2">05482299-1</td>
-                            <td class="py-2">Técnico Informático</td>
-                            <td class="py-2">Ministerio de Salud</td>
-                            <td class="py-2">7008-6814</td>
-                            <td class="py-2">francisco.escobar@salud.gob.sv</td>
-                        </tr>
-        
-                        <tr class="border-b">
-                            <td class="py-2">Ivan Alessandro Mendoza Landaverde</td>
-                            <td class="py-2">05482299-1</td>
-                            <td class="py-2">Técnico Informático</td>
-                            <td class="py-2">Ministerio de Salud</td>
-                            <td class="py-2">7008-6814</td>
-                            <td class="py-2">ivan.mendoza@salud.gob.sv</td>
-
+                        <tr class="border-b" v-for="x in asistencia">
+                            <td class="py-2">{{ x.participante }}</td>
+                            <td class="py-2">{{ x.dui }}</td>
+                            <td class="py-2">{{ x.cargo }}</td>
+                            <td class="py-2">{{ x.institucion }}</td>
+                            <td class="py-2">{{ x.telefono }}</td>
+                            <td class="py-2">{{ x.correo }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <p class="text-xl font-light text-center lg:text-right mt-8">Fecha hora fin de la reunión: <b>08/01/2025 1:15 P.M</b></p>
+            <p class="text-xl font-light text-center lg:text-right mt-8">Fecha hora fin de la reunión: <b>{{ minuta.fechaFin }}</b></p>
         </div>
 
         <Footer />
@@ -122,3 +162,16 @@
 
 </template>
 
+<style>
+
+    ul {
+        list-style-type: disc;
+        padding-left: 1.25rem; /* Tailwind: pl-5 */
+    }
+  
+    li {
+        margin-bottom: 0.5rem; /* Tailwind: mb-2 */
+    }
+
+
+</style>

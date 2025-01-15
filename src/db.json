@@ -85,10 +85,33 @@
       "proyecto": "4",
       "nombre": "Firma de acta de aceptación",
       "lugar": "Google Meet",
+      "estado": "Cancelado",
       "id_usuario": 1,
       "codigo": "5ead72",
       "fecha": "14/1/2025, 10:42:51 a.m.",
       "expiracion": "14/1/2025, 11:12:51 a.m."
+    },
+    {
+      "id": "556c2ddb",
+      "proyecto": "3",
+      "nombre": "Presentacion de prototipo de Estrategia Canguro",
+      "lugar": "Megacentro de Vacunacion",
+      "id_usuario": 1,
+      "codigo": "56c2dd",
+      "fecha": "14/1/2025, 6:28:37 p.m.",
+      "expiracion": "14/1/2025, 6:58:37 p.m.",
+      "estado": "Cancelado"
+    },
+    {
+      "id": "0fdb952e",
+      "proyecto": "89e41372e12",
+      "nombre": "Toma inicial de requerimiento",
+      "lugar": "Megacentro",
+      "id_usuario": 1,
+      "codigo": "fdb952",
+      "fecha": "14/1/2025, 6:58:13 p.m.",
+      "expiracion": "14/1/2025, 7:28:13 p.m.",
+      "estado": "Finalizado"
     }
   ],
   "encargados": [
@@ -96,6 +119,16 @@
       "id": "be30cf85a6c",
       "id_usuario": "2",
       "id_reunion": "05ead72a"
+    },
+    {
+      "id": "6c2ddb768eb",
+      "id_usuario": "1",
+      "id_reunion": "556c2ddb"
+    },
+    {
+      "id": "db952ee2483",
+      "id_usuario": "1",
+      "id_reunion": "0fdb952e"
     }
   ],
   "asistencia": [
@@ -108,9 +141,42 @@
       "telefono": "70086814",
       "correo": "francisco.escobar@salud.gob.sv",
       "id_reunion": "05ead72a"
+    },
+    {
+      "id": "ddb768eb1d9",
+      "participante": "Francisco Josue Escobar",
+      "institucion": "MINSAL",
+      "cargo": "Tecnico Informatico",
+      "dui": "05482299-1",
+      "telefono": "70086814",
+      "correo": "francisco.escobar@salud.gob.sv",
+      "id_reunion": "556c2ddb"
+    },
+    {
+      "id": "952ee248320",
+      "participante": "Francisco Escobar",
+      "institucion": "MINSAL",
+      "cargo": "Tecnico Informatico",
+      "dui": "05482299-1",
+      "telefono": "70086814",
+      "correo": "a@a.com",
+      "id_reunion": "0fdb952e"
     }
   ],
-  "minutareunion": [],
+  "minutareunion": [
+    {
+      "id": "8028e3b6c57",
+      "descripcion": "<p>Este es un ejemplo de descripcion de la minuta de reunion, en la presente <strong>REUNION </strong>se tiene:</p><ul><li><p>Textos enriquecidos, <strong>negrita</strong>, <em>italica, listas...</em></p></li><li><p>La reunion se guarda en el session storage, el cual funciona a modo de borrador en caso que falle la conexion.</p></li><li><p>Otros usuarios pueden acceder a completar la lista de asistencia con la url del sitio y la clave de reunion</p></li></ul>",
+      "fechaFin": "14/1/2025, 6:45:34 p.m.",
+      "id_reunion": "556c2ddb"
+    },
+    {
+      "id": "e2483200005",
+      "descripcion": "<p>Este es un ejemplo de descripcion de la minuta de reunion, en la presente <strong>REUNION </strong>se tiene:</p><ul><li><p>Textos enriquecidos, <strong>negrita</strong>, <em>italica, listas...</em></p></li><li><p>La reunion se guarda en el session storage, el cual funciona a modo de borrador en caso que falle la conexion.</p></li><li><p>Otros usuarios pueden acceder a completar la lista de asistencia con la url del sitio y la clave de reunion</p></li></ul><p>Agregando texto...</p>",
+      "fechaFin": "14/1/2025, 7:00:40 p.m.",
+      "id_reunion": "0fdb952e"
+    }
+  ],
   "puntoreunion": [
     {
       "id": "",
@@ -121,6 +187,16 @@
       "id": "",
       "nombre": "Segundo Punto",
       "id_reunion": "05ead72a"
+    },
+    {
+      "id": "b768eb1d9f8",
+      "nombre": "Retroalimentacion de la reunion anterior",
+      "id_reunion": "556c2ddb"
+    },
+    {
+      "id": "2ee24832000",
+      "nombre": "Nuevo punto de reunion",
+      "id_reunion": "0fdb952e"
     }
   ],
   "acuerdocompromiso": [
@@ -133,6 +209,16 @@
       "id": "",
       "nombre": "Segundo acuerdo",
       "id_reunion": "05ead72a"
+    },
+    {
+      "id": "60890ed91f7",
+      "nombre": "Se brindara acceso al documento compartido",
+      "id_reunion": "556c2ddb"
+    },
+    {
+      "id": "ee248320000",
+      "nombre": "Acuerdo o compromiso",
+      "id_reunion": "0fdb952e"
     }
   ]
 }

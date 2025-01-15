@@ -35,7 +35,7 @@ const router = createRouter({
       component: () => import('../views/HistorialView.vue'),
     },
     {
-      path: '/historial-reuniones/detalle',
+      path: '/historial-reuniones/detalle/:id',
       name: 'detalle',
       component: () => import('../views/DetalleView.vue'),
     },

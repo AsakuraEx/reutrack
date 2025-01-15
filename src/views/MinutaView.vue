@@ -6,19 +6,22 @@
     import SvgIcon from '@jamescoyle/vue-icon';
     import TipTap from '@/components/TipTap.vue';
     import { mdiTrashCanOutline } from '@mdi/js';
-    import { onMounted, onUnmounted, reactive, ref } from 'vue';
-    import { useRoute } from 'vue-router';
+    import { onMounted, reactive, ref } from 'vue';
+    import { useRoute, useRouter } from 'vue-router';
     import { useReunionStore } from '@/stores/reuniones';
     import { uid } from 'uid';
 
-    const path = mdiTrashCanOutline;
-    const route = useRoute()
+    const path = mdiTrashCanOutline;        //Parte del icono
+    const route = useRoute()        //Se utiliza para obtener informacion de la URL
     const {id} = route.params;     //Se obtiene el id de la reunion actual
-    const idReunion = id;
-    const store = useReunionStore()
-    const puntos = ref([])
-    const acuerdos = ref([])
+    const idReunion = id;           //Se almacena en una variable para evitar conflicto de nombres
+    const store = useReunionStore() //Contiene metodos utiles para el manejo de la vista
+    const puntos = ref([])          //Se almacenan todos los puntos
+    const acuerdos = ref([])        //Se almacenan todos los acuerdos guardados
+    const router = useRouter()      //Se utiliza para redireccionar a otra vista
+    let backup;
 
+    //Formulario de minuta
     const minuta = reactive({
         id: '',
         descripcion: '',
@@ -26,12 +29,14 @@
         id_reunion: idReunion
     });
 
+    //Formulario del punto de la reunion
     const punto = reactive({
         id: '',
         nombre: '',
         id_reunion: idReunion
     })
 
+    //Formulario del acuerdo de la reunion
     const acuerdo = reactive({
         id: '',
         nombre: '',
@@ -47,11 +52,23 @@
 
     onMounted(async ()=>{
         
-        minuta.descripcion = sessionStorage.getItem('minuta')
+        //Obtiene puntos
         puntos.value = await store.obtenerPuntos(idReunion)
+        
+        //Obtiene acuerdos
         acuerdos.value = await store.obtenerAcuerdos(idReunion)
+        
+        //Se obtiene lo que existe en el sesion storage
+        minuta.descripcion = sessionStorage.getItem('minuta')
+
+        //Si no existe algo guarda vacio
+        if(!minuta.descripcion){
+            minuta.descripcion = ''
+        }
+
+
         //Cada 20 segundos genera una copia de la minuta en el SessionStorage
-        const backup = setInterval(()=>{
+        backup = setInterval(()=>{
             GenerarBackupReunion()
         }, 20000)
 
@@ -61,12 +78,26 @@
         punto.id = uid()
         await store.agregarPuntos(punto)
         puntos.value = await store.obtenerPuntos(idReunion)
+        Object.assign(punto, {
+            id: '',
+            nombre: '',
+            id_reunion: idReunion
+        })
     }
 
     const agregarAcuerdo = async () => {
+        //Asigna un id al acuerdo a agregar
         acuerdo.id = uid()
+        //realiza el guardado del acuerdo
         await store.agregarAcuerdos(acuerdo)
+        //Actualiza el array de acuerdos
         acuerdos.value = await store.obtenerAcuerdos(idReunion)
+        //Limpia el objeto de acuerdos
+        Object.assign(acuerdo, {
+            id: '',
+            nombre: '',
+            id_reunion: idReunion
+        })
     }
 
     const eliminarPunto = async (id) => {
@@ -80,7 +111,34 @@
         acuerdos.value = await store.obtenerAcuerdos(idReunion)
     }
 
+    const finalizarReunion = async () => {
+        //Asigna un id a la minuta
+        minuta.id = uid()
+        //Guarda la hora de finalizacion de la minuta
+        minuta.fechaFin = new Date().toLocaleString()
 
+        //Guarda la minuta
+        await store.GuardarMinuta(minuta)
+
+        //Marca la reunion como finalizada
+        await store.FinalizarReunion(idReunion)
+
+        //Elimina el intervalo
+        clearInterval(backup)
+        //Limpia el session Storage
+        sessionStorage.clear()
+
+        //Limpia el objeto
+        Object.assign(minuta, {
+            id: '',
+            descripcion: '',
+            fechaFin: '',
+            id_reunion: idReunion
+        })
+
+        //Finalmente envia al historial de reuniones
+        router.push({name: 'historial'})
+    }
 
 
 
@@ -141,8 +199,6 @@
                 <TipTap 
                     v-model="minuta.descripcion" 
                 />
-                <h2>Contenido de la Minuta:</h2>
-                <div v-html="minuta.descripcion"></div>
             </div>
 
             <div class="space-y-4">
@@ -189,13 +245,14 @@
                 Anterior
             </RouterLink>
 
-            <RouterLink 
+            <button 
                 v-if="minuta"
-                :to="{name: 'historial'}"
+                type="button"
+                @click="finalizarReunion()"
                 class="bg-purple-500 hover:bg-purple-400 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center animate-pulse hover:animate-none"
             >
                 Finalizar Reunión
-            </RouterLink>
+            </button>
 
             
         </div>

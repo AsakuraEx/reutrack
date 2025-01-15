@@ -26,6 +26,7 @@
         codigo: '',
         fecha: '',
         expiracion: '',
+        estado: 'Iniciado'
     })
 
     //instrucciones que se cargan al mostrar la vista
@@ -87,12 +88,14 @@
                 :label="'Nombre de la reunión: *'"
                 :requerido="true" 
                 v-model:campo="formData.nombre"
+                :tipo="'text'"
             />
 
             <Textfield 
                 :label="'Lugar de la reunión: *'" 
                 :requerido="true"
                 v-model:campo="formData.lugar"
+                :tipo="'text'"
             />
 
             <div class="flex justify-end px-4">

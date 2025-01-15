@@ -4,7 +4,27 @@
     import Header from '@/components/Header.vue';
     import DatePicker from '@/components/DatePicker.vue';
     import CardHistorial from '@/components/CardHistorial.vue';
+    import ModalCancelarReu from '@/components/ModalCancelarReu.vue';
     import Select2 from '@/components/Select2.vue';
+    import { onMounted, ref } from 'vue';
+    import { useReunionStore } from '@/stores/reuniones';
+
+    const store = useReunionStore()
+    const reuniones = ref([])
+    const modal = ref({})
+
+    onMounted(async ()=>{
+        reuniones.value = await store.obtenerReuniones()
+    })
+
+    const cancelarReunion = async (id) => {
+        await store.cancelarReunion(id)
+        reuniones.value = await store.obtenerReuniones()
+    }
+
+    const modalMostrado = (reunion) => {
+        modal.value = reunion
+    }
 
 </script>
 
@@ -39,29 +59,22 @@
 
         <!-- LISTADO DE CARDS-->
         <div class="flex flex-col gap-3">
-
             <CardHistorial 
-                :titulo="'Reunión para toma de requerimiento en ISBM'"
-                :lugar="'Oficinas centrales de ISBM'"
-                :fecha="'08-01-2025 11:30 A.M'"
-                :estado="'Iniciado'"
-            />
-
-            <CardHistorial 
-                :titulo="'Reunión de Tamizaje Metabolico SIS'"
-                :lugar="'Megacentro de Vacunación'"
-                :fecha="'08-01-2025 11:30 A.M'"
-                :estado="'Finalizado'"
-            />
-
-            <CardHistorial 
-                :titulo="'Reunión para coordinar implementación nacional de RRI'"
-                :lugar="'MINSAL - Despacho de Ministro'"
-                :fecha="'08-01-2025 11:30 A.M'"
-                :estado="'Cancelado'"
+                v-for="reunion in reuniones"
+                :titulo="reunion.nombre"
+                :lugar="reunion.lugar"
+                :fecha="reunion.fecha"
+                :estado="reunion.estado"
+                :id="reunion.id"
+                @modal-mostrado="modalMostrado({id: reunion.id, nombre: reunion.nombre})"
             />
     
         </div>
+
+        <ModalCancelarReu 
+            :reunion="modal"
+            @cancelar-reunion="cancelarReunion(modal.id)"
+        />
 
     </div>
 

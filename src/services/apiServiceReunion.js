@@ -1,8 +1,20 @@
 import api from "@/lib/axios";
 
 export default {
+    consultarReuniones(){
+        return api.get('reuniones')
+    },
     guardarReunion(data){
         return api.post('/reuniones', data)
+    },
+    cancelarReunion(id){
+        return api.patch(`/reuniones/${id}`, {estado: 'Cancelado'})
+    },
+    consultarReunion(id){
+        return api.get(`/reuniones/${id}`)
+    },
+    finalizarReunion(idReunion){
+        return api.patch(`/reuniones/${idReunion}`, {estado: 'Finalizado'})
     },
     consultarEncargados(reunion){
         return api.get(`/encargados?id_reunion=${reunion}`)
@@ -43,5 +55,8 @@ export default {
     },
     agregarMinuta(data){
         return api.post('/minutareunion', data)
+    },
+    consultarMinuta(reunion){
+        return api.get(`/minutareunion?id_reunion=${reunion}`)
     },
 }
