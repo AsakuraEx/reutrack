@@ -6,7 +6,7 @@
     import BtnSubmit from '@/components/BtnSubmit.vue';
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline } from '@mdi/js';
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
     import { computed, onMounted, reactive, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { uid } from 'uid';
@@ -17,6 +17,8 @@
     const {id} = route.params;     //Se obtiene el id de la reunion actual
     const idReunion = id;
     const store = useReunionStore()
+    const router = useRouter()
+    const usuarioRol = sessionStorage.getItem('rol')
 
     //Variable que representa el formulario
     const formData = ref({
@@ -39,6 +41,9 @@
 
     //Pull de funciones que se cargan al montar el componente
     onMounted(async ()=>{
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
         formData.value.id = uid()
         participantes.value = await store.obtenerParticipantes(idReunion)
     })
@@ -74,7 +79,7 @@
 <template>
     
         
-    <Header />
+    <Header :rol="usuarioRol"/>
     
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>

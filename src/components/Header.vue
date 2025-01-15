@@ -1,5 +1,19 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+
+const router = useRouter()
+
+defineProps({
+    rol:{
+        type: String,
+        required:true
+    }
+})
+
+const cerrarSesion = () => {
+    sessionStorage.clear()
+    router.push({name:'login'})
+}
 </script>
 
 <template>
@@ -7,7 +21,7 @@ import { RouterLink } from 'vue-router'
     <header class="flex flex-col md:flex-row items-center items md:justify-between px-8 py-4 text-white gap-12">
             
         <RouterLink :to="{name: 'home'}" class="font-['roboto'] text-2xl font-extrabold">
-            REUTRACK: Control y Gestión de Reuniones y Asistencia
+            REUTRACK
         </RouterLink>
 
         <ul class="flex flex-col md:flex-row gap-4 text-lg justify-center items-center">
@@ -23,12 +37,12 @@ import { RouterLink } from 'vue-router'
             <RouterLink  :to="{name: 'reunion'}" class="hover:text-purple-300 transition-colors duration-300">
                 Nueva Reunion
             </RouterLink>
-            <RouterLink  to="/" class="hover:text-purple-300 transition-colors duration-300">
+            <RouterLink v-if="rol !== 'estandar'"  to="/" class="hover:text-purple-300 transition-colors duration-300">
                 Usuarios
             </RouterLink>
-            <RouterLink  to="/" class="hover:text-purple-300 transition-colors duration-300">
+            <button @click="cerrarSesion()" class="hover:text-purple-300 transition-colors duration-300">
                 Cerrar Sesión
-            </RouterLink>
+            </button>
         </ul>
 
     </header>

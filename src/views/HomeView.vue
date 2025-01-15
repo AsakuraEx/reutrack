@@ -1,29 +1,44 @@
 <script setup>
 
-    import {RouterLink} from 'vue-router'
+    import {RouterLink, useRouter} from 'vue-router'
     import Header from '../../src/components/Header.vue'
     import Footer from '../../src/components/Footer.vue'
     import CardIndex from '@/components/CardIndex.vue';
+    import { onMounted, ref } from 'vue';
+    import { useReunionStore } from '@/stores/reuniones';
+
+    const reuniones = ref([])
+    const store = useReunionStore()
+    const router = useRouter() 
+    const usuarioNombre = sessionStorage.getItem('usuario')
+    const usuarioRol = sessionStorage.getItem('rol')
+
+    onMounted(async ()=>{
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
+        reuniones.value = await store.obtenerReuniones('Finalizado', 3)
+    })
 
 </script>
 
 <template>
   
-  <Header />
+  <Header :rol="usuarioRol"/>
   
   <div class="container mx-auto py-4 min-h-screen text-white">
       
       <picture class="flex flex-col md:flex-row gap-4 md:gap-16 justify-end items-center mt-12 py-12">
           <div class="text-center ">
               <h2 class="text-2xl font-bold uppercase">
-                  Bienvenido/a de nuevo, Ana Gabriela Mendoza de Leiva
+                  Bienvenido/a de nuevo, {{ usuarioNombre }}
               </h2>
               <span class="text-lg">
                   ¡No sueñes con el éxito, trabaja para lograrlo!
               </span>
           </div>
           <img 
-              src="https://b2472105.smushcdn.com/2472105/wp-content/uploads/2023/09/Poses-Perfil-Profesional-Mujeres-ago.-10-2023-1-819x1024.jpg?lossy=1&strip=1&webp=1" 
+              src="/public/images/home.png" 
               alt="imagen de perfil"
               class="rounded-full aspect-square object-cover max-w-72 lg:max-w-lg"
           >
@@ -36,9 +51,10 @@
 
           <div class="mt-12 flex flex-col md:flex-row gap-4 px-3">
 
-            <CardIndex />
-            <CardIndex />
-            <CardIndex />
+            <CardIndex 
+                v-for="reu in reuniones"
+                :reunion="reu"
+            />
 
           </div>
       </div>

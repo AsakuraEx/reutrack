@@ -1,6 +1,6 @@
 <script setup>
 
-    import { reactive } from 'vue';
+    import { onMounted, reactive } from 'vue';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import Textfield from '@/components/Textfield.vue';
@@ -9,6 +9,7 @@
     import { useRouter } from 'vue-router';
     const store = useProyectoStore()
     const router = useRouter()
+    const usuarioRol = sessionStorage.getItem('rol')
 
     const nuevoProyecto = reactive({
         id: uid(),
@@ -17,6 +18,12 @@
         estado: "Pendiente",
         id_usuario: 1,
         acta_aceptacion: null
+    })
+
+    onMounted(()=>{
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
     })
 
     const guardarProyecto = async (proyecto) => {
@@ -28,7 +35,7 @@
 
 <template>
     
-    <Header />
+    <Header :rol="usuarioRol"/>
 
     <div class="container mx-auto px-4 mt-16 min-h-[75vh]">
         <h1 class="text-purple-300 font-extrabold text-center text-2xl uppercase">Nuevo Proyecto</h1>

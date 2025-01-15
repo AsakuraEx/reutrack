@@ -1,13 +1,13 @@
 <script setup>
 
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
     import { onMounted, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
 
     //LIBRERIA PARA PDF
-    import html2pdf from 'html2pdf.js/dist/html2pdf.bundle.min.js';
+
 
     //LIBRERIA DE ICONOS
     import SvgIcon from '@jamescoyle/vue-icon';
@@ -21,13 +21,18 @@
     const acuerdos = ref([])
     const encargados = ref([])
     const minuta = ref({})
+    const usuarioRol = sessionStorage.getItem('rol')
 
     const store = useReunionStore()
     const route = useRoute()
+    const router = useRouter()
 
     const { id } = route.params
 
     onMounted(async ()=>{
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
         reunion.value = await store.obtenerReunion(id)
         encargados.value = await store.obtenerEncargados(id)
         puntos.value = await store.obtenerPuntos(id)
@@ -37,26 +42,16 @@
     })
 
 
-    const generarPDF = async () => {
-        const contenido = document.getElementById("pdf")
-        
-        // Configuración del PDF
-        const opciones = {
-            margin: 1,
-            filename: "minuta-reunion.pdf",
-            image: { type: "jpeg", quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-        };
+    const generarPDF = () => {
 
-        // Generar el PDF
-        await html2pdf().set(opciones).from(contenido).save();
+
+
     }
 </script>
 
 <template>
 
-    <Header />
+    <Header :rol="usuarioRol"/>
 
     <div class="container mx-auto text-right">
         <button 

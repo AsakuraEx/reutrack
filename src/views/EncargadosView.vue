@@ -21,6 +21,7 @@
     const store = useUsuarioStore();
     const storeReu = useReunionStore();
     const route = useRoute();
+    const usuarioRol = sessionStorage.getItem('rol')
 
     //variables o statements de la vista
     const arrayEncargados = ref([]);
@@ -40,6 +41,9 @@
     })
 
     onMounted(async ()=>{
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
         formData.id = uid()
         arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
         listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
@@ -67,7 +71,7 @@
 <template>
     
         
-    <Header />
+    <Header :rol="usuarioRol"/>
     
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>

@@ -8,13 +8,21 @@
     import Select2 from '@/components/Select2.vue';
     import { onMounted, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
+    import { useRouter } from 'vue-router';
+    const router = useRouter()
 
     const store = useReunionStore()
     const reuniones = ref([])
     const modal = ref({})
+    const usuarioRol = sessionStorage.getItem('rol')
 
     onMounted(async ()=>{
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
+
         reuniones.value = await store.obtenerReuniones()
+
     })
 
     const cancelarReunion = async (id) => {
@@ -30,7 +38,7 @@
 
 <template>
 
-    <Header />
+    <Header :rol="usuarioRol"/>
 
     <div class="container mx-auto min-h-[75vh] space-y-4 px-2">        
         <h1 class="uppercase text-2xl font-extrabold text-purple-300 text-center my-12">

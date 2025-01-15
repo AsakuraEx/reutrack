@@ -19,6 +19,7 @@
     const puntos = ref([])          //Se almacenan todos los puntos
     const acuerdos = ref([])        //Se almacenan todos los acuerdos guardados
     const router = useRouter()      //Se utiliza para redireccionar a otra vista
+    const usuarioRol = sessionStorage.getItem('rol')
     let backup;
 
     //Formulario de minuta
@@ -51,7 +52,9 @@
     }
 
     onMounted(async ()=>{
-        
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
         //Obtiene puntos
         puntos.value = await store.obtenerPuntos(idReunion)
         
@@ -126,7 +129,7 @@
         //Elimina el intervalo
         clearInterval(backup)
         //Limpia el session Storage
-        sessionStorage.clear()
+        sessionStorage.removeItem('minuta')
 
         //Limpia el objeto
         Object.assign(minuta, {
@@ -147,7 +150,7 @@
 
 <template>
 
-    <Header />
+    <Header :rol="usuarioRol"/>
     
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>

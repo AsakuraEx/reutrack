@@ -11,6 +11,9 @@ export default {
       fontFamily: {
         'roboto': ["Roboto", "serif"],
       },
+      backgroundImage: {
+        'login': "url('../public/images/bg-login.jpg')"
+      }
     },
   },
   plugins: [

@@ -16,7 +16,19 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         
     }
 
+    async function iniciarSesion(email){
+        try{
+            const {status, data} = await apiServiceUsuarios.iniciarSesion(email)
+            if(status === 200){
+                return data;
+            }
+        }catch(e){
+            console.error(e)
+        }
+    }
+
     return {
-        mostrarEncargados
+        mostrarEncargados,
+        iniciarSesion
     }
 })

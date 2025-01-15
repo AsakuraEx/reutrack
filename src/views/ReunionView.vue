@@ -17,6 +17,7 @@
     const storeReu = useReunionStore()
     const router = useRouter()
     const arrayProyectos = ref([]);
+    const usuarioRol = sessionStorage.getItem('rol')
     const formData = reactive({
         id: uid(8),
         proyecto: 0,
@@ -62,7 +63,7 @@
 
 <template>
     
-    <Header />
+    <Header :rol="usuarioRol"/>
 
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>

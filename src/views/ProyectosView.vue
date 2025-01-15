@@ -8,7 +8,9 @@
     import ModalFinalizar from '@/components/ModalFinalizar.vue';
     import ModalCancelar from '@/components/ModalCancelar.vue';
     import { useProyectoStore } from '@/stores/proyectos';
-
+    import { useRouter } from 'vue-router';
+    const router = useRouter()
+    const usuarioRol = sessionStorage.getItem('rol')
     //definición de variables
     const arrayProyectos = ref([]);
     const modalActual = ref({
@@ -33,6 +35,10 @@
 
 
     onMounted(async ()=>{
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
+
         arrayProyectos.value = await store.mostrarProyectos();
     })
 
@@ -40,7 +46,7 @@
 
 <template>
 
-    <Header />
+    <Header :rol="usuarioRol"/>
 
     <div class="container mx-auto px-4 min-h-[75vh]">
 

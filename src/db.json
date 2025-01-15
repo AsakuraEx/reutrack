@@ -1,16 +1,36 @@
 {
   "usuarios": [
     {
+      "id": "4",
+      "nombre": "Administrador Reutrack",
+      "correo": "admin@salud.gob.sv",
+      "contraseña": "123",
+      "estado": "activo",
+      "rol": "admin"
+    },
+    {
       "id": "1",
-      "nombre": "Francisco Josue Escobar Quintanilla"
+      "nombre": "Francisco Josue Escobar Quintanilla",
+      "correo": "francisco.escobar@salud.gob.sv",
+      "contraseña": "123",
+      "estado": "activo",
+      "rol": "estandar"
     },
     {
       "id": "2",
-      "nombre": "Ivan Alessandro Mendoza Landaverde"
+      "nombre": "Ivan Alessandro Mendoza Landaverde",
+      "correo": "ivan.mendozal@salud.gob.sv",
+      "contraseña": "123",
+      "estado": "activo",
+      "rol": "estandar"
     },
     {
       "id": "3",
-      "nombre": "Walter Alcides Romero"
+      "nombre": "Walter Alcides Romero",
+      "correo": "walter.romero@salud.gob.sv",
+      "contraseña": "123",
+      "estado": "inactivo",
+      "rol": "estandar"
     }
   ],
   "proyectos": [
@@ -34,7 +54,7 @@
       "id": "3",
       "nombre": "Mejora - Estratégia canguro",
       "version": "Version 3",
-      "estado": "Pendiente",
+      "estado": "Cancelado",
       "id_usuario": 1,
       "acta_aceptacion": null
     },
@@ -77,6 +97,14 @@
       "estado": "Cancelado",
       "id_usuario": 1,
       "acta_aceptacion": null
+    },
+    {
+      "id": "2c8f18bdcd8",
+      "nombre": "Sismed",
+      "version": "443",
+      "estado": "Pendiente",
+      "id_usuario": 1,
+      "acta_aceptacion": null
     }
   ],
   "reuniones": [
@@ -112,6 +140,72 @@
       "fecha": "14/1/2025, 6:58:13 p.m.",
       "expiracion": "14/1/2025, 7:28:13 p.m.",
       "estado": "Finalizado"
+    },
+    {
+      "id": "1923f1d9",
+      "proyecto": "3",
+      "nombre": "Francisco Escobar",
+      "lugar": "Francisco Escobar",
+      "id_usuario": 1,
+      "codigo": "923f1d",
+      "fecha": "15/1/2025, 7:56:26 a.m.",
+      "expiracion": "15/1/2025, 8:26:26 a.m.",
+      "estado": "Cancelado"
+    },
+    {
+      "id": "3f1d9b4c",
+      "proyecto": "3",
+      "nombre": "Francisco Escobar",
+      "lugar": "Francisco Escobar",
+      "id_usuario": 1,
+      "codigo": "f1d9b4",
+      "fecha": "15/1/2025, 7:57:20 a.m.",
+      "expiracion": "15/1/2025, 8:27:20 a.m.",
+      "estado": "Iniciado"
+    },
+    {
+      "id": "d9b4c843",
+      "proyecto": "4",
+      "nombre": "Presentacion de Avances",
+      "lugar": "Google Meet",
+      "id_usuario": 1,
+      "codigo": "9b4c84",
+      "fecha": "15/1/2025, 7:59:04 a.m.",
+      "expiracion": "15/1/2025, 8:29:04 a.m.",
+      "estado": "Finalizado"
+    },
+    {
+      "id": "a4cc0fec",
+      "proyecto": "4",
+      "nombre": "Feedback",
+      "lugar": "Sala req",
+      "id_usuario": 1,
+      "codigo": "4cc0fe",
+      "fecha": "15/1/2025, 11:28:09 a.m.",
+      "expiracion": "15/1/2025, 11:58:09 a.m.",
+      "estado": "Finalizado"
+    },
+    {
+      "id": "2d3b1539",
+      "proyecto": "89e41372e12",
+      "nombre": "Presentación",
+      "lugar": "Megacentro",
+      "id_usuario": 1,
+      "codigo": "d3b153",
+      "fecha": "15/1/2025, 3:17:37 p.m.",
+      "expiracion": "15/1/2025, 3:47:37 p.m.",
+      "estado": "Iniciado"
+    },
+    {
+      "id": "395753a4",
+      "proyecto": "89e41372e12",
+      "nombre": "Presentación",
+      "lugar": "Megacentro",
+      "id_usuario": 1,
+      "codigo": "95753a",
+      "fecha": "15/1/2025, 3:18:10 p.m.",
+      "expiracion": "15/1/2025, 3:48:10 p.m.",
+      "estado": "Iniciado"
     }
   ],
   "encargados": [
@@ -129,6 +223,21 @@
       "id": "db952ee2483",
       "id_usuario": "1",
       "id_reunion": "0fdb952e"
+    },
+    {
+      "id": "b4c84327d85",
+      "id_usuario": "1",
+      "id_reunion": "d9b4c843"
+    },
+    {
+      "id": "cc0fec712c8",
+      "id_usuario": "1",
+      "id_reunion": "a4cc0fec"
+    },
+    {
+      "id": "5753a4c15d6",
+      "id_usuario": "1",
+      "id_reunion": "395753a4"
     }
   ],
   "asistencia": [
@@ -161,6 +270,56 @@
       "telefono": "70086814",
       "correo": "a@a.com",
       "id_reunion": "0fdb952e"
+    },
+    {
+      "id": "c84327d8528",
+      "participante": "Francisco Escobar",
+      "institucion": "MINSAL",
+      "cargo": "Informatico",
+      "dui": "05482299-1",
+      "telefono": "70086814",
+      "correo": "a@a.com",
+      "id_reunion": "d9b4c843"
+    },
+    {
+      "id": "0fec712c8f1",
+      "participante": "Jeannete peraza",
+      "institucion": "Dtic",
+      "cargo": "Coordinador",
+      "dui": "01729344-4",
+      "telefono": "78154863",
+      "correo": "jeannete.peraza@salud.gob.sv",
+      "id_reunion": "a4cc0fec"
+    },
+    {
+      "id": "3f6582243ee",
+      "participante": "Francisco Escobar",
+      "institucion": "Francisco Escobar",
+      "cargo": "Francisco Escobar",
+      "dui": "05482299-1",
+      "telefono": "70086814",
+      "correo": "a@a.com",
+      "id_reunion": "395753a4"
+    },
+    {
+      "id": "3f6582243ee",
+      "participante": "Cristian Surio",
+      "institucion": "Francisco Escobar",
+      "cargo": "Francisco Escobar",
+      "dui": "05482299-1",
+      "telefono": "70086814",
+      "correo": "a@a.com",
+      "id_reunion": "395753a4"
+    },
+    {
+      "id": "f6582243eea",
+      "participante": "asdasdasd",
+      "institucion": "asdasdasd",
+      "cargo": "asdasdasd",
+      "dui": "05482299-1",
+      "telefono": "70086814",
+      "correo": "a@a.com",
+      "id_reunion": "395753a4"
     }
   ],
   "minutareunion": [
@@ -175,6 +334,18 @@
       "descripcion": "<p>Este es un ejemplo de descripcion de la minuta de reunion, en la presente <strong>REUNION </strong>se tiene:</p><ul><li><p>Textos enriquecidos, <strong>negrita</strong>, <em>italica, listas...</em></p></li><li><p>La reunion se guarda en el session storage, el cual funciona a modo de borrador en caso que falle la conexion.</p></li><li><p>Otros usuarios pueden acceder a completar la lista de asistencia con la url del sitio y la clave de reunion</p></li></ul><p>Agregando texto...</p>",
       "fechaFin": "14/1/2025, 7:00:40 p.m.",
       "id_reunion": "0fdb952e"
+    },
+    {
+      "id": "8528cf2a4e8",
+      "descripcion": "<p>asdlkfaslñkdfklñsajdflkjsdalñdfjñalksdfjñlksd</p><ul><li><p>lakjshfaskjhdklahskdljas</p></li><li><p>alskhfkjashfkljahslkfhaklsf</p></li><li><p>alksjhfkjashflkahslkfhashflkj</p></li></ul><p></p><p>AAAAAAAAAAAAAAAAAAAA <strong>EL PDF SE CREA EN EL BACKEND, WALTER TE TOCA DE AHUEVOOOOOOOOOOO</strong></p><p></p><p><strong><em>AUN PUEDO COMBINAR ESTILOS, </em></strong><em>VERDAD O RETO, </em>TEXTO NORMAL</p>",
+      "fechaFin": "15/1/2025, 8:01:36 a.m.",
+      "id_reunion": "d9b4c843"
+    },
+    {
+      "id": "12c8f18bdcd",
+      "descripcion": "<p>Kmplementacii. Apolo</p>",
+      "fechaFin": "15/1/2025, 11:31:42 a.m.",
+      "id_reunion": "a4cc0fec"
     }
   ],
   "puntoreunion": [
@@ -197,6 +368,31 @@
       "id": "2ee24832000",
       "nombre": "Nuevo punto de reunion",
       "id_reunion": "0fdb952e"
+    },
+    {
+      "id": "4327d8528cf",
+      "nombre": "Punto de la reunion",
+      "id_reunion": "d9b4c843"
+    },
+    {
+      "id": "327d8528cf2",
+      "nombre": "Otro punto de reunion",
+      "id_reunion": "d9b4c843"
+    },
+    {
+      "id": "27d8528cf2a",
+      "nombre": "Putear a los totonet por ser una mierda",
+      "id_reunion": "d9b4c843"
+    },
+    {
+      "id": "ec712c8f18b",
+      "nombre": "Fjncionamiento",
+      "id_reunion": "a4cc0fec"
+    },
+    {
+      "id": "c712c8f18bd",
+      "nombre": "Plan de imomeme",
+      "id_reunion": "a4cc0fec"
     }
   ],
   "acuerdocompromiso": [
@@ -219,6 +415,21 @@
       "id": "ee248320000",
       "nombre": "Acuerdo o compromiso",
       "id_reunion": "0fdb952e"
+    },
+    {
+      "id": "7d8528cf2a4",
+      "nombre": "Walter se hecha el pdf",
+      "id_reunion": "d9b4c843"
+    },
+    {
+      "id": "d8528cf2a4e",
+      "nombre": "Yo solo lo consumo y lo muestro si si me cae que si",
+      "id_reunion": "d9b4c843"
+    },
+    {
+      "id": "712c8f18bdc",
+      "nombre": "Reunion de impmem 28 de feb",
+      "id_reunion": "a4cc0fec"
     }
   ]
 }
