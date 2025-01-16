@@ -10,9 +10,9 @@ export const useReunionStore = defineStore('reuniones', () => {
     })
 
     //FUNCION QUE OBTIENE TODAS LAS REUNIONES
-    async function obtenerReuniones(estado, limite, codigo){
+    async function obtenerReuniones(estado, limite, codigo, proyecto){
         try{
-            const {status, data} = await apiServiceReunion.consultarReuniones(estado, limite, codigo)
+            const {status, data} = await apiServiceReunion.consultarReuniones(estado, limite, codigo, proyecto)
             if(status === 200){
                 return data;
             }

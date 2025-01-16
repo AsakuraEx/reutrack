@@ -19,6 +19,7 @@
     const store = useReunionStore()
     const router = useRouter()
     const usuarioRol = sessionStorage.getItem('rol')
+    const reunion = ref({})
 
     //Variable que representa el formulario
     const formData = ref({
@@ -46,6 +47,7 @@
         }
         formData.value.id = uid()
         participantes.value = await store.obtenerParticipantes(idReunion)
+        reunion.value = await store.obtenerReunion(idReunion)
     })
 
     // Variables con diferentes funcionalidades del sistema
@@ -88,7 +90,8 @@
         
         <Stepper :step="3"/>
 
-        <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Lista de Asistencia</h1>  
+        <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Lista de Asistencia</h1>
+        <h2 class="text-xl font-extrabold text-center text-purple-400">Codigo: {{ reunion.codigo }}</h2>  
         
         <form class="flex flex-col gap-8 md:gap-0" @submit.prevent="agregarParticipante">
 

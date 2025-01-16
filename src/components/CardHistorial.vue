@@ -2,7 +2,6 @@
     <!-- CARD DE REUNION -->
     <div class="border bg-transparent p-3 flex flex-col lg:flex-row gap-4 justify-between items-center rounded">
         <div>
-            <p>{{ id }}</p>
             <p class="text-xl font-bold">{{ titulo }}</p>
             <p class="font-light text-slate-300">Lugar de Reunion: <b>{{ lugar }}</b></p>
             <span class="font-light italic">{{ fecha }}</span>

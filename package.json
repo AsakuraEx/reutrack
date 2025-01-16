@@ -7,7 +7,7 @@
     "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview",
-    "json-server": "npx json-server src/db.json --host 10.168.241.44"
+    "json-server": "npx json-server src/db.json --host 192.168.1.2"
   },
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",

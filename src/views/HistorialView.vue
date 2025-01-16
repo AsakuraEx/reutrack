@@ -6,15 +6,22 @@
     import CardHistorial from '@/components/CardHistorial.vue';
     import ModalCancelarReu from '@/components/ModalCancelarReu.vue';
     import Select2 from '@/components/Select2.vue';
-    import { onMounted, ref } from 'vue';
+    import { onMounted, reactive, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { useRouter } from 'vue-router';
+import { useProyectoStore } from '@/stores/proyectos';
     const router = useRouter()
 
     const store = useReunionStore()
     const reuniones = ref([])
     const modal = ref({})
     const usuarioRol = sessionStorage.getItem('rol')
+    const storePro = useProyectoStore()
+    const proyectos = ref([])
+
+    const filtros = reactive({
+        proyecto: 0,
+    })
 
     onMounted(async ()=>{
         if(sessionStorage.getItem('token') == null){
@@ -22,6 +29,7 @@
         }
 
         reuniones.value = await store.obtenerReuniones()
+        proyectos.value = await storePro.mostrarProyectos()
 
     })
 
@@ -32,6 +40,14 @@
 
     const modalMostrado = (reunion) => {
         modal.value = reunion
+    }
+
+    const filtrarReuniones = async () => {
+        reuniones.value = await store.obtenerReuniones(null,null,null, filtros.proyecto)
+
+        Object.assign(filtros, {
+            proyecto: 0
+        })
     }
 
 </script>
@@ -47,7 +63,11 @@
     
         <div class="flex flex-col lg:flex-row gap-2">
 
-            <Select2 :label="'Proyecto'"/>
+            <Select2 
+                :label="'Proyecto'" 
+                :opciones="proyectos" 
+                v-model:campo="filtros.proyecto"
+                :requerido="false"/>
 
             <DatePicker 
                 :label="'Desde'" 
@@ -59,8 +79,7 @@
             />
 
             <div class="flex lg:w-1/5 justify-end gap-2 items-end">
-                <button class="bg-slate-300 hover:bg-slate-500 w-1/2 h-fit font-bold text-black px-4 py-2 rounded">Filtrar</button>
-                <button class="bg-white hover:bg-slate-200 w-1/2 h-fit font-bold text-black px-4 py-2 rounded">Limpiar</button>
+                <button class="bg-slate-300 w-full hover:bg-slate-500 h-fit font-bold text-black px-4 py-2 rounded" @click="filtrarReuniones()">Filtrar</button>
             </div>
 
         </div>

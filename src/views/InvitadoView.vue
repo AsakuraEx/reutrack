@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen">
+    <div class="min-h-screen py-12">
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Lista de Asistencia</h1>  
         
         <form class="flex flex-col gap-8 md:gap-0" @submit.prevent="agregarParticipante">
@@ -93,7 +93,7 @@
     const agregarParticipante = async () => {
         
         await store.agregarParticipante(formData.value)
-        router.push({name: 'login'})
+        router.push({name: 'agradecimiento'})
 
     }
 </script>
