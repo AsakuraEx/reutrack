@@ -18,12 +18,13 @@
     const router = useRouter()
     const arrayProyectos = ref([]);
     const usuarioRol = sessionStorage.getItem('rol')
+    const usuarioId = sessionStorage.getItem('id')
     const formData = reactive({
         id: uid(8),
         proyecto: 0,
         nombre: '',
         lugar: '',
-        id_usuario: 1,
+        id_usuario: usuarioId,
         codigo: '',
         fecha: '',
         expiracion: '',

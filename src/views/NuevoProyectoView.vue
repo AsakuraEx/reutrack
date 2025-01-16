@@ -10,13 +10,14 @@
     const store = useProyectoStore()
     const router = useRouter()
     const usuarioRol = sessionStorage.getItem('rol')
+    const usuarioId = sessionStorage.getItem('id')
 
     const nuevoProyecto = reactive({
         id: uid(),
         nombre: "",
         version: "",
         estado: "Pendiente",
-        id_usuario: 1,
+        id_usuario: usuarioId,
         acta_aceptacion: null
     })
 
