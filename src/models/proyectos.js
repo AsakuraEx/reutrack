@@ -3,9 +3,6 @@ const {
   Model
 } = require('sequelize');
 
-const reunion = require('./reunion')
-const users = require('./users')
-const estado = require('./ctl_estados')
 const db = require("../config/database"); 
 
 module.exports = (sequelize, DataTypes) => {
@@ -37,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     id_estado: DataTypes.INTEGER
   }, {
     sequelize: db,
-    reezeTableName: true,
+    freezeTableName: true,
     modelName: 'proyecto',
   });
   return proyecto;

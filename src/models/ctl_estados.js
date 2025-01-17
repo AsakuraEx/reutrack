@@ -1,9 +1,6 @@
 'use strict';
 const {Model} = require('sequelize');
 
-const reunion = require('./reunion')
-const proyectos = require('./proyectos')
-const users = require('./users')
 const db = require("../config/database"); 
 
 module.exports = (sequelize, DataTypes) => {

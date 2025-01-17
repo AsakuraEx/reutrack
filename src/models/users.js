@@ -4,7 +4,6 @@ const {
 } = require('sequelize');
 
 const db = require("../config/database"); 
-const proyectos = require('./proyectos');
 
 
 module.exports = (sequelize, DataTypes) => {

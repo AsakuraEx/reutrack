@@ -28,23 +28,23 @@ module.exports = (sequelize, DataTypes) => {
       })
       reunion.hasMany(models.puntoreunion,{
         foreignKey: 'id_reunion',
-        as: 'puntos de reunion'
+        as: 'punto de reunion'
       })
       reunion.hasMany(models.encargado,{
         foreignKey: 'id_reunion',
-        as: 'encargados de reunion'
+        as: 'encargado de reunion'
       })
       reunion.hasMany(models.listaasistencia,{
         foreignKey: 'id_reunion',
-        as: 'asistencia de reunion'
+        as: 'lista de asistencia reunion'
       })
       reunion.hasMany(models.minutareunion,{
         foreignKey: 'id_reunion',
-        as: 'minuta de reunion'
+        as: 'minuta reunion'
       })
       reunion.hasMany(models.acuerdocompromiso,{
         foreignKey: 'id_reunion',
-        as: 'acuerdos de reunion'
+        as: 'acuerdo reunion'
       })
     }
   }
