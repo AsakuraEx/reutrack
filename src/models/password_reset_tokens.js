@@ -2,8 +2,11 @@
 const {
   Model
 } = require('sequelize');
+
+const db = require("../config/database"); 
+
 module.exports = (sequelize, DataTypes) => {
-  class password_reset_tokens extends Model {
+  class password_reset_token extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,12 +16,12 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  password_reset_tokens.init({
+  password_reset_token.init({
     email: DataTypes.STRING,
     token: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'password_reset_tokens',
+    modelName: 'password_reset_token',
   });
-  return password_reset_tokens;
+  return password_reset_token;
 };

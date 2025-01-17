@@ -34,7 +34,7 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'estados', // Nombre de la tabla referenciada
+          model: 'ctl_estado', // Nombre de la tabla referenciada
           key: 'id',        // Columna referenciada
         },
         onUpdate: 'CASCADE',

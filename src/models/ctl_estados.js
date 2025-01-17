@@ -1,7 +1,11 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const {Model} = require('sequelize');
+
+const reunion = require('./reunion')
+const proyectos = require('./proyectos')
+const users = require('./users')
+const db = require("../config/database"); 
+
 module.exports = (sequelize, DataTypes) => {
   class ctl_estados extends Model {
     /**
@@ -10,14 +14,27 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      ctl_estados.hasMany(models.reunion,{
+        foreignKey: 'id_estado',
+        as: 'estado de reunion'
+      })
+      ctl_estados.hasMany(models.proyecto,{
+        foreignKey: 'id_estado',
+        as: 'estado de proyecto'
+      })
+      ctl_estados.hasMany(models.users,{
+        foreignKey: 'id_estado',
+        as: 'estado de usuario'
+      })
     }
   }
   ctl_estados.init({
     name: DataTypes.STRING
   }, {
-    sequelize,
-    modelName: 'ctl_estados',
+    sequelize: db,
+    freezeTableName: true,
+    modelName: 'ctl_estado',
+    
   });
   return ctl_estados;
 };

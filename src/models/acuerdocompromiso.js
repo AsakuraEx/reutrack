@@ -1,6 +1,9 @@
 'use strict';
-const db = require("../config/database"); 
+
 const {  Model } = require('sequelize');
+
+const db = require("../config/database"); 
+
 module.exports = (sequelize, DataTypes) => {
   class acuerdocompromiso extends Model {
     /**

@@ -23,7 +23,7 @@ const sequelize = new Sequelize(
 );
 sequelize.authenticate()
     .then(() => {
-        console.log(`Server is running at ${process.env.DB_HOST}:${process.env.DB_PORT}`);
+        console.log(`DB RRRRRRRRUNIIIIIIIIIIIIIING`);
     })
     .catch(err => {
         console.error('Unable to connect to the database:', err.message || err);

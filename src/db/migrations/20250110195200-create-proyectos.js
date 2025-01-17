@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('proyectos', {
+    await queryInterface.createTable('proyecto', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -29,11 +29,14 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'ctl_estados', // Nombre de la tabla referenciada
+          model: 'ctl_estado', // Nombre de la tabla referenciada
           key: 'id',        // Columna referenciada
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
+      },
+      acta_aceptacion:{
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -46,6 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('proyectos');
+    await queryInterface.dropTable('proyecto');
   }
 };

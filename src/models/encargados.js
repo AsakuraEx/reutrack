@@ -2,23 +2,37 @@
 const {
   Model
 } = require('sequelize');
+
+const reunion = require('./reunion')
+const users = require('./users')
+const db = require("../config/database"); 
+
+
 module.exports = (sequelize, DataTypes) => {
-  class encargados extends Model {
+  class encargado extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      encargado.belongsTo(models.reunion, {
+        foreignKey: 'id_reunion',
+        as: 'reunion'
+      })
+      encargado.belongsTo(models.users, {
+        foreignKey: 'id_usuario',
+        as: 'usuario'
+      })
     }
   }
-  encargados.init({
+  encargado.init({
     id_usuario: DataTypes.INTEGER,
     id_reunion: DataTypes.INTEGER
   }, {
-    sequelize,
-    modelName: 'encargados',
+    sequelize: db,
+    reezeTableName: true,
+    modelName: 'encargado',
   });
-  return encargados;
+  return encargado;
 };

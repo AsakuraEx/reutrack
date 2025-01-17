@@ -2,6 +2,10 @@
 const {
   Model
 } = require('sequelize');
+
+const reunion = require('./reunion')
+const db = require("../config/database"); 
+
 module.exports = (sequelize, DataTypes) => {
   class listaasistencia extends Model {
     /**
@@ -10,7 +14,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      listaasistencia.belongsTo(models.reunion, {
+        foreignKey: 'id_reunion',
+        as: 'reunion'
+      })
     }
   }
   listaasistencia.init({
@@ -21,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
     correo: DataTypes.STRING,
     id_reunion: DataTypes.INTEGER
   }, {
-    sequelize,
+    sequelize: db,
+    reezeTableName: true,
     modelName: 'listaasistencia',
   });
   return listaasistencia;

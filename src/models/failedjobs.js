@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class failed - jobs extends Model {
+  class failedjob extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,11 +13,11 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  failed - jobs.init({
+  failedjob.init({
     uuid: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'failed-jobs',
+    modelName: 'failedjob',
   });
-  return failed - jobs;
+  return failedjob;
 };
