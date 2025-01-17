@@ -33,6 +33,7 @@
                     :requerido="true" 
                     :tipo="'text'"
                     :pattern="regexDui"
+                    :mascara="'########-#'"
                 />
                 
                 <Textfield 

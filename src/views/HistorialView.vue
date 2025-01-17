@@ -16,6 +16,7 @@ import { useProyectoStore } from '@/stores/proyectos';
     const reuniones = ref([])
     const modal = ref({})
     const usuarioRol = sessionStorage.getItem('rol')
+    const usuarioId = sessionStorage.getItem('id')
     const storePro = useProyectoStore()
     const proyectos = ref([])
 
@@ -28,7 +29,11 @@ import { useProyectoStore } from '@/stores/proyectos';
             router.push({name: 'login'})
         }
 
-        reuniones.value = await store.obtenerReuniones()
+        if(usuarioId != 4){
+            reuniones.value = await store.obtenerReuniones(null,null,null, null, usuarioId)
+        }else{
+            reuniones.value = await store.obtenerReuniones(null,null,null, null)
+        }
         proyectos.value = await storePro.mostrarProyectos()
 
     })
@@ -43,7 +48,12 @@ import { useProyectoStore } from '@/stores/proyectos';
     }
 
     const filtrarReuniones = async () => {
-        reuniones.value = await store.obtenerReuniones(null,null,null, filtros.proyecto)
+
+        if(usuarioId != 4){
+            reuniones.value = await store.obtenerReuniones(null,null,null, filtros.proyecto, usuarioId)
+        }else{
+            reuniones.value = await store.obtenerReuniones(null,null,null, filtros.proyecto)
+        }
 
         Object.assign(filtros, {
             proyecto: 0

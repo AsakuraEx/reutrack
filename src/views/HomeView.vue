@@ -12,12 +12,17 @@
     const router = useRouter() 
     const usuarioNombre = sessionStorage.getItem('usuario')
     const usuarioRol = sessionStorage.getItem('rol')
+    const usuarioId = sessionStorage.getItem('id')
 
     onMounted(async ()=>{
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
         }
-        reuniones.value = await store.obtenerReuniones('Finalizado', 3)
+        if(usuarioId != 4){
+            reuniones.value = await store.obtenerReuniones('Finalizado', 3, null, null, usuarioId)
+        }else{
+            reuniones.value = await store.obtenerReuniones('Finalizado', 3, null, null, null)    
+        }
     })
 
 </script>

@@ -29,516 +29,228 @@
       "nombre": "Walter Alcides Romero",
       "correo": "walter.romero@salud.gob.sv",
       "contraseña": "123",
-      "estado": "inactivo",
+      "estado": "activo",
       "rol": "estandar"
     }
   ],
   "proyectos": [
     {
-      "id": "1",
-      "nombre": "SISMED",
-      "version": "Sprint 10",
-      "estado": "Finalizado",
-      "id_usuario": 2,
-      "acta_aceptacion": "http://hola.com"
-    },
-    {
-      "id": "2",
-      "nombre": "Hospital de Día",
-      "version": "SPRINT 2 Nefrología",
-      "estado": "Finalizado",
-      "id_usuario": 1,
-      "acta_aceptacion": "http://hola.com"
-    },
-    {
-      "id": "3",
-      "nombre": "Mejora - Estratégia canguro",
-      "version": "Version 3",
-      "estado": "Cancelado",
-      "id_usuario": 1,
+      "id": "69df2724878",
+      "nombre": "Costos",
+      "version": "1.0",
+      "estado": "Pendiente",
+      "id_usuario": "3",
       "acta_aceptacion": null
     },
     {
-      "id": "4",
-      "nombre": "APOLO OPS",
+      "id": "94bb15b6438",
+      "nombre": "ASIMED",
       "version": "SPRINT 1",
       "estado": "Pendiente",
-      "id_usuario": 1,
-      "acta_aceptacion": null
-    },
-    {
-      "id": "5",
-      "nombre": "Transporte",
-      "version": "SPRINT 1",
-      "estado": "Cancelado",
-      "id_usuario": 2,
-      "acta_aceptacion": null
-    },
-    {
-      "id": "89e41372e12",
-      "nombre": "Tamizaje Cardiaco",
-      "version": "Sprint 1",
-      "estado": "Pendiente",
-      "id_usuario": 1,
-      "acta_aceptacion": null
-    },
-    {
-      "id": "592f02cde79",
-      "nombre": "Sesiones Prenatales",
-      "version": "Sprint 1",
-      "estado": "Cancelado",
-      "id_usuario": 1,
-      "acta_aceptacion": null
-    },
-    {
-      "id": "8760afcc8c8",
-      "nombre": "CONAMED",
-      "version": "Sprint 2",
-      "estado": "Cancelado",
-      "id_usuario": 1,
-      "acta_aceptacion": null
-    },
-    {
-      "id": "2c8f18bdcd8",
-      "nombre": "Sismed",
-      "version": "443",
-      "estado": "Pendiente",
-      "id_usuario": 1,
+      "id_usuario": "1",
       "acta_aceptacion": null
     }
   ],
   "reuniones": [
     {
-      "id": "05ead72a",
-      "proyecto": "4",
-      "nombre": "Firma de acta de aceptación",
-      "lugar": "Google Meet",
-      "estado": "Cancelado",
-      "id_usuario": 1,
-      "codigo": "5ead72",
-      "fecha": "14/1/2025, 10:42:51 a.m.",
-      "expiracion": "14/1/2025, 11:12:51 a.m."
-    },
-    {
-      "id": "556c2ddb",
-      "proyecto": "3",
-      "nombre": "Presentacion de prototipo de Estrategia Canguro",
-      "lugar": "Megacentro de Vacunacion",
-      "id_usuario": 1,
-      "codigo": "56c2dd",
-      "fecha": "14/1/2025, 6:28:37 p.m.",
-      "expiracion": "14/1/2025, 6:58:37 p.m.",
+      "id": "9df27248",
+      "proyecto": "69df2724878",
+      "nombre": "Reu de costos ",
+      "lugar": "El mega :(",
+      "id_usuario": "3",
+      "codigo": "df2724",
+      "fecha": "17/1/2025, 2:09:04 p. m.",
+      "expiracion": "17/1/2025, 2:39:04 p. m.",
       "estado": "Cancelado"
     },
     {
-      "id": "0fdb952e",
-      "proyecto": "89e41372e12",
-      "nombre": "Toma inicial de requerimiento",
-      "lugar": "Megacentro",
-      "id_usuario": 1,
-      "codigo": "fdb952",
-      "fecha": "14/1/2025, 6:58:13 p.m.",
-      "expiracion": "14/1/2025, 7:28:13 p.m.",
+      "id": "4bb15b64",
+      "proyecto": "94bb15b6438",
+      "nombre": "Toma inicial de requerimiento de ASIMED",
+      "lugar": "CONAMED - DIMES",
+      "id_usuario": "1",
+      "codigo": "bb15b6",
+      "fecha": "17/1/2025, 2:09:25 p.m.",
+      "expiracion": "17/1/2025, 2:39:25 p.m.",
       "estado": "Finalizado"
     },
     {
-      "id": "1923f1d9",
-      "proyecto": "3",
-      "nombre": "Francisco Escobar",
-      "lugar": "Francisco Escobar",
-      "id_usuario": 1,
-      "codigo": "923f1d",
-      "fecha": "15/1/2025, 7:56:26 a.m.",
-      "expiracion": "15/1/2025, 8:26:26 a.m.",
-      "estado": "Cancelado"
-    },
-    {
-      "id": "3f1d9b4c",
-      "proyecto": "3",
-      "nombre": "Francisco Escobar",
-      "lugar": "Francisco Escobar",
-      "id_usuario": 1,
-      "codigo": "f1d9b4",
-      "fecha": "15/1/2025, 7:57:20 a.m.",
-      "expiracion": "15/1/2025, 8:27:20 a.m.",
-      "estado": "Iniciado"
-    },
-    {
-      "id": "d9b4c843",
-      "proyecto": "4",
-      "nombre": "Presentacion de Avances",
-      "lugar": "Google Meet",
-      "id_usuario": 1,
-      "codigo": "9b4c84",
-      "fecha": "15/1/2025, 7:59:04 a.m.",
-      "expiracion": "15/1/2025, 8:29:04 a.m.",
+      "id": "16794859",
+      "proyecto": "69df2724878",
+      "nombre": "Reu de costos ",
+      "lugar": "Reu de costos ",
+      "id_usuario": "3",
+      "codigo": "679485",
+      "fecha": "17/1/2025, 2:09:42 p. m.",
+      "expiracion": "17/1/2025, 2:39:42 p. m.",
       "estado": "Finalizado"
-    },
-    {
-      "id": "a4cc0fec",
-      "proyecto": "4",
-      "nombre": "Feedback",
-      "lugar": "Sala req",
-      "id_usuario": 1,
-      "codigo": "4cc0fe",
-      "fecha": "15/1/2025, 11:28:09 a.m.",
-      "expiracion": "15/1/2025, 11:58:09 a.m.",
-      "estado": "Finalizado"
-    },
-    {
-      "id": "2d3b1539",
-      "proyecto": "89e41372e12",
-      "nombre": "Presentación",
-      "lugar": "Megacentro",
-      "id_usuario": 1,
-      "codigo": "d3b153",
-      "fecha": "15/1/2025, 3:17:37 p.m.",
-      "expiracion": "15/1/2025, 3:47:37 p.m.",
-      "estado": "Iniciado"
-    },
-    {
-      "id": "395753a4",
-      "proyecto": "89e41372e12",
-      "nombre": "Presentación",
-      "lugar": "Megacentro",
-      "id_usuario": 1,
-      "codigo": "95753a",
-      "fecha": "15/1/2025, 3:18:10 p.m.",
-      "expiracion": "15/1/2025, 3:48:10 p.m.",
-      "estado": "Iniciado"
-    },
-    {
-      "id": "ae6aefc0",
-      "proyecto": "4",
-      "nombre": "Presentacion de requerimientos funcionales",
-      "lugar": "Meet",
-      "id_usuario": 1,
-      "codigo": "e6aefc",
-      "fecha": "15/1/2025, 8:03:58 p.m.",
-      "expiracion": "15/1/2025, 8:33:58 p.m.",
-      "estado": "Iniciado"
-    },
-    {
-      "id": "74f60e23",
-      "proyecto": "4",
-      "nombre": "asdasdasd",
-      "lugar": "asdasdasd",
-      "id_usuario": 1,
-      "codigo": "4f60e2",
-      "fecha": "15/1/2025, 8:05:40 p.m.",
-      "expiracion": "15/1/2025, 8:35:40 p.m.",
-      "estado": "Finalizado"
-    },
-    {
-      "id": "2b78a44d",
-      "proyecto": "2c8f18bdcd8",
-      "nombre": "aaaaaaaaaaaaaaaaaaaaaaa",
-      "lugar": "aaaaaaaaaaaaaaaaaaaaaaaa",
-      "id_usuario": 1,
-      "codigo": "b78a44",
-      "fecha": "15/1/2025, 8:38:33 p.m.",
-      "expiracion": "15/1/2025, 9:08:33 p.m.",
-      "estado": "Iniciado"
     }
   ],
   "encargados": [
     {
-      "id": "be30cf85a6c",
-      "id_usuario": "2",
-      "id_reunion": "05ead72a"
-    },
-    {
-      "id": "6c2ddb768eb",
+      "id": "b15b6438795",
       "id_usuario": "1",
-      "id_reunion": "556c2ddb"
+      "id_reunion": "4bb15b64"
     },
     {
-      "id": "db952ee2483",
-      "id_usuario": "1",
-      "id_reunion": "0fdb952e"
-    },
-    {
-      "id": "b4c84327d85",
-      "id_usuario": "1",
-      "id_reunion": "d9b4c843"
-    },
-    {
-      "id": "cc0fec712c8",
-      "id_usuario": "1",
-      "id_reunion": "a4cc0fec"
-    },
-    {
-      "id": "5753a4c15d6",
-      "id_usuario": "1",
-      "id_reunion": "395753a4"
-    },
-    {
-      "id": "f60e2393fa1",
-      "id_usuario": "4",
-      "id_reunion": "74f60e23"
-    },
-    {
-      "id": "78a44debf8c",
-      "id_usuario": "4",
-      "id_reunion": "2b78a44d"
+      "id": "79485919e01",
+      "id_usuario": "3",
+      "id_reunion": "16794859"
     }
   ],
   "asistencia": [
     {
-      "id": "30cf85a6cd0",
-      "participante": "Francisco Escobar",
-      "institucion": "MINSAL/DTIC",
-      "cargo": "Tecnico Informático",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "francisco.escobar@salud.gob.sv",
-      "id_reunion": "05ead72a"
-    },
-    {
-      "id": "ddb768eb1d9",
-      "participante": "Francisco Josue Escobar",
-      "institucion": "MINSAL",
-      "cargo": "Tecnico Informatico",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "francisco.escobar@salud.gob.sv",
-      "id_reunion": "556c2ddb"
-    },
-    {
-      "id": "952ee248320",
-      "participante": "Francisco Escobar",
-      "institucion": "MINSAL",
-      "cargo": "Tecnico Informatico",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "a@a.com",
-      "id_reunion": "0fdb952e"
-    },
-    {
-      "id": "c84327d8528",
-      "participante": "Francisco Escobar",
-      "institucion": "MINSAL",
-      "cargo": "Informatico",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "a@a.com",
-      "id_reunion": "d9b4c843"
-    },
-    {
-      "id": "0fec712c8f1",
-      "participante": "Jeannete peraza",
-      "institucion": "Dtic",
-      "cargo": "Coordinador",
-      "dui": "01729344-4",
-      "telefono": "78154863",
-      "correo": "jeannete.peraza@salud.gob.sv",
-      "id_reunion": "a4cc0fec"
-    },
-    {
-      "id": "3f6582243ee",
-      "participante": "Francisco Escobar",
-      "institucion": "Francisco Escobar",
-      "cargo": "Francisco Escobar",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "a@a.com",
-      "id_reunion": "395753a4"
-    },
-    {
-      "id": "3f6582243ee",
-      "participante": "Cristian Surio",
-      "institucion": "Francisco Escobar",
-      "cargo": "Francisco Escobar",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "a@a.com",
-      "id_reunion": "395753a4"
-    },
-    {
-      "id": "f6582243eea",
-      "participante": "asdasdasd",
-      "institucion": "asdasdasd",
-      "cargo": "asdasdasd",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "a@a.com",
-      "id_reunion": "395753a4"
-    },
-    {
-      "id": "36bda98c2f4",
-      "participante": "Jeannete peraza",
-      "institucion": "Minsal",
-      "cargo": "Pro",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "a@a.com",
-      "id_reunion": "74f60e23"
-    },
-    {
-      "id": "b063ae6dbbe",
-      "participante": "Sara mancia",
-      "institucion": "DIMES",
-      "cargo": "Enfermera",
-      "dui": "05240809-2",
-      "telefono": "76173848",
-      "correo": "sara.manciac@salud.gob.sv",
-      "id_reunion": "74f60e23"
-    },
-    {
-      "id": "ce36e610979",
-      "participante": "Francisco Josue Escobar",
+      "id": "485919e019f",
+      "participante": "Walter Romero",
       "institucion": "DTIC",
-      "cargo": "Analista Programador",
-      "dui": "05482299-1",
-      "telefono": "70086814",
-      "correo": "a@a.com",
-      "id_reunion": "74f60e23"
+      "cargo": "TEC INFORMATICO",
+      "dui": "05917835-5",
+      "telefono": "76901725",
+      "correo": "walter.romero@salud.gob.sv",
+      "id_reunion": "16794859"
     },
     {
-      "id": "c27927082f3",
-      "participante": "Luis",
-      "institucion": "Minsal",
-      "cargo": "Dev",
-      "dui": "06790311-2",
-      "telefono": "70936767",
-      "correo": "ldiegoeq909@gmail.com",
-      "id_reunion": "74f60e23"
+      "id": "6c47c44fdd5",
+      "participante": "Arleny Raquel García Claros",
+      "institucion": "DTIC/MINSAL",
+      "cargo": "Técnico Informático",
+      "dui": "05322078-0",
+      "telefono": "69350864",
+      "correo": "arleny.garcia@salud.gob.sv",
+      "id_reunion": "16794859"
     },
     {
-      "id": "d7b006aacc5",
-      "participante": "Jeannete peraza",
-      "institucion": "Jeannete peraza",
-      "cargo": "Jeannete peraza",
+      "id": "44b532fd9f1",
+      "participante": "Diana",
+      "institucion": "DTIC",
+      "cargo": "Analista de requerimientos",
+      "dui": "65165716-6",
+      "telefono": "77777777",
+      "correo": "prueba.dt@gmsil.com",
+      "id_reunion": "16794859"
+    },
+    {
+      "id": "5b643879546",
+      "participante": "Francisco Josue Escobar Quintanilla",
+      "institucion": "MINSAL / DTIC",
+      "cargo": "Tecnico Informatico",
       "dui": "05482299-1",
       "telefono": "70086814",
-      "correo": "a@a.com",
-      "id_reunion": "2b78a44d"
+      "correo": "francisco.escobar@salud.gob.sv",
+      "id_reunion": "4bb15b64"
+    },
+    {
+      "id": "e362755063b",
+      "participante": "Juan",
+      "institucion": "DIMES/SIS",
+      "cargo": "Ministro",
+      "dui": "15498795-7",
+      "telefono": "22458965",
+      "correo": "wafewfgregrj@mail.com",
+      "id_reunion": "4bb15b64"
+    },
+    {
+      "id": "cc5fe954b9a",
+      "participante": "Sofía Paz",
+      "institucion": "DTIC",
+      "cargo": "Técnico informático",
+      "dui": "05566967-1",
+      "telefono": "71537314",
+      "correo": "sofia.paz@salud.gob.sv",
+      "id_reunion": "16794859"
+    },
+    {
+      "id": "9f26f546743",
+      "participante": "Arleny",
+      "institucion": "DTIC",
+      "cargo": "Chaneque",
+      "dui": "07716036-9",
+      "telefono": "72946194",
+      "correo": "arleny@holi.com",
+      "id_reunion": "16794859"
+    },
+    {
+      "id": "c0821e147ec",
+      "participante": "Elías Díaz",
+      "institucion": "DTIC / Minsal",
+      "cargo": "Técnico Informático",
+      "dui": "04980594-2",
+      "telefono": "77284059",
+      "correo": "elias.diazv@salud.gob.sv",
+      "id_reunion": "4bb15b64"
+    },
+    {
+      "id": "4740870a5dd",
+      "participante": "Sofía Paz ",
+      "institucion": "DTIC",
+      "cargo": "Técnico Informático ",
+      "dui": "05566967-1",
+      "telefono": "24540000",
+      "correo": "sofixspaz@gmail.com",
+      "id_reunion": "16794859"
     }
   ],
   "minutareunion": [
     {
-      "id": "8028e3b6c57",
-      "descripcion": "<p>Este es un ejemplo de descripcion de la minuta de reunion, en la presente <strong>REUNION </strong>se tiene:</p><ul><li><p>Textos enriquecidos, <strong>negrita</strong>, <em>italica, listas...</em></p></li><li><p>La reunion se guarda en el session storage, el cual funciona a modo de borrador en caso que falle la conexion.</p></li><li><p>Otros usuarios pueden acceder a completar la lista de asistencia con la url del sitio y la clave de reunion</p></li></ul>",
-      "fechaFin": "14/1/2025, 6:45:34 p.m.",
-      "id_reunion": "556c2ddb"
+      "id": "4d0f0483989",
+      "descripcion": "",
+      "fechaFin": "17/1/2025, 2:17:44 p. m.",
+      "id_reunion": "16794859"
     },
     {
-      "id": "e2483200005",
-      "descripcion": "<p>Este es un ejemplo de descripcion de la minuta de reunion, en la presente <strong>REUNION </strong>se tiene:</p><ul><li><p>Textos enriquecidos, <strong>negrita</strong>, <em>italica, listas...</em></p></li><li><p>La reunion se guarda en el session storage, el cual funciona a modo de borrador en caso que falle la conexion.</p></li><li><p>Otros usuarios pueden acceder a completar la lista de asistencia con la url del sitio y la clave de reunion</p></li></ul><p>Agregando texto...</p>",
-      "fechaFin": "14/1/2025, 7:00:40 p.m.",
-      "id_reunion": "0fdb952e"
-    },
-    {
-      "id": "8528cf2a4e8",
-      "descripcion": "<p>asdlkfaslñkdfklñsajdflkjsdalñdfjñalksdfjñlksd</p><ul><li><p>lakjshfaskjhdklahskdljas</p></li><li><p>alskhfkjashfkljahslkfhaklsf</p></li><li><p>alksjhfkjashflkahslkfhashflkj</p></li></ul><p></p><p>AAAAAAAAAAAAAAAAAAAA <strong>EL PDF SE CREA EN EL BACKEND, WALTER TE TOCA DE AHUEVOOOOOOOOOOO</strong></p><p></p><p><strong><em>AUN PUEDO COMBINAR ESTILOS, </em></strong><em>VERDAD O RETO, </em>TEXTO NORMAL</p>",
-      "fechaFin": "15/1/2025, 8:01:36 a.m.",
-      "id_reunion": "d9b4c843"
-    },
-    {
-      "id": "12c8f18bdcd",
-      "descripcion": "<p>Kmplementacii. Apolo</p>",
-      "fechaFin": "15/1/2025, 11:31:42 a.m.",
-      "id_reunion": "a4cc0fec"
-    },
-    {
-      "id": "d2b78a44deb",
-      "descripcion": "<p>asdasdasdasdasdasd</p>",
-      "fechaFin": "15/1/2025, 8:35:08 p.m.",
-      "id_reunion": "74f60e23"
-    }
-  ],
-  "puntoreunion": [
-    {
-      "id": "",
-      "nombre": "Primer punto",
-      "id_reunion": "05ead72a"
-    },
-    {
-      "id": "",
-      "nombre": "Segundo Punto",
-      "id_reunion": "05ead72a"
-    },
-    {
-      "id": "b768eb1d9f8",
-      "nombre": "Retroalimentacion de la reunion anterior",
-      "id_reunion": "556c2ddb"
-    },
-    {
-      "id": "2ee24832000",
-      "nombre": "Nuevo punto de reunion",
-      "id_reunion": "0fdb952e"
-    },
-    {
-      "id": "4327d8528cf",
-      "nombre": "Punto de la reunion",
-      "id_reunion": "d9b4c843"
-    },
-    {
-      "id": "327d8528cf2",
-      "nombre": "Otro punto de reunion",
-      "id_reunion": "d9b4c843"
-    },
-    {
-      "id": "27d8528cf2a",
-      "nombre": "Putear a los totonet por ser una mierda",
-      "id_reunion": "d9b4c843"
-    },
-    {
-      "id": "ec712c8f18b",
-      "nombre": "Fjncionamiento",
-      "id_reunion": "a4cc0fec"
-    },
-    {
-      "id": "c712c8f18bd",
-      "nombre": "Plan de imomeme",
-      "id_reunion": "a4cc0fec"
-    },
-    {
-      "id": "19d2b78a44d",
-      "nombre": "adasdasdasdasd",
-      "id_reunion": "74f60e23"
+      "id": "5529629a07b",
+      "descripcion": "<p>Se toma en consideración las limitaciones que puede presentar un sitio web desarrollado por las personas de requerimientos, por lo que se declara que:</p><ul><li><p>Francisco Escobar desarrolla el frontend en vue 3 utilizando el api composition y la sintaxis script setup</p></li><li><p>Walter Romero dice que va a hacer el backend pero ya lleva 1 semana y no hay avances</p></li><li><p>Ivan Mendoza jura y rejura que lo hara en Laravel pero que le haga las tablas </p></li></ul><p>Se le muestra a gaby y me dice que cambie toda la interfaz, <strong>NO LE GUSTA</strong>. Ella quiere que lo haga en figma o me cae todo el peso de la ley.</p><p></p><p>Leiva menciona que va a borrar la base, que hara los cambios y que sin el, el SIS se muere.</p><p>Se realiza un desarrollo rapidito, en el cual Francisco nunca hace la vista de usuarios (algun dia tendremos administracion), ademas este sitio debera solicitar los usuarios a su administrador, por lo que no vamos a tener metodos de registro personal y tampoco vamos a recuperar la contraseña, porque toda la vida cierran los correos de mensajeria.</p><p>Sin mas que agregar, me despido.</p><p>Saludos, raza. </p><p>Feliz Viernes</p>",
+      "fechaFin": "17/1/2025, 2:30:01 p.m.",
+      "id_reunion": "4bb15b64"
     }
   ],
   "acuerdocompromiso": [
     {
-      "id": "",
-      "nombre": "asdasd",
-      "id_reunion": "05ead72a"
+      "id": "c0b85529629",
+      "nombre": "Walter dice que va a hacer el backend",
+      "id_reunion": "4bb15b64"
     },
     {
-      "id": "",
-      "nombre": "Segundo acuerdo",
-      "id_reunion": "05ead72a"
+      "id": "0b85529629a",
+      "nombre": "Walter se compromete a hacer el backend",
+      "id_reunion": "4bb15b64"
     },
     {
-      "id": "60890ed91f7",
-      "nombre": "Se brindara acceso al documento compartido",
-      "id_reunion": "556c2ddb"
+      "id": "b85529629a0",
+      "nombre": "Francisco va a levantar el proyecto en laravel y genera las migraciones",
+      "id_reunion": "4bb15b64"
     },
     {
-      "id": "ee248320000",
-      "nombre": "Acuerdo o compromiso",
-      "id_reunion": "0fdb952e"
+      "id": "85529629a07",
+      "nombre": "Ivan si va a hacer el backend pero en laravel uwu",
+      "id_reunion": "4bb15b64"
+    }
+  ],
+  "puntoreunion": [
+    {
+      "id": "47b73c0b855",
+      "nombre": "Se presenta el nuevo miembro del DIMES",
+      "id_reunion": "4bb15b64"
     },
     {
-      "id": "7d8528cf2a4",
-      "nombre": "Walter se hecha el pdf",
-      "id_reunion": "d9b4c843"
+      "id": "7b73c0b8552",
+      "nombre": "Se evalua el problema a resolver",
+      "id_reunion": "4bb15b64"
     },
     {
-      "id": "d8528cf2a4e",
-      "nombre": "Yo solo lo consumo y lo muestro si si me cae que si",
-      "id_reunion": "d9b4c843"
+      "id": "b73c0b85529",
+      "nombre": "Se realiza un diagrama de proceso para determinar la mejor solucion",
+      "id_reunion": "4bb15b64"
     },
     {
-      "id": "712c8f18bdc",
-      "nombre": "Reunion de impmem 28 de feb",
-      "id_reunion": "a4cc0fec"
+      "id": "73c0b855296",
+      "nombre": "Se realiza el FIGMA",
+      "id_reunion": "4bb15b64"
     },
     {
-      "id": "9d2b78a44de",
-      "nombre": "asdasdasd",
-      "id_reunion": "74f60e23"
+      "id": "3c0b8552962",
+      "nombre": "Se presenta la propuesta de solucion",
+      "id_reunion": "4bb15b64"
     }
   ]
 }

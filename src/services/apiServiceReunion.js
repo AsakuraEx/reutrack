@@ -1,7 +1,7 @@
 import api from "@/lib/axios";
 
 export default {
-    consultarReuniones(estado, limite, codigo, proyecto){
+    consultarReuniones(estado, limite, codigo, proyecto, usuario){
         let url = '/reuniones?_sort=fecha&_order=desc'
 
         if(estado){
@@ -18,6 +18,10 @@ export default {
 
         if(proyecto){
             url = url + `&proyecto=${proyecto}`
+        }
+
+        if(usuario){
+            url = url + `&id_usuario=${usuario}`
         }
 
         return api.get(url)

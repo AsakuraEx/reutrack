@@ -124,6 +124,7 @@
                     :requerido="true" 
                     :tipo="'text'"
                     :pattern="regexDui"
+                    :mascara="'########-#'"
                 />
                 
                 <Textfield 
@@ -132,6 +133,7 @@
                     :requerido="true"
                     :tipo="'text'"
                     :pattern="regexTel"
+                    :mascara="'########'"
                 />
                     
                 <Textfield 

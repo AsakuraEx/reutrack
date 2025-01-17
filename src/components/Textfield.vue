@@ -11,6 +11,7 @@
             @input="$emit('update:campo', $event.target.value)"
             :pattern="pattern"
             :value="campo"
+            :placeholder="mascara"
         >
     </div>
 </template>
@@ -39,6 +40,10 @@
             required: false,
             default: '',
         },
+        mascara: {
+            type: String,
+            required: false
+        }
     })
 
     const emit = defineEmits(['update:campo'])
