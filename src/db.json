@@ -38,9 +38,9 @@
       "id": "69df2724878",
       "nombre": "Costos",
       "version": "1.0",
-      "estado": "Pendiente",
+      "estado": "Finalizado",
       "id_usuario": "3",
-      "acta_aceptacion": null
+      "acta_aceptacion": "https://drive.google.com/drive/u/0/home"
     },
     {
       "id": "94bb15b6438",
@@ -84,6 +84,28 @@
       "fecha": "17/1/2025, 2:09:42 p. m.",
       "expiracion": "17/1/2025, 2:39:42 p. m.",
       "estado": "Finalizado"
+    },
+    {
+      "id": "9678107d",
+      "proyecto": "69df2724878",
+      "nombre": "Reu de costos ",
+      "lugar": "Costos",
+      "id_usuario": "3",
+      "codigo": "678107",
+      "fecha": "20/1/2025, 2:47:27 p. m.",
+      "expiracion": "20/1/2025, 3:17:27 p. m.",
+      "estado": "Finalizado"
+    },
+    {
+      "id": "d9cee1a0",
+      "proyecto": "94bb15b6438",
+      "nombre": "Walter Romero",
+      "lugar": "Walter Romero",
+      "id_usuario": "3",
+      "codigo": "9cee1a",
+      "fecha": "20/1/2025, 2:52:32 p. m.",
+      "expiracion": "20/1/2025, 3:22:32 p. m.",
+      "estado": "Cancelado"
     }
   ],
   "encargados": [
@@ -96,6 +118,11 @@
       "id": "79485919e01",
       "id_usuario": "3",
       "id_reunion": "16794859"
+    },
+    {
+      "id": "78107d385ad",
+      "id_usuario": "1",
+      "id_reunion": "9678107d"
     }
   ],
   "asistencia": [
@@ -202,6 +229,12 @@
       "descripcion": "<p>Se toma en consideración las limitaciones que puede presentar un sitio web desarrollado por las personas de requerimientos, por lo que se declara que:</p><ul><li><p>Francisco Escobar desarrolla el frontend en vue 3 utilizando el api composition y la sintaxis script setup</p></li><li><p>Walter Romero dice que va a hacer el backend pero ya lleva 1 semana y no hay avances</p></li><li><p>Ivan Mendoza jura y rejura que lo hara en Laravel pero que le haga las tablas </p></li></ul><p>Se le muestra a gaby y me dice que cambie toda la interfaz, <strong>NO LE GUSTA</strong>. Ella quiere que lo haga en figma o me cae todo el peso de la ley.</p><p></p><p>Leiva menciona que va a borrar la base, que hara los cambios y que sin el, el SIS se muere.</p><p>Se realiza un desarrollo rapidito, en el cual Francisco nunca hace la vista de usuarios (algun dia tendremos administracion), ademas este sitio debera solicitar los usuarios a su administrador, por lo que no vamos a tener metodos de registro personal y tampoco vamos a recuperar la contraseña, porque toda la vida cierran los correos de mensajeria.</p><p>Sin mas que agregar, me despido.</p><p>Saludos, raza. </p><p>Feliz Viernes</p>",
       "fechaFin": "17/1/2025, 2:30:01 p.m.",
       "id_reunion": "4bb15b64"
+    },
+    {
+      "id": "dd9cee1a010",
+      "descripcion": "<p>saaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaasdasdasdasd</p><ul><li><p>kkkkskdasdasdasda<strong>asdfsdfsfds</strong></p></li><li><p><strong>s<em>asdasasdasdasdasdasd</em></strong></p></li></ul>",
+      "fechaFin": "20/1/2025, 2:50:52 p. m.",
+      "id_reunion": "9678107d"
     }
   ],
   "acuerdocompromiso": [
@@ -224,6 +257,26 @@
       "id": "85529629a07",
       "nombre": "Ivan si va a hacer el backend pero en laravel uwu",
       "id_reunion": "4bb15b64"
+    },
+    {
+      "id": "385add9cee1",
+      "nombre": "sdasdasdas",
+      "id_reunion": "9678107d"
+    },
+    {
+      "id": "85add9cee1a",
+      "nombre": "asdasdasdasdasda",
+      "id_reunion": "9678107d"
+    },
+    {
+      "id": "5add9cee1a0",
+      "nombre": "asdasdasdasdasd",
+      "id_reunion": "9678107d"
+    },
+    {
+      "id": "add9cee1a01",
+      "nombre": "asdadasdasdasda",
+      "id_reunion": "9678107d"
     }
   ],
   "puntoreunion": [
@@ -251,6 +304,21 @@
       "id": "3c0b8552962",
       "nombre": "Se presenta la propuesta de solucion",
       "id_reunion": "4bb15b64"
+    },
+    {
+      "id": "07d385add9c",
+      "nombre": "dasda",
+      "id_reunion": "9678107d"
+    },
+    {
+      "id": "7d385add9ce",
+      "nombre": "asdasdasda",
+      "id_reunion": "9678107d"
+    },
+    {
+      "id": "d385add9cee",
+      "nombre": "dasdadasd",
+      "id_reunion": "9678107d"
     }
   ]
 }
