@@ -29,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
     id_reunion: DataTypes.INTEGER
   }, {
     sequelize: db,
-    reezeTableName: true,
+    freezeTableName: true,
     modelName: 'listaasistencia',
   });
   return listaasistencia;

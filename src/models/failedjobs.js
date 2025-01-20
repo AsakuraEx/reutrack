@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'failedjob',
+    freezeTableName: true
   });
   return failedjob;
 };

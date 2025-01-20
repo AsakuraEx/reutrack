@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         as: 'estado'
       })
       reunion.belongsTo(models.users,{
-        foreignKey: 'id_user',
+        foreignKey: 'id_usuario',
         as: 'user'
       })
       reunion.belongsTo(models.proyecto,{

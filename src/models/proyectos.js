@@ -18,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
         as: 'estado'
       })
       proyecto.belongsTo(models.users,{
-        foreignKey: 'id_user',
-        as: 'user'
+        foreignKey: 'id_usuario',
+        as: 'usuario'
       })
       proyecto.hasMany(models.reunion,{
         foreignKey: 'id_proyecto',

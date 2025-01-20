@@ -50,25 +50,3 @@ exports.update = async (req, res) => {
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
-exports.disable = async (req, res) => {
-    try {
-        const id = req.params.id
-        await Estado.update({ status: 0},{ where: {id: id}})
-        const updatedEstado = await Estado.findByPk(id)
-        res.status(HttpCode.HTTP_OK).json(updatedEstado)
-    } catch (err) {
-        console.error('Error', err.message || err);
-        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
-    }
-}
-exports.enable = async (req, res) => {
-    try {
-        const id = req.params.id
-        await Estado.update({status: 1},{ where: {id: id}})
-        const updatedEstado = await Estado.findByPk(id)
-        res.status(HttpCode.HTTP_OK).json(updatedEstado)
-    } catch (err) {
-        console.error('Error', err.message || err);
-        res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'Internal server error' });
-    }
-}

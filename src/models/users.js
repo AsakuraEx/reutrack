@@ -84,7 +84,7 @@ module.exports = (sequelize, DataTypes) => {
   },
   }, {
     sequelize: db,
-    reezeTableName: true,
+    freezeTableName: true,
     modelName: 'users',
   });
   return users;
