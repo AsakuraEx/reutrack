@@ -6,17 +6,21 @@
     import Textfield from '@/components/Textfield.vue';
     import { uid } from 'uid';
     import { useProyectoStore } from '@/stores/proyectos';
-    import { useRouter } from 'vue-router';
-    
+    import { useRoute, useRouter } from 'vue-router';
     const store = useProyectoStore()
     const router = useRouter()
+    const route = useRoute()
     const usuarioRol = sessionStorage.getItem('rol')
     const usuarioId = sessionStorage.getItem('id')
+    const {id} = route.params
 
-    const nuevoProyecto = reactive({
+    const nuevaVersion = reactive({
         id: uid(),
-        nombre: "",
+        descripcion: "",
+        version: "",
+        estado: "Pendiente",
         id_usuario: usuarioId,
+        id_proyecto: id,
         acta_aceptacion: null
     })
 
@@ -26,9 +30,9 @@
         }
     })
 
-    const guardarProyecto = async (proyecto) => {
-        await store.crearProyecto(proyecto)
-        router.push({name:'proyectos'})
+    const guardarVersion= async (version) => {
+        await store.crearVersion(version)
+        router.push({name:'versiones'})
     }
 
 </script>
@@ -38,16 +42,24 @@
     <Header :rol="usuarioRol"/>
 
     <div class="container mx-auto px-4 mt-16 min-h-[75vh]">
-        <h1 class="text-purple-300 font-extrabold text-center text-2xl uppercase">Nuevo Proyecto</h1>
+        <h1 class="text-purple-300 font-extrabold text-center text-2xl uppercase">Detalla la nueva versión</h1>
 
-        <form @submit.prevent="guardarProyecto(nuevoProyecto)">
+        <form @submit.prevent="guardarVersion(nuevaVersion)">
 
             <div class="space-y-4 mt-8">
 
                 <Textfield 
-                    :label="'Nombre del proyecto: *'"
-                    v-model:campo="nuevoProyecto.nombre"
+                    :label="'Nombre de versión: *'"
+                    v-model:campo="nuevaVersion.version"
                     :requerido="true"
+                    :tipo="'text'"
+                />
+
+                <Textfield
+                    :label="'Descripción de version: *'"
+                    v-model:campo="nuevaVersion.descripcion"
+                    :requerido="true"
+                    :tipo="'text'"
                 />
 
             </div>

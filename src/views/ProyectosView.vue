@@ -9,6 +9,11 @@
     import ModalCancelar from '@/components/ModalCancelar.vue';
     import { useProyectoStore } from '@/stores/proyectos';
     import { useRouter } from 'vue-router';
+
+    import SvgIcon from '@jamescoyle/vue-icon';
+    import { mdiGit } from '@mdi/js';
+
+    const path = mdiGit
     const router = useRouter()
     const usuarioRol = sessionStorage.getItem('rol')
     //definición de variables
@@ -27,10 +32,6 @@
 
     const claseEstado = (estado) => {
         return `${estados[estado]}`
-    }
-
-    const mostrarModal = async (id) => {
-        modalActual.value = await store.consultarProyecto(id);
     }
 
 
@@ -60,56 +61,24 @@
                 <thead class="uppercase text-xl font-bold border-b-2 w-full">
                     <tr>
                         <td class="px-3">Proyecto</td>
-                        <td class="px-3">Version</td>
-                        <td class="px-3">Creado por</td>
-                        <td class="px-3">Estado</td>
                         <td class="px-3">Acción</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="border-b" v-if="arrayProyectos" v-for="item in arrayProyectos">
-                        <td class="py-2 px-3">{{ item.nombre }}</td>
-                        <td class="py-2 px-3">{{ item.version }}</td>
-                        <td class="py-2 px-3">{{ item.id_usuario }}</td>
-                        <td class="py-2 px-3">
-                            <div class="-bold text-center w-24 rounded" :class="claseEstado(item.estado)">
-                                {{ item.estado }}
-                            </div>
-                        </td>
-                        <td class="py-2 w-48">
-                            <button
-                                onclick="modalFinalizar.showModal()"
-                                v-if="item.estado === 'Pendiente'" 
-                                class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300"
-                                @click="mostrarModal(item.id)"
+                        <td class="py-2 px-3 w-4/5">{{ item.nombre }}</td>
+                        <td class="py-2">
+                            <RouterLink
+                                :to="{name: 'versiones', params:{id: item.id}}"
+                                class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300 flex gap-2 w-fit"
                             >
-                                Finalizar
-                            </button>
-                            <button 
-                                v-if="item.estado === 'Pendiente'"
-                                onclick="modalCancelar.showModal()" 
-                                class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300"
-                                @click="mostrarModal(item.id)"
-                            >
-                                Cancelar
-                            </button>
-
+                                <svg-icon type="mdi" :path="path"></svg-icon>
+                                Detalle de versiones
+                            </RouterLink>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
-            <!-- MODAL PARA FINALIZAR -->
-            <ModalFinalizar 
-                :proyecto="modalActual" 
-                v-model:datos="arrayProyectos"
-            />
-
-            <!-- MODAL PARA CANCELAR -->
-            <ModalCancelar 
-                :proyecto="modalActual"
-                v-model:datos="arrayProyectos"
-            />
 
         </div>
 

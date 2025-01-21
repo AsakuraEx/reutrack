@@ -22,9 +22,9 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
-    async function cancelarProyecto(id){
+    async function cancelarVersion(id){
         try{
-            const {status} = await apiServiceProyectos.cancelarProyecto(id);
+            const {status} = await apiServiceProyectos.cancelarVersion(id);
             if(status === 200){
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡El proyecto se canceló exitosamente!'
@@ -52,13 +52,13 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
-    async function finalizarProyecto(id, url){
+    async function finalizarVersion(id, url){
 
         try{
-            const {status} = await apiServiceProyectos.finalizarProyecto(id, url)
+            const {status} = await apiServiceProyectos.finalizarVersion(id, url)
             if(status === 200){
                 message.value.tipo = 'Exito';
-                message.value.mensaje = '¡El proyecto se finalizó exitosamente!'
+                message.value.mensaje = '¡La version se finalizó exitosamente!'
 
                 setTimeout(()=>{
                     message.value.tipo = "",
@@ -89,12 +89,58 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
+    async function crearVersion(version) {
+        try{
+            const {status} = await apiServiceProyectos.crearVersion(version)
+            if(status === 201){
+                message.value.tipo = 'Exito';
+                message.value.mensaje = '¡La versión se creó exitosamente!'
+
+                setTimeout(()=>{
+                    message.value.tipo = "",
+                    message.value.mensaje = ""
+                },3000)
+
+
+            }
+        }catch(e){
+            console.error(e)
+        } 
+    }
+
+    async function mostrarVersiones(idProyecto, estado) {
+        try{
+            const {status, data} = await apiServiceProyectos.getVersiones(idProyecto, estado);
+            if(status === 200){
+                return data;
+            }
+
+        }catch(e){
+            console.error(e)
+        }
+    }
+
+    async function consultarVersion(id){
+        try {
+            const {status, data} = await apiServiceProyectos.getVersion(id);
+            if(status === 200){
+                return data;
+            }
+        }catch(e){
+            console.error(e);
+        }
+    }
+
     return {
         message,
         mostrarProyectos,
-        cancelarProyecto,
         consultarProyecto,
-        finalizarProyecto,
-        crearProyecto
+        finalizarVersion,
+        crearProyecto,
+        crearVersion,
+        mostrarVersiones,
+        cancelarVersion,
+        consultarVersion
+
     }
 })

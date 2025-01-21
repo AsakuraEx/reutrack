@@ -5,7 +5,7 @@
             
             <svg-icon type="mdi" :path="path" class="text-red-400 mx-auto w-16 h-16"></svg-icon>
             
-            <p class="text-lg font-bold py-4 text-center">¿Está seguro de cancelar el proyecto {{ proyecto.nombre }} {{ proyecto.version }}?
+            <p class="text-lg font-bold py-4 text-center">¿Está seguro de cancelar la version {{ version.version }}?
                 , Esta acción no se puede deshacer.</p>
 
             <div class="modal-action">
@@ -13,7 +13,7 @@
                     <!-- if there is a button in form, it will close the modal -->
                     <button 
                         class="btn bg-red-400 border-2 border-red-400 text-white hover:bg-red-700 transition-colors duration-300 mr-1"
-                        @click="cancelarProyecto(proyecto.id)"
+                        @click="cancelarVersion(version.id, version.id_proyecto)"
                         type="submit"
                     >
                         Aceptar
@@ -38,7 +38,7 @@
     const store = useProyectoStore()
 
     defineProps({
-        proyecto: {
+        version: {
             type: Object,
             required: true
         }
@@ -46,8 +46,8 @@
 
     const emit = defineEmits(['update:datos'])
 
-    const cancelarProyecto = async (id) => {
-        await store.cancelarProyecto(id)
-        await emit('update:datos', await store.mostrarProyectos())
+    const cancelarVersion = async (id, proyecto) => {
+        await store.cancelarVersion(id)
+        await emit('update:datos', await store.mostrarVersiones(proyecto))
     }
 </script>

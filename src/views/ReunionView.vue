@@ -16,7 +16,7 @@
     const store = useProyectoStore()
     const storeReu = useReunionStore()
     const router = useRouter()
-    const arrayProyectos = ref([]);
+    const arrayVersiones = ref([]);
     const usuarioRol = sessionStorage.getItem('rol')
     const usuarioId = sessionStorage.getItem('id')
     const formData = reactive({
@@ -36,7 +36,7 @@
         //Se genera el codigo aleatorio con la libreria uid
         formData.codigo = uid(6);
         //Se solicita la lista de proyectos "Pendiente" (no cancelados ni finalizados)
-        arrayProyectos.value = await store.mostrarProyectos('Pendiente');
+        arrayVersiones.value = await store.mostrarVersiones(null,'Pendiente');
         //Se asigna la hora de expiracion del codigo
         expiracionCodigo()
     })
@@ -79,12 +79,20 @@
         
         <form class="flex flex-col gap-4 md:gap-8" @submit.prevent="crearReunion()">
 
-            <Select 
-                :label="'Proyecto asociado: *'" 
-                :opciones="arrayProyectos" 
-                :requerido="true"
-                v-model:campo="formData.proyecto" 
-            />
+            <!-- SELECT PERSONALIZADO  -->
+            <div 
+                class="w-full flex flex-col gap-4 items-center px-4" 
+            >
+                <label class="text-xl px-4 md:text-left text-center">Proyecto Asociado: *</label>
+                <select 
+                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
+                    :required="requerido == true ? 'required':''"
+                    v-model="formData.proyecto"
+                >
+                    <option class="text-gray-900" value="0" disabled selected>Seleccione...</option>
+                    <option v-for="opcion in arrayVersiones" class="text-gray-900" :value="opcion.id"> {{ opcion.id_proyecto }} {{ opcion.version }}</option>
+                </select>
+            </div>
 
             <Textfield 
                 :label="'Nombre de la reunión: *'"
