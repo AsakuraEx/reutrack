@@ -37,7 +37,7 @@ const cerrarSesion = () => {
             <RouterLink  :to="{name: 'reunion'}" class="hover:text-purple-300 transition-colors duration-300">
                 Nueva Reunion
             </RouterLink>
-            <RouterLink v-if="rol !== 'estandar'"  to="/" class="hover:text-purple-300 transition-colors duration-300">
+            <RouterLink v-if="rol !== 'estandar'"  :to="{name: 'usuarios'}" class="hover:text-purple-300 transition-colors duration-300">
                 Usuarios
             </RouterLink>
             <button @click="cerrarSesion()" class="hover:text-purple-300 transition-colors duration-300">

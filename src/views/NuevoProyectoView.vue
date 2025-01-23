@@ -48,6 +48,7 @@
                     :label="'Nombre del proyecto: *'"
                     v-model:campo="nuevoProyecto.nombre"
                     :requerido="true"
+                    :tipo="'text'"
                 />
 
             </div>

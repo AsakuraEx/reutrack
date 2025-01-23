@@ -15,6 +15,16 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/usuarios',
+      name: 'usuarios',
+      component: () => import('../views/UsuariosView.vue'),
+    },
+    {
+      path: '/usuarios/nuevo',
+      name: 'nuevousuario',
+      component: () => import('../views/NuevoUsuarioView.vue'),
+    },
+    {
       path: '/nueva-reunion',
       name: 'reunion',
       component: () => import('../views/ReunionView.vue'),
