@@ -25,6 +25,16 @@ const router = createRouter({
       component: () => import('../views/NuevoUsuarioView.vue'),
     },
     {
+      path: '/usuarios/editar/:id',
+      name: 'editarusuario',
+      component: () => import('../views/EditarUsuarioView.vue'),
+    },
+    {
+      path: '/mi-password',
+      name: 'contraseña',
+      component: () => import('../views/CambiarContraView.vue'),
+    },
+    {
       path: '/nueva-reunion',
       name: 'reunion',
       component: () => import('../views/ReunionView.vue'),

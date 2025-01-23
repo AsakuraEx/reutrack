@@ -1,15 +1,21 @@
 <script setup>
 import Header from '@/components/Header.vue';
 import { onMounted, ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { useUsuarioStore } from '@/stores/usuarios';
 
 const usuarioRol = sessionStorage.getItem('rol')
 const store = useUsuarioStore();
 const listaUsuarios = ref([]);
 const usuarioActivo = sessionStorage.getItem('id');
+const router = useRouter();
 
 onMounted(async ()=>{
+
+    if(usuarioRol !== 'admin'){
+        router.push({name: 'home'})
+    }
+
     listaUsuarios.value = await store.mostrarUsuarios()
 })
 
@@ -47,7 +53,7 @@ const cambiarEstado = async (id, estado) => {
                         <td class="py-2 px-3"> {{ usuario.correo }} </td>
                         <td class="py-2 px-3">
                             <button 
-                                class="px-2 rounded-sm hover:scale-95 uppercase transition-transform duration-300"
+                                class="w-24 px-2 rounded-sm hover:scale-95 uppercase transition-transform duration-300"
                                 :class="usuario.estado === 'activo' ? 'bg-green-100 text-green-700':'bg-red-100 text-red-700'"
                                 v-if="!(usuarioActivo === usuario.id)"
                                 @click="cambiarEstado(usuario.id, usuario.estado)"
@@ -57,7 +63,7 @@ const cambiarEstado = async (id, estado) => {
                         </td>
                         <td class="py-2">
                             <RouterLink
-                                :to="{name: 'home'}"
+                                :to="{name: 'editarusuario', params: {id: usuario.id}}"
                                 class="border px-3 py-1 rounded hover:bg-yellow-500 hover:border-yellow-500 transition-colors duration-300 flex gap-2 w-fit"
                                 v-if="!(usuarioActivo === usuario.id)"
                             >

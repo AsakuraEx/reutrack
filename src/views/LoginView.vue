@@ -145,7 +145,12 @@
         sessionStorage.setItem('usuario', usuario.value[0].nombre)
         sessionStorage.setItem('rol', usuario.value[0].rol)
         sessionStorage.setItem('id', usuario.value[0].id)
-        router.push({name:'home'})
+
+        if(login.contraseña.length <= 4){
+            router.push({name:'contraseña'})
+        }else{
+            router.push({name:'home'})
+        }
     }
 
     const registrarAsistencia = async () => {

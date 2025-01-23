@@ -8,6 +8,9 @@ export default {
         }
         return api.get(url);
     },
+    getUsuario(id){
+        return api.get(`/usuarios/${id}`)
+    },
     iniciarSesion(email){
         return api.get(`/usuarios?correo=${email}`)
     },
@@ -17,5 +20,14 @@ export default {
         }else{
             return api.patch(`/usuarios/${id}`, {estado: 'activo'})
         }
+    },
+    crearUsuario(data){
+        return api.post('/usuarios', data)
+    },
+    actualizarContraseña(id, password){
+        return api.patch(`/usuarios/${id}`, {contraseña: password})
+    },
+    actualizarUsuario(id, data){
+        return api.patch(`/usuarios/${id}`, data)
     }
 }

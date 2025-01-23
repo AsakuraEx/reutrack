@@ -3,46 +3,41 @@ import Header from '@/components/Header.vue';
 import Textfield from '@/components/Textfield.vue';
 import { useUsuarioStore } from '@/stores/usuarios';
 import { uid } from 'uid';
-import { onMounted, reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { onMounted, ref, reactive } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 const store = useUsuarioStore()
 const error = ref('');
 const usuarioRol = sessionStorage.getItem('rol')
 const router = useRouter();
+const route = useRoute();
+
+const {id} = route.params
+
 const usuarioNuevo = reactive({
     nombre: '',
     correo: '',
-    contraseña: '',
     rol: 'estandar',
     estado: 'activo',
-    id: ''
+    id: id
 })
 
-onMounted(()=>{
+onMounted(async ()=>{
     if(usuarioRol !== 'admin'){
         router.push({name: 'home'})
     }
-
+    const {nombre, correo} = await store.obtenerUsuario(id)
+    usuarioNuevo.nombre = nombre;
+    usuarioNuevo.correo = correo;
 })
 
 const asignarContra = () => {
     usuarioNuevo.contraseña = uid(4)
 }
 
-const crearUsuario = async (data) => {
+const actualizarUsuario = async (id, data) => {
     
-    if(!data.contraseña){
-        
-        error.value = 'Se debe generar una contraseña generica para el usuario antes de crearlo.'
-        setTimeout(()=>{
-            error.value = '';
-        },3000)
-
-        return
-    }
-    usuarioNuevo.id = uid(6);
-    await store.crearUsuario(data)
+    await store.actualizarUsuario(id,data)
     router.push({name: 'usuarios'})
 
 }
@@ -54,7 +49,7 @@ const crearUsuario = async (data) => {
     
     <div class="container mx-auto px-4 mt-16 min-h-screen">
 
-        <h1 class="text-purple-300 font-extrabold text-center text-2xl uppercase">Nuevo Usuario</h1>
+        <h1 class="text-purple-300 font-extrabold text-center text-2xl uppercase">Editar Usuario</h1>
 
         <div role="alert" class="alert alert-error mt-12" v-if="error">
             <svg
@@ -71,7 +66,7 @@ const crearUsuario = async (data) => {
             <span> {{ error }} </span>
           </div>
 
-        <form class="space-y-4 mt-8" @submit.prevent="crearUsuario(usuarioNuevo)">
+        <form class="space-y-4 mt-8" @submit.prevent="actualizarUsuario(id, usuarioNuevo)">
             
             <Textfield 
                 :label="'Nombre: *'"
@@ -95,7 +90,7 @@ const crearUsuario = async (data) => {
                     class="w-full lg:w-72 text-center py-2 bg-purple-500 hover:bg-purple-700 focus:scale-95 rounded-lg transition-colors duration-500"
                     @click="asignarContra()"
                 >
-                    Generar Contraseña
+                    Reestablecer Contraseña
                 </button>
                 <h2 class="text-center font-black text-4xl"> {{ usuarioNuevo.contraseña }} </h2>
             </div>
@@ -105,7 +100,7 @@ const crearUsuario = async (data) => {
             <div class="flex justify-center gap-4 px-4 mt-8">
 
                 <button class="bg-purple-400 hover:bg-purple-300 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center">
-                    Crear
+                    Actualizar
                 </button>
 
                 <RouterLink 
