@@ -109,6 +109,7 @@
         }
 
         usuario.value = await store.iniciarSesion(login.correo)
+        console.log(usuario.value)
 
         if(usuario.value.length === 0){
             error.value = "No existe un correo asociado a un usuario del sistema."

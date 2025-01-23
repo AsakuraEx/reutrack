@@ -36,9 +36,9 @@
 
 
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
+        // if(sessionStorage.getItem('token') == null){
+        //     router.push({name: 'login'})
+        // }
 
         arrayProyectos.value = await store.mostrarProyectos();
     })

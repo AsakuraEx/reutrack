@@ -2,7 +2,7 @@ import api from "@/lib/axios";
 
 export default {
     consultarReuniones(estado, limite, codigo, proyecto, usuario){
-        let url = '/reuniones?_sort=fecha&_order=desc'
+        let url = '/reuniones?'
 
         if(estado){
             url = url + `&estado=${estado}`
@@ -30,7 +30,7 @@ export default {
         return api.post('/reuniones', data)
     },
     cancelarReunion(id){
-        return api.patch(`/reuniones/${id}`, {estado: 'Cancelado'})
+        return api.patch(`/reuniones/${id}`, {estado: 2})
     },
     consultarReunion(id){
         return api.get(`/reuniones/${id}`)
@@ -39,7 +39,7 @@ export default {
         return api.patch(`/reuniones/${idReunion}`, {estado: 'Finalizado'})
     },
     consultarEncargados(reunion){
-        return api.get(`/encargados?id_reunion=${reunion}`)
+        return api.get(`/encargados/${reunion}`)
     },
     agregarEncargado(data){
         return api.post('/encargados', data)
@@ -51,7 +51,7 @@ export default {
         return api.post('/asistencia', data)
     },
     consultarParticipantes(reunion){
-        return api.get(`/asistencia?id_reunion=${reunion}`)
+        return api.get(`/asistencia/${reunion}`)
     },
     eliminarAsistencia(id){
         return api.delete(`/asistencia/${id}`)
@@ -61,7 +61,7 @@ export default {
         return api.post('/puntoreunion', data)
     },
     consultarPuntos(reunion){
-        return api.get(`/puntoreunion?id_reunion=${reunion}`)
+        return api.get(`/puntoreunion/${reunion}`)
     },
     eliminarPuntos(id){
         return api.delete(`/puntoreunion/${id}`)
@@ -70,7 +70,7 @@ export default {
         return api.post('/acuerdocompromiso', data)
     },
     consultarAcuerdo(reunion){
-        return api.get(`/acuerdocompromiso?id_reunion=${reunion}`)
+        return api.get(`/acuerdocompromiso/${reunion}`)
     },
     eliminarAcuerdo(id){
         return api.delete(`/acuerdocompromiso/${id}`)
@@ -79,6 +79,6 @@ export default {
         return api.post('/minutareunion', data)
     },
     consultarMinuta(reunion){
-        return api.get(`/minutareunion?id_reunion=${reunion}`)
+        return api.get(`/minutareunion/${reunion}`)
     },
 }

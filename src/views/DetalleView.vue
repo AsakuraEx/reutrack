@@ -30,9 +30,9 @@
     const { id } = route.params
 
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
+        // if(sessionStorage.getItem('token') == null){
+        //     router.push({name: 'login'})
+        // }
         reunion.value = await store.obtenerReunion(id)
         encargados.value = await store.obtenerEncargados(id)
         puntos.value = await store.obtenerPuntos(id)
@@ -74,7 +74,7 @@
             <p class="text-xl font-light text-center">
                 Lugar: <b>{{ reunion.lugar }}</b>
             </p>
-            <p class="text-xl font-light text-center mb-4">Fecha hora inicio de reunión: <b>{{ reunion.fecha }}</b></p>
+            <p class="text-xl font-light text-center mb-4">Fecha hora inicio de reunión: <b>{{ reunion.createdAt }}</b></p>
 
             <hr>
 
@@ -88,7 +88,7 @@
                     </thead>
                     <tbody>
                         <tr class="border-b" v-for="e in encargados">
-                            <td class="py-2">{{ e.id_usuario }}</td>
+                            <td class="py-2">{{ e.usuario.name }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -107,7 +107,7 @@
             <h3 class="text-2xl font-bold">Desarrollo de la reunión</h3>
 
             <div class="overflow-x-auto">
-                <p class="py-4 text-justify" v-html="minuta.descripcion">
+                <p class="py-4 text-justify" v-html="minuta.minuta">
                 </p>
             </div>
 
@@ -138,7 +138,7 @@
                     <tbody>
                         <tr class="border-b" v-for="x in asistencia">
                             <td class="py-2">{{ x.participante }}</td>
-                            <td class="py-2">{{ x.dui }}</td>
+                            <td class="py-2">{{ x.doc_identidad }}</td>
                             <td class="py-2">{{ x.cargo }}</td>
                             <td class="py-2">{{ x.institucion }}</td>
                             <td class="py-2">{{ x.telefono }}</td>
@@ -148,7 +148,7 @@
                 </table>
             </div>
 
-            <p class="text-xl font-light text-center lg:text-right mt-8">Fecha hora fin de la reunión: <b>{{ minuta.fechaFin }}</b></p>
+            <p class="text-xl font-light text-center lg:text-right mt-8">Fecha hora fin de la reunión: <b>{{ minuta.createdAt }}</b></p>
         </div>
 
         <Footer />

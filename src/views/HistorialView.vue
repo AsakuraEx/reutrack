@@ -9,7 +9,7 @@
     import { onMounted, reactive, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { useRouter } from 'vue-router';
-import { useProyectoStore } from '@/stores/proyectos';
+    import { useProyectoStore } from '@/stores/proyectos';
     const router = useRouter()
 
     const store = useReunionStore()
@@ -25,9 +25,9 @@ import { useProyectoStore } from '@/stores/proyectos';
     })
 
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
+        // if(sessionStorage.getItem('token') == null){
+        //     router.push({name: 'login'})
+        // }
 
         if(usuarioId != 4){
             reuniones.value = await store.obtenerReuniones(null,null,null, null, usuarioId)
@@ -100,7 +100,7 @@ import { useProyectoStore } from '@/stores/proyectos';
                 v-for="reunion in reuniones"
                 :titulo="reunion.nombre"
                 :lugar="reunion.lugar"
-                :fecha="reunion.fecha"
+                :fecha="reunion.createdAt"
                 :estado="reunion.estado"
                 :id="reunion.id"
                 @modal-mostrado="modalMostrado({id: reunion.id, nombre: reunion.nombre})"
