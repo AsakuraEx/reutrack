@@ -4,17 +4,10 @@ const db = require('../models');
 exports.index = async (req, res) => {
     const id = req.params.id_reunion
     try {
-        const encargado = await db.encargado.findAll({
-            include: [
-                { model: db.users,
-                    as: 'usuario',
-                    attributes: ['name'],
-                    required: true,
-                },
-            ],
-            where: { id_reunion: id}
-        });
-        res.status(HttpCode.HTTP_OK).json(encargado);
+        const acuerdocompromiso = await db.acuerdocompromiso.findAll({
+            where: {id_reunion: id}
+        })
+        res.status(HttpCode.HTTP_OK).json(acuerdocompromiso);
     } catch (err) {
         console.error('Error', err.message || err);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
@@ -22,13 +15,13 @@ exports.index = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    const {id_usuario, id_reunion} = req.body;
+    const {nombre, id_reunion} = req.body;
     try {
-        const newEncargado = await db.encargado.create({
-            id_usuario,
+        const newAcuerdoCompromiso = await db.acuerdocompromiso.create({
+            nombre,
             id_reunion,
         });
-        res.status(HttpCode.HTTP_CREATED).json(newEncargado );
+        res.status(HttpCode.HTTP_CREATED).json(newAcuerdoCompromiso);
     } catch (error) {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
@@ -37,22 +30,23 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const {id_usuario, id_reunion} = req.body;
+        const {nombre, id_reunion} = req.body;
         const id = req.params.id;
-        await db.encargado.update({id_usuario, id_reunion},{ where: {id: id}});
+        await db.acuerdocompromiso.update({nombre, id_reunion},{ where: {id: id}});
 
-        const updatedData = await db.encargado.findByPk(id);
+        const updatedData = await db.acuerdocompromiso.findByPk(id);
         res.status(HttpCode.HTTP_OK).json(updatedData)
     } catch (err) {
         console.error('Error', err.message || err);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
+
 exports.delete = async (req, res) => {
     try {
         const id = req.params.id;
-        await db.encargado.destroy({where: {id: id}});
-        res.status(HttpCode.HTTP_OK).json({message: 'Encargado eliminado con éxito'})
+        await db.acuerdocompromiso.destroy({where: {id: id}});
+        res.status(HttpCode.HTTP_OK).json({message: 'Acuerdo eliminado con éxito'})
     } catch (error) {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });

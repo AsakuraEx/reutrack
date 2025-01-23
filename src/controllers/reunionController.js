@@ -14,7 +14,27 @@ exports.getOne = async (req,res) => {
 
 exports.index = async (req, res) => {
     try {
-        const reunion = await db.reunion.findAll();
+        const reunion = await db.reunion.findAll({
+            attributes: {exclude: ['id_usuario', 'id_proyecto', 'id_estado', 'updatedAt']},
+            include: [
+                { model: db.users,
+                    as: 'user',
+                    attributes: ['name'],
+                    required: true,
+                },
+                { model: db.proyecto,
+                    as: 'proyecto',
+                    attributes: ['nombre'],
+                    required: true,
+
+                },
+                { model: db.ctl_estado,
+                    as: 'estado',
+                    attributes: ['name'],
+                    required: true,
+                }
+            ],   
+        });
         res.status(HttpCode.HTTP_OK).json(reunion);
     } catch (err) {
         console.error('Error', err.message || err);
@@ -32,11 +52,6 @@ exports.create = async (req, res) => {
         id_proyecto
     } = req.body;
 
-    // Validation
-    if (!nombre || !lugar || !codigo || !id_usuario || !id_estado || !id_proyecto) {
-        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'All fields are required.' });
-    }
-
     try {
         const reunion = await db.reunion.create({
             nombre,
@@ -51,4 +66,16 @@ exports.create = async (req, res) => {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     } 
+}
+
+exports.cancelar = async (req, res) => {
+    try {
+        const id = req.params.id;
+        await db.reunion.update({ 'id_estado': 2 },{ where: {id: id}});
+        const reunion = await db.reunion.findByPk(id)
+        res.status(HttpCode.HTTP_OK).json(reunion);
+    } catch (error) {
+        console.error('Error', error.message || error);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
 }

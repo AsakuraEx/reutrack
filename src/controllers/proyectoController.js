@@ -3,7 +3,21 @@ const db = require('../models');
 
 exports.index = async (req, res) => {
     try {
-        const proyecto = await db.proyecto.findAll();
+        const proyecto = await db.proyecto.findAll({
+            attributes: {exclude: ['id_usuario','id_estado', 'updatedAt']},
+            include: [
+                { model: db.users,
+                    as: 'usuario',
+                    attributes: ['name'],
+                    required: true,
+                },
+                { model: db.ctl_estado,
+                    as: 'estado',
+                    attributes: ['name'],
+                    required: true,
+                }
+            ]
+        });
         res.status(HttpCode.HTTP_OK).json(proyecto);
     } catch (error) {
         console.error('Error', error.message || error);
@@ -18,6 +32,19 @@ exports.byStatus = async (req, res) => {
     }
     try {
         const proyecto = await db.proyecto.findAll({
+            attributes: {exclude: ['id_usuario','id_estado', 'updatedAt']},
+            include: [
+                { model: db.users,
+                    as: 'usuario',
+                    attributes: ['name'],
+                    required: true,
+                },
+                { model: db.ctl_estado,
+                    as: 'estado',
+                    attributes: ['name'],
+                    required: true,
+                }
+            ],
             where: {
                 id_estado: estado 
             }
@@ -70,12 +97,12 @@ exports.update = async (req, res) => {
             acta_aceptacion
         }, {where: {id: id}});
 
-        const updatedProyecto = await db.proyecto.findByPk(id)
+        const updatedData = await db.proyecto.findByPk(id)
         
-        if (!updatedProyecto){
+        if (!updatedData){
             return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Proyecto not found'})
         }
-        res.status(HttpCode.HTTP_OK).json(updatedProyecto);
+        res.status(HttpCode.HTTP_OK).json(updatedData);
     } catch (error) {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
@@ -84,7 +111,8 @@ exports.update = async (req, res) => {
 exports.cancelar = async (req, res) => {
     try {
         const id = req.params.id;
-        const proyecto = await db.proyecto.update({ estado: 2 },{ where: {id: id}});
+        await db.proyecto.update({ 'id_estado': 2 },{ where: {id: id}});
+        const proyecto = await db.proyecto.findByPk(id)
         res.status(HttpCode.HTTP_OK).json(proyecto);
     } catch (error) {
         console.error('Error', error.message || error);

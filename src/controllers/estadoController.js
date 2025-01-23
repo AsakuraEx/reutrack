@@ -42,9 +42,9 @@ exports.update = async (req, res) => {
         const id = req.params.id;
         await db.ctl_estado.update({name, status},{ where: {id: id}});
 
-        const updatedEstado = await db.ctl_estado.findByPk(id);
+        const updatedData = await db.ctl_estado.findByPk(id);
 
-        res.status(HttpCode.HTTP_OK).json(updatedEstado)
+        res.status(HttpCode.HTTP_OK).json(updatedData)
     } catch (err) {
         console.error('Error', err.message || err);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });

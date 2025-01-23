@@ -3,7 +3,7 @@ var app = express.Router();
 
 const proyectoController = require('../controllers/proyectoController')
 
-app.get('/index',     proyectoController.index)
+app.get('/',     proyectoController.index)
 app.get('/status/:id', proyectoController.byStatus)
 app.post('/create',  proyectoController.create)
 app.patch('/update/:id', proyectoController.update)

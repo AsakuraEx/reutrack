@@ -7,12 +7,20 @@ const estadoRouter = require('../routes/estados');
 const proyectoRouter = require('../routes/proyecto');
 const reunionRouter = require('../routes/reunion');
 const encargadoRouter = require('../routes/encargado');
+const acuerdoCompromisoRouter = require('../routes/acuerdocompromiso');
+const listaAsistenciaRouter = require('../routes/listaasistencia')
+const minutaReunionRouter = require('../routes/minutareunion')
+const puntoreunionRouter = require('../routes/puntoreunion')
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/usuarios', usersRouter);
 app.use('/estado', estadoRouter);
 app.use('/proyectos', proyectoRouter);
 app.use('/reuniones', reunionRouter);
 app.use('/encargados', encargadoRouter);
+app.use('/acuerdocompromiso',acuerdoCompromisoRouter)
+app.use('/asistencia', listaAsistenciaRouter)
+app.use('/minutareunion', minutaReunionRouter)
+app.use('/puntoreunion', puntoreunionRouter)
 
 module.exports = app
