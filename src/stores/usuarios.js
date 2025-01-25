@@ -4,6 +4,9 @@ import { ref } from "vue";
 
 export const useUsuarioStore = defineStore('usuarios', ()=>{
     
+    const limiteInactividad = 15 * 60 * 100; // 15 minutos
+    let temporizadorActividad = null;
+
     const message = ref({
         tipo: '',
         mensaje: '' 
@@ -128,7 +131,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }     
     }
 
-    async function actualizarUsuario (id, data){
+    async function actualizarUsuario(id, data){
         try{
             const {status} = await apiServiceUsuarios.actualizarUsuario(id, data)
             if(status === 201){
@@ -146,6 +149,10 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
             console.error(e)
         }
     } 
+
+    function cerrarSesion(){
+
+    }
 
     return {
         mostrarEncargados,
