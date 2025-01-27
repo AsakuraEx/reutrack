@@ -12,9 +12,6 @@ module.exports = {
       nombre: {
         type: Sequelize.STRING(200)
       },
-      version: {
-        type: Sequelize.STRING(100)
-      },
       id_usuario: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -34,9 +31,6 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-      },
-      acta_aceptacion:{
-        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

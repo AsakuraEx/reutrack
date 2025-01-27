@@ -22,9 +22,9 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_usuario',
         as: 'user'
       })
-      reunion.belongsTo(models.proyecto,{
-        foreignKey: 'id_proyecto',
-        as: 'proyecto'
+      reunion.belongsTo(models.version,{
+        foreignKey: 'id_version',
+        as: 'version'
       })
       reunion.hasMany(models.puntoreunion,{
         foreignKey: 'id_reunion',
@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
     lugar: DataTypes.STRING,
     codigo: DataTypes.STRING,
     id_usuario: DataTypes.INTEGER,
-    id_proyecto: DataTypes.INTEGER,
+    id_version: DataTypes.INTEGER,
     id_estado: DataTypes.INTEGER
   }, {
     sequelize: db,

@@ -13,15 +13,15 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       ctl_estados.hasMany(models.reunion,{
         foreignKey: 'id_estado',
-        as: 'estado de reunion'
+        as: 'estado reunion'
       })
       ctl_estados.hasMany(models.proyecto,{
         foreignKey: 'id_estado',
-        as: 'estado de proyecto'
+        as: 'estado proyecto'
       })
       ctl_estados.hasMany(models.users,{
         foreignKey: 'id_estado',
-        as: 'estado de usuario'
+        as: 'estado usuario'
       })
     }
   }

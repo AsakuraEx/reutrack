@@ -11,8 +11,11 @@ const acuerdoCompromisoRouter = require('../routes/acuerdocompromiso');
 const listaAsistenciaRouter = require('../routes/listaasistencia')
 const minutaReunionRouter = require('../routes/minutareunion')
 const puntoreunionRouter = require('../routes/puntoreunion')
+const versionRouter = require('../routes/version')
+const authRouter = require('../routes/auth');
+const { verifyToken } = require('../middlewares/verifyToken');
 
-app.use('/', indexRouter);
+app.use('/',indexRouter);
 app.use('/usuarios', usersRouter);
 app.use('/estado', estadoRouter);
 app.use('/proyectos', proyectoRouter);
@@ -22,5 +25,7 @@ app.use('/acuerdocompromiso',acuerdoCompromisoRouter)
 app.use('/asistencia', listaAsistenciaRouter)
 app.use('/minutareunion', minutaReunionRouter)
 app.use('/puntoreunion', puntoreunionRouter)
+app.use('/auth', authRouter)
+app.use('/version', versionRouter)
 
 module.exports = app

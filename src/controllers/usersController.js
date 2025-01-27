@@ -1,5 +1,6 @@
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
+const bcrypt = require('bcrypt')
 
 exports.index = async (req, res) => {
     try {
@@ -16,7 +17,7 @@ exports.create = async (req, res) => {
 
     try {
         const newUser = await db.users.create({ 
-            name, email, password, perfi, id_estado, rol, remember_token
+            name, email, password: bcrypt.hashSync(password, 16), perfi, id_estado, rol, remember_token
         });
         res.status(HttpCode.HTTP_CREATED).json(newUser);
     } catch (error) {
@@ -44,3 +45,4 @@ exports.update = async (req, res) => {
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
+

@@ -26,10 +26,18 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_usuario',
         as: 'usuario de reunion'
       })
+      users.belongsTo(models.ctl_estado,{
+        foreignKey: 'id_estado',
+        as: 'estado usuario'
+      })
+      users.belongsTo(models.ctl_rol,{
+        foreignKey: 'id_rol',
+        as: 'rol usuario'
+      })
     }
   }
   users.init({
-    id: {
+  id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
@@ -44,17 +52,13 @@ module.exports = (sequelize, DataTypes) => {
     allowNull: false,
     unique: true,
   },
-  email_verified_at: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  perfil: {
+  remember_token: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   id_estado: {
     type: DataTypes.INTEGER,
@@ -66,13 +70,15 @@ module.exports = (sequelize, DataTypes) => {
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   },
-  rol: {
-    type: DataTypes.ENUM('admin', 'estandar'),
+  id_rol: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-  },
-  remember_token: {
-    type: DataTypes.STRING,
-    allowNull: true,
+    references: {
+      model: 'ctl_rol', 
+      key: 'id',        
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
   },
   createdAt: {
     type: DataTypes.DATE,

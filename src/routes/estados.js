@@ -7,7 +7,7 @@ var app = express.Router();
 const estadoController = require('../controllers/estadoController')
 
 app.get('/getOne/:id',     estadoController.getOne)
-app.get('/index',     estadoController.index)
+app.get('/',     estadoController.index)
 app.post('/create',  estadoController.create)
 //app.put('/update/:id',  validate(vetSpecialityUpdateSchema), vetSpecialityController.update)
 //app.put('/enable/:id',  vetSpecialityController.enable)

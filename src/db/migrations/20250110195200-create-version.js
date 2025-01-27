@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('reunion', {
+    await queryInterface.createTable('version', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,17 +10,17 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       nombre: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
+        type: Sequelize.STRING(200)
       },
-      lugar: {
-        type: Sequelize.STRING(255),
-        allowNull: false
-      },
-      codigo: {
-        type: Sequelize.STRING(16),
+      id_proyecto: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true
+        references: {
+          model: 'proyecto', // Nombre de la tabla referenciada
+          key: 'id',        // Columna referenciada
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       id_usuario: {
         type: Sequelize.INTEGER,
@@ -42,15 +42,8 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      id_version: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'version', // Nombre de la tabla referenciada
-          key: 'id',        // Columna referenciada
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
+      acta_aceptacion:{
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -63,6 +56,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('reunion');
+    await queryInterface.dropTable('version');
   }
 };

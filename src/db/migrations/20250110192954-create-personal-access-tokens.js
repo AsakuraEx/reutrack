@@ -9,25 +9,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      tokenable_id: {
+      id_usuario: {
         type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      tokenable_type: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      name: {
-        type: Sequelize.STRING
       },
       token: {
         type: Sequelize.STRING(64),
         allowNull: false,
         unique: true,
-      },
-      abilities: {
-        type: Sequelize.TEXT,
-        allowNull: true,
       },
       last_used_at: {
         type: Sequelize.DATE,

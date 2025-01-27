@@ -2,30 +2,29 @@
 
 const db = require("../config/database"); 
 
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class personal_access_token extends Model {
+  class ctl_rol extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      ctl_rol.hasMany(models.users,{
+        foreignKey: 'id_rol',
+        as: 'rol usuario'
+      })
     }
   }
-  personal_access_token.init({
-    name: DataTypes.STRING,
-    id_usuario: DataTypes.INTEGER,
-    token: DataTypes.STRING,
-    last_used_at: DataTypes.DATE,
-    expires_at: DataTypes.DATE,
+  ctl_rol.init({
+    nombre: DataTypes.STRING,
+    descripcion: DataTypes.STRING
   }, {
     sequelize: db,
     freezeTableName: true,
-    modelName: 'personal_access_token',
+    modelName: 'ctl_rol',
   });
-  return personal_access_token;
+  return ctl_rol;
 };

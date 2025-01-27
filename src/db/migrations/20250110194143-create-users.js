@@ -18,17 +18,13 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      email_verified_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
       password: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      perfil: {
+      remember_token: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       id_estado: {
         type: Sequelize.INTEGER,
@@ -40,13 +36,13 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      rol: {
-        type: Sequelize.ENUM('admin', 'estandar'),
+      id_rol:{
+        type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      remember_token: {
-        type: Sequelize.STRING,
-        allowNull: true,
+        references: {
+          model: 'ctl_rol',
+          key: 'id',
+        }
       },
       createdAt: {
         allowNull: false,
@@ -60,5 +56,5 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('users');
-  }
+  },
 };

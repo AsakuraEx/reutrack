@@ -15,15 +15,15 @@ exports.getOne = async (req,res) => {
 exports.index = async (req, res) => {
     try {
         const reunion = await db.reunion.findAll({
-            attributes: {exclude: ['id_usuario', 'id_proyecto', 'id_estado', 'updatedAt']},
+            attributes: {exclude: ['id_usuario', 'id_version', 'id_estado', 'updatedAt']},
             include: [
                 { model: db.users,
                     as: 'user',
                     attributes: ['name'],
                     required: true,
                 },
-                { model: db.proyecto,
-                    as: 'proyecto',
+                { model: db.version,
+                    as: 'version',
                     attributes: ['nombre'],
                     required: true,
 
@@ -49,7 +49,7 @@ exports.create = async (req, res) => {
         codigo,
         id_usuario,
         id_estado,
-        id_proyecto
+        id_version
     } = req.body;
 
     try {
@@ -58,8 +58,8 @@ exports.create = async (req, res) => {
             lugar,
             codigo,
             id_usuario,
+            id_version,
             id_estado,
-            id_proyecto
         });
         res.status(HttpCode.HTTP_CREATED).json(reunion);
     } catch (error) {
