@@ -14,10 +14,8 @@
     const usuarioId = sessionStorage.getItem('id')
 
     const nuevoProyecto = reactive({
-        id: uid(),
         nombre: "",
-        id_usuario: usuarioId,
-        acta_aceptacion: null
+        id_usuario: usuarioId
     })
 
     onMounted(()=>{

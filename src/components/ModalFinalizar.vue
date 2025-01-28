@@ -3,7 +3,7 @@
     <!-- Modal -->
     <dialog id="modalFinalizar" class="modal">
         <div class="modal-box max-w-[64rem] bg-[#202c33]">
-            <h3 class="text-lg font-bold py-4">Finalización de proyecto: " {{ version.version }}  " </h3>
+            <h3 class="text-lg font-bold py-4">Finalización de proyecto: " {{ version.nombre }}  " </h3>
             
             
             <div class="modal-action">

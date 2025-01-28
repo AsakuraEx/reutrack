@@ -1,12 +1,15 @@
 import { defineStore } from "pinia";
 import apiServiceUsuarios from "@/services/apiServiceUsuarios";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 export const useUsuarioStore = defineStore('usuarios', ()=>{
     
-    const limiteInactividad = 15 * 60 * 100; // 15 minutos
-    let temporizadorActividad = null;
+    const router = useRouter()
+    const limiteInactividad = 15 * 60 * 1000; // 15 minutos
+    let inactividad = null;
 
+    const errorInactividad = ref('')
     const message = ref({
         tipo: '',
         mensaje: '' 
@@ -70,12 +73,14 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         
     }
 
-    async function iniciarSesion(email){
+    async function iniciarSesion(email, password){
         try{
-            const {status, data} = await apiServiceUsuarios.iniciarSesion(email)
+            const {status, data} = await apiServiceUsuarios.iniciarSesion(email, password)
             if(status === 200){
+                console.log(data)
                 return data;
             }
+            errorInactividad.value = ''
         }catch(e){
             console.error(e)
         }
@@ -150,8 +155,58 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     } 
 
-    function cerrarSesion(){
+    async function cerrarSesion(idToken){
+        try{
 
+            const { status } = await apiServiceUsuarios.cerrarSesion(idToken)
+
+            if( status === 200) {
+                router.push({name: 'login'})
+            }
+
+            errorInactividad.value = ''
+            sessionStorage.clear()
+            router.push({name:'login'})
+
+        }catch(e){
+            console.error(e)
+        }
+    }
+
+    async function cerrarSesionInactividad(){
+        try{
+
+            const { status } = await apiServiceUsuarios.cerrarSesion(idToken)
+
+            if( status === 200) {
+                router.push({name: 'login'})
+            }
+
+            sessionStorage.clear()
+            errorInactividad.value = 'Se ha cerrado su sesión por inactividad'
+            router.push({name:'login'})
+            
+        }catch(e){
+            console.error(e)
+        }
+
+    }
+
+    const reiniciarTiempo = () => {
+        clearTimeout(inactividad)
+        inactividad = setTimeout(cerrarSesionInactividad, limiteInactividad)
+
+    }
+
+    const detectarActividad = () => {
+        document.addEventListener('mousemove', reiniciarTiempo)
+        document.addEventListener('keydown', reiniciarTiempo)
+    }
+
+    const cancelarDeteccionActividad = () => {
+        clearTimeout(inactividad);
+        document.removeEventListener('mousemove', reiniciarTiempo);
+        document.removeEventListener('keydown', reiniciarTiempo);
     }
 
     return {
@@ -163,6 +218,11 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         actualizarContraseña,
         validarContraseñaAnterior,
         obtenerUsuario,
-        actualizarUsuario
+        actualizarUsuario,
+        cerrarSesion,
+        detectarActividad,
+        cancelarDeteccionActividad,
+        reiniciarTiempo,
+        errorInactividad,
     }
 })

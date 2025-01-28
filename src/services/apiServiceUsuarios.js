@@ -11,8 +11,11 @@ export default {
     getUsuario(id){
         return api.get(`/usuarios/${id}`)
     },
-    iniciarSesion(email){
-        return api.get(`/usuarios?correo=${email}`)
+    iniciarSesion(email, password){
+        return api.post(`/auth/login`, {email:email, password:password})
+    },
+    cerrarSesion(idToken){
+        return api.post(`/auth/logout`, {id: idToken})
     },
     cambiarEstado(id, estado){
         if(estado === 'activo'){

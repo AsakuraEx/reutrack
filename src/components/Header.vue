@@ -1,7 +1,10 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
+import { useUsuarioStore } from '@/stores/usuarios';
+import { onMounted, onUnmounted } from 'vue';
 
-const router = useRouter()
+const store = useUsuarioStore()
+const id = sessionStorage.getItem('id')
 
 defineProps({
     rol:{
@@ -10,10 +13,16 @@ defineProps({
     }
 })
 
-const cerrarSesion = () => {
-    sessionStorage.clear()
-    router.push({name:'login'})
-}
+onMounted(()=>{
+    store.detectarActividad()
+    store.reiniciarTiempo()
+})
+
+onUnmounted(()=>{
+    store.cancelarDeteccionActividad()
+})
+
+
 </script>
 
 <template>
@@ -43,7 +52,7 @@ const cerrarSesion = () => {
             <RouterLink v-if="rol !== 'estandar'"  :to="{name: 'usuarios'}" class="hover:text-purple-300 transition-colors duration-300">
                 Usuarios
             </RouterLink>
-            <button @click="cerrarSesion()" class="hover:text-purple-300 transition-colors duration-300">
+            <button @click="store.cerrarSesion(id)" class="hover:text-purple-300 transition-colors duration-300">
                 Cerrar Sesión
             </button>
         </ul>

@@ -23,11 +23,11 @@
     const arrayVersiones = ref([]);
     const modalActual = ref({
         id_proyecto: id,
-        version: '',
+        nombre: '',
         id: ''
     });
     const estados = {
-        Pendiente: 'bg-yellow-200 text-yellow-800',
+        Iniciado: 'bg-yellow-200 text-yellow-800',
         Finalizado: 'bg-blue-200 text-blue-800',
         Cancelado: 'bg-red-200 text-red-800'
     }
@@ -77,7 +77,7 @@
                 </thead>
                 <tbody>
                     <tr class="border-b" v-if="arrayVersiones" v-for="item in arrayVersiones">
-                        <td class="py-2 px-3">{{ item.version }}</td>
+                        <td class="py-2 px-3">{{ item.nombre }}</td>
                         <td class="py-2 px-3">{{ item.descripcion }}</td>
                         <td class="py-2 px-3">
                             <a 
@@ -89,23 +89,23 @@
                                 Ver Acta
                             </a>
                         </td>
-                        <td class="py-2 px-3">{{ item.id_usuario }}</td>
+                        <td class="py-2 px-3">{{ item.usuario.name }}</td>
                         <td class="py-2 px-3">
-                            <div class="-bold text-center w-24 rounded" :class="claseEstado(item.estado)">
-                                {{ item.estado }}
+                            <div class="-bold text-center w-24 rounded" :class="claseEstado(item.estado.name)">
+                                {{ item.estado.name }}
                             </div>
                         </td>
                         <td class="py-2 w-48">
                             <button
                                 onclick="modalFinalizar.showModal()"
-                                v-if="item.estado === 'Pendiente'" 
+                                v-if="item.estado.name === 'Iniciado'" 
                                 class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300"
                                 @click="mostrarModal(item.id)"
                             >
                                 Finalizar
                             </button>
                             <button 
-                                v-if="item.estado === 'Pendiente'"
+                                v-if="item.estado.name === 'Pendiente'"
                                 onclick="modalCancelar.showModal()" 
                                 class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300"
                                 @click="mostrarModal(item.id)"

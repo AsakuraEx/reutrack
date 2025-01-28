@@ -4,9 +4,12 @@ const jsonServerURL = import.meta.env.VITE_JSONSERVER_URL;
 const baseURL = import.meta.env.VITE_BASE_URL;
 const localURL = import.meta.env.VITE_LOCAL_URL;
 
+const token = sessionStorage.getItem('token')
+
 const api = axios.create({
-    baseURL: baseURL,
+    baseURL: baseURL
 })
+
 
 // Agregar el token dinámicamente antes de cada solicitud
 api.interceptors.request.use(
@@ -29,7 +32,6 @@ api.interceptors.response.use(
     // Redirigir al login si el token es inválido o ha expirado
     console.error("Token inválido o expirado. Redirigiendo al login...");
     sessionStorage.clear()
-    router.push({name: 'login'});
     }
     return Promise.reject(error);
 }

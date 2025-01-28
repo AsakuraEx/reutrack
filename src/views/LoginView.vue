@@ -13,6 +13,11 @@
                     :error="error"
                     v-if="error"
                 />
+
+                <AlertWarning
+                    :error="store.errorInactividad"
+                    v-if="store.errorInactividad"
+                />
             </div>
 
             <form class="space-y-4 text-center" @submit.prevent="iniciarSesion()">
@@ -75,6 +80,7 @@
     import { reactive, ref } from 'vue';
     import { useUsuarioStore } from '@/stores/usuarios';
     import AlertaError from '@/components/AlertaError.vue';
+    import AlertWarning from '@/components/AlertWarning.vue';
     import { uid } from 'uid';
     import { useRouter } from 'vue-router';
     import { useReunionStore } from '@/stores/reuniones';
@@ -83,9 +89,9 @@
     const storeReu = useReunionStore()
     const router = useRouter()
     
-    const usuario = ref([])
+    const user = ref({})
     const error = ref("")
-    const token = ref("")
+    const tokenApi = ref("")
     const errorCorreo = ref(false)
     const errorContra = ref(false)
     const codigo = ref("")
@@ -108,21 +114,14 @@
             return
         }
 
-        usuario.value = await store.iniciarSesion(login.correo)
-        console.log(usuario.value)
+        const {token, usuario} = await store.iniciarSesion(login.correo, login.contraseña)
+        user.value = usuario
+        tokenApi.value = token
 
-        if(usuario.value.length === 0){
-            error.value = "No existe un correo asociado a un usuario del sistema."
+        console.log(user.value)
 
-            setTimeout(()=>{
-                error.value = ""
-            },3000)
-
-            return
-        }
-
-        if(login.contraseña != usuario.value[0].contraseña){
-            error.value = "Las contraseña es incorrecta, valide la información ingresada."
+        if(!user.value){
+            error.value = "No existe el usuario al que intenta acceder."
 
             setTimeout(()=>{
                 error.value = ""
@@ -131,7 +130,7 @@
             return
         }
 
-        if(usuario.value[0].estado === 'inactivo'){
+        if(usuario.id_estado === 5){
             error.value = "El usuario al que intenta acceder está deshabilitado."
 
             setTimeout(()=>{
@@ -141,11 +140,10 @@
             return
         }
 
-        token.value = uid(16)
-        sessionStorage.setItem('token', token.value)
-        sessionStorage.setItem('usuario', usuario.value[0].nombre)
-        sessionStorage.setItem('rol', usuario.value[0].rol)
-        sessionStorage.setItem('id', usuario.value[0].id)
+        sessionStorage.setItem('token', tokenApi.value)
+        sessionStorage.setItem('usuario', user.value.name)
+        sessionStorage.setItem('rol', user.value.id_rol)
+        sessionStorage.setItem('id', user.value.id)
 
         if(login.contraseña.length <= 4){
             router.push({name:'contraseña'})

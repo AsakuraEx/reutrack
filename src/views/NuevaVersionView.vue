@@ -15,10 +15,9 @@
     const {id} = route.params
 
     const nuevaVersion = reactive({
-        id: uid(),
         descripcion: "",
-        version: "",
-        estado: "Pendiente",
+        nombre: "",
+        id_estado: 1,
         id_usuario: usuarioId,
         id_proyecto: id,
         acta_aceptacion: null
@@ -50,7 +49,7 @@
 
                 <Textfield 
                     :label="'Nombre de versión: *'"
-                    v-model:campo="nuevaVersion.version"
+                    v-model:campo="nuevaVersion.nombre"
                     :requerido="true"
                     :tipo="'text'"
                 />

@@ -17,6 +17,7 @@
     const storeReu = useReunionStore()
     const router = useRouter()
     const arrayVersiones = ref([]);
+    const arrayProyectos = ref([])
     const usuarioRol = sessionStorage.getItem('rol')
     const usuarioId = sessionStorage.getItem('id')
     const formData = reactive({
@@ -36,7 +37,9 @@
         //Se genera el codigo aleatorio con la libreria uid
         formData.codigo = uid(6);
         //Se solicita la lista de proyectos "Pendiente" (no cancelados ni finalizados)
-        arrayVersiones.value = await store.mostrarVersiones(null,'Pendiente');
+        
+        arrayProyectos.value = await store.mostrarProyectos(1)
+        
         //Se asigna la hora de expiracion del codigo
         expiracionCodigo()
     })
@@ -59,6 +62,11 @@
         //Regresa true si existe al menos un atributo vacio del objeto
         return Object.values(formData).includes('')
     })
+
+    const consultarVersiones = async (proyecto) => {
+        console.log("Solicitando las versiones del proyecto con id:" + proyecto)
+        arrayVersiones.value = await store.mostrarVersiones(proyecto,1);
+    }
 
 </script>
 
@@ -83,10 +91,26 @@
             <div 
                 class="w-full flex flex-col gap-4 items-center px-4" 
             >
-                <label class="text-xl px-4 md:text-left text-center">Proyecto Asociado: *</label>
+                <label class="text-xl px-4 md:text-left text-center">Proyecto: *</label>
                 <select 
                     class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
-                    :required="requerido == true ? 'required':''"
+                    :required="true"
+                    @change="consultarVersiones(formData.proyecto)"
+                    v-model="formData.proyecto"
+                >
+                    <option class="text-gray-900" value="0" disabled selected>Seleccione...</option>
+                    <option v-for="opcion in arrayProyectos" class="text-gray-900" :value="opcion.id"> {{ opcion.nombre }} </option>
+                </select>
+            </div>
+
+            <!-- SELECT PERSONALIZADO  -->
+            <div 
+                class="w-full flex flex-col gap-4 items-center px-4" 
+            >
+                <label class="text-xl px-4 md:text-left text-center">Version: *</label>
+                <select 
+                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
+                    :required="true"
                     v-model="formData.proyecto"
                 >
                     <option class="text-gray-900" value="0" disabled selected>Seleccione...</option>
