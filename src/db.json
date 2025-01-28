@@ -1,54 +1,5 @@
 {
-  "usuarios": [
-    {
-      "id": "1",
-      "nombre": "Administrador Reutrack",
-      "correo": "admin@salud.gob.sv",
-      "contraseña": "123",
-      "estado": "activo",
-      "rol": "admin"
-    },
-    {
-      "id": "ca63a8",
-      "nombre": "Francisco Escobar",
-      "correo": "francisco.escobar@salud.gob.sv",
-      "contraseña": "Pokeluchos2.",
-      "rol": "estandar",
-      "estado": "activo"
-    },
-    {
-      "id": "0d074a",
-      "nombre": "Elías Arturo Díaz Sorto",
-      "correo": "elias.diazv@salud.gob.sv",
-      "contraseña": "Admin123@",
-      "rol": "estandar",
-      "estado": "activo"
-    },
-    {
-      "id": "a0e47d",
-      "nombre": "Walter Alcides Romero",
-      "correo": "walter.romero@salud.gob.sv",
-      "contraseña": "Admin123.",
-      "rol": "estandar",
-      "estado": "activo"
-    },
-    {
-      "id": "2a1174",
-      "nombre": "Jeannete Peraza",
-      "correo": "jeannete.peraza@salud.gob.sv",
-      "contraseña": "M4f4ld4@",
-      "rol": "admin",
-      "estado": "activo"
-    },
-    {
-      "id": "e4bf26",
-      "nombre": "Iván Alessandro Mendoza Landaverde",
-      "correo": "ivan.mendozal@salud.gob.sv",
-      "contraseña": "Admin123@",
-      "rol": "estandar",
-      "estado": "activo"
-    }
-  ],
+  "usuarios": [],
   "proyectos": [],
   "versiones": [],
   "reuniones": [],

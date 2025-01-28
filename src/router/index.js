@@ -17,72 +17,72 @@ const router = createRouter({
     {
       path: '/usuarios',
       name: 'usuarios',
-      component: () => import('../views/UsuariosView.vue'),
+      component: () => import('../views/Usuarios/UsuariosView.vue'),
     },
     {
       path: '/usuarios/nuevo',
       name: 'nuevousuario',
-      component: () => import('../views/NuevoUsuarioView.vue'),
+      component: () => import('../viewsUsuarios//NuevoUsuarioView.vue'),
     },
     {
       path: '/usuarios/editar/:id',
       name: 'editarusuario',
-      component: () => import('../views/EditarUsuarioView.vue'),
+      component: () => import('../views/Usuarios/EditarUsuarioView.vue'),
     },
     {
       path: '/mi-password',
       name: 'contraseña',
-      component: () => import('../views/CambiarContraView.vue'),
+      component: () => import('../views/Usuarios/CambiarContraView.vue'),
     },
     {
       path: '/nueva-reunion',
       name: 'reunion',
-      component: () => import('../views/ReunionView.vue'),
+      component: () => import('../views/Reuniones/ReunionView.vue'),
     },
     {
       path: '/nueva-reunion/encargados/:id',
       name: 'encargados',
-      component: () => import('../views/EncargadosView.vue'),
+      component: () => import('../views/Reuniones/EncargadosView.vue'),
     },
     {
       path: '/nueva-reunion/asistencia/:id',
       name: 'asistencia',
-      component: () => import('../views/AsistenciaView.vue'),
+      component: () => import('../views/Reuniones/AsistenciaView.vue'),
     },
     {
       path: '/nueva-reunion/minuta/:id',
       name: 'minuta',
-      component: () => import('../views/MinutaView.vue'),
+      component: () => import('../views/Reuniones/MinutaView.vue'),
     },
     {
       path: '/historial-reuniones',
       name: 'historial',
-      component: () => import('../views/HistorialView.vue'),
+      component: () => import('../views/Historial/HistorialView.vue'),
     },
     {
       path: '/historial-reuniones/detalle/:id',
       name: 'detalle',
-      component: () => import('../views/DetalleView.vue'),
+      component: () => import('../views/Historial/DetalleView.vue'),
     },
     {
       path: '/proyectos',
       name: 'proyectos',
-      component: () => import('../views/ProyectosView.vue'),
+      component: () => import('../views/Proyectos/ProyectosView.vue'),
     },
     {
       path: '/proyectos/nuevo',
       name: 'nuevoproyecto',
-      component: () => import('../views/NuevoProyectoView.vue'),
+      component: () => import('../views/Proyectos/NuevoProyectoView.vue'),
     },
     {
       path: '/proyectos/versiones/:id',
       name: 'versiones',
-      component: () => import('../views/VersionesView.vue')
+      component: () => import('../views/Versiones/VersionesView.vue')
     },
     {
       path: '/proyectos/versiones/nuevo/:id',
       name: 'nuevaversion',
-      component: () => import('../views/NuevaVersionView.vue')
+      component: () => import('../views/Versiones/NuevaVersionView.vue')
     },
     {
       path: '/login',
@@ -92,12 +92,12 @@ const router = createRouter({
     {
       path: '/invitado/:id',
       name: 'invitado',
-      component: () => import('../views/InvitadoView.vue'),
+      component: () => import('../views/Invitado/InvitadoView.vue'),
     },
     {
       path: '/invitado/exito',
       name: 'agradecimiento',
-      component: () => import('../views/AgradecimientoView.vue'),
+      component: () => import('../views/Invitado/AgradecimientoView.vue'),
     },
   ],
 })

@@ -1,11 +1,11 @@
-import axios from "axios";
+import axios from "axios";    //Importa la libreria axios para realizar peticiones
 
-const jsonServerURL = import.meta.env.VITE_JSONSERVER_URL;
-const baseURL = import.meta.env.VITE_BASE_URL;
-const localURL = import.meta.env.VITE_LOCAL_URL;
+const jsonServerURL = import.meta.env.VITE_JSONSERVER_URL;    //url utilizada en el metodo axios create, apunta a json-server, se configura en env
+const baseURL = import.meta.env.VITE_BASE_URL;    //url utilizada en el metodo axios create, apunta al backend, se configura en env
+const localURL = import.meta.env.VITE_LOCAL_URL;  //url utilizada en el metodo axios create, apunta al backend local, se configura en env
 
-const token = sessionStorage.getItem('token')
 
+// Creando la variable a exportar
 const api = axios.create({
     baseURL: baseURL
 })
@@ -25,6 +25,7 @@ api.interceptors.request.use(
     }
 );
 
+// Valida la respuesta recibida para determinar si el token es invalido o ha expirado
 api.interceptors.response.use(
 (response) => response,
 (error) => {
@@ -37,4 +38,5 @@ api.interceptors.response.use(
 }
 );
 
+//Realiza el export de la instancia axios
 export default api;

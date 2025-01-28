@@ -1,35 +1,44 @@
-import apiServiceProyectos from "@/services/apiServiceProyectos";
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import apiServiceProyectos from "@/services/apiServiceProyectos";       //Importa el servicio de consultas de api - proyectos
+import { defineStore } from "pinia";                                    //Importa el uso de pinia para generar stores
+import { ref } from "vue";                                              //Importa ref para generar variables reactivas en vue
 
 
-export const useProyectoStore = defineStore('proyectos', ()=>{
+export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicializa el store, define el id 'proyectos'
 
-    const message = ref({
+    //Define una variable mensaje para mostrar ya sea errores o mensajes de exito
+    const message = ref({                                                               
         tipo: '',
         mensaje: '' 
     })
 
+    //Función del store asincrona para mostrar proyectos
     async function mostrarProyectos(estado){
         try{
-            const {status, data} = await apiServiceProyectos.getProyectos(estado);
-            if(status === 200){
+            const {status, data} = await apiServiceProyectos.getProyectos(estado);      //Realiza la petición y extraye por destructuración el status y la data
+            
+            //Si la respuesta es 200, retorna la data
+            if(status === 200){                                                
                 return data;
             }
 
         }catch(e){
+            //Si no se logra realizar la petición, captura el error y lo muestra de forma generica
             console.error(e)
         }
     }
 
+    //Función asincrona del store para cancelar una versión
     async function cancelarVersion(id){
         try{
+            //Realiza la peticion
             const {status} = await apiServiceProyectos.cancelarVersion(id);
+            //Si el status es 200, guarda un mensaje de exito
             if(status === 200){
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡El proyecto se canceló exitosamente!'
 
-
+                //Posterior a 3 segundos, se elimina de la variable la información
+                //Se utiliza para generar alertas reactivas
                 setTimeout(()=>{
                     message.value.tipo = "",
                     message.value.mensaje = ""
@@ -41,9 +50,13 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
+    //Función asincrona del store para consultar un proyecto especifico mediante su id
     async function consultarProyecto(id){
         try {
+            //Realiza la petición y extrae el status y la data
             const {status, data} = await apiServiceProyectos.getProyecto(id);
+
+            //Si el status es 200 retorna la data
             if(status === 200){
                 return data;
             }
@@ -52,6 +65,7 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
+    //Finaliza la versión mediante su id y la url el cual es la url del acta de aceptacion
     async function finalizarVersion(id, url){
 
         try{
@@ -70,6 +84,7 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
+    //Crea un proyecto
     async function crearProyecto(proyecto){
         try{
             const {status} = await apiServiceProyectos.crearProyecto(proyecto)
@@ -89,6 +104,7 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
+    //Crea una versión
     async function crearVersion(version) {
         try{
             const {status} = await apiServiceProyectos.crearVersion(version)
@@ -108,6 +124,7 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         } 
     }
 
+    //Muestra las versiones mediante un id de proyecto y un estado
     async function mostrarVersiones(idProyecto, estado) {
         try{
             const {status, data} = await apiServiceProyectos.getVersiones(idProyecto, estado);
@@ -120,6 +137,7 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
+    //Consulta una versión especifica
     async function consultarVersion(id){
         try {
             const {status, data} = await apiServiceProyectos.getVersion(id);
@@ -131,6 +149,7 @@ export const useProyectoStore = defineStore('proyectos', ()=>{
         }
     }
 
+    //Retorna todas las funciones o variables creadas en el store para ser consumidas por un componente
     return {
         message,
         mostrarProyectos,
