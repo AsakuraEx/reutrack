@@ -95,17 +95,16 @@ import { ErrorMessage, Field, Form } from 'vee-validate';
                 class="w-full flex flex-col gap-4 items-center px-4" 
             >
                 <label for="id_proyecto" class="text-xl px-4 md:text-left text-center">Proyecto: *</label>
-                <Field as="select"
+                <select
                     name="id_proyecto" 
                     class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
-                    mode="aggressive"
-                    rules="required"
                     @change="consultarVersiones(formData.id_proyecto)"
                     v-model="formData.id_proyecto"
+                    required
                 >
                     <option class="text-gray-900" value="0" selected>Seleccione...</option>
                     <option v-for="opcion in arrayProyectos" class="text-gray-900" :value="opcion.id"> {{ opcion.nombre }} </option>
-                </Field>
+                </select>
 
                 <ErrorMessage name="id_proyecto" class="text-red-500" />
             </div>
@@ -115,17 +114,15 @@ import { ErrorMessage, Field, Form } from 'vee-validate';
                 class="w-full flex flex-col gap-4 items-center px-4" 
             >
                 <label for="id_version" class="text-xl px-4 md:text-left text-center">Version: *</label>
-                <Field as="select"
+                <select
                     name="id_version"
                     class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
-                    mode="aggressive"
-                    rules="required"
-                    :required="true"
+                    required
                     v-model="formData.id_version"
                 >
                     <option class="text-gray-900" value="0" selected>Seleccione...</option>
                     <option v-for="opcion in arrayVersiones" class="text-gray-900" :value="opcion.id"> {{ opcion.proyecto.nombre }} {{ opcion.nombre }}</option>
-                </Field>
+                </select>
 
                 <ErrorMessage name="id_version" class="text-red-500" />
             </div>

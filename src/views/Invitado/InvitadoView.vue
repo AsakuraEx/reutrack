@@ -2,70 +2,116 @@
     <div class="min-h-screen py-12">
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Lista de Asistencia</h1>  
         
-        <form class="flex flex-col gap-8 md:gap-0" @submit.prevent="agregarParticipante">
+        <Form class="flex flex-col gap-8 md:gap-0" @submit="agregarParticipante">
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-                <Textfield 
-                    v-model:campo="formData.participante" 
-                    :label="'Participante: *'"  
-                    :requerido="true"
-                    :tipo="'text'"
-                />
+                <div class="flex flex-col gap-4 items-center px-4">
+                    <label for="participante" class="text-xl px-4 md:text-left text-center">
+                        Nombre de participante *:
+                    </label>
+                    <Field
+                        type="text" 
+                        name="participante"
+                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        v-model="formData.participante"
+                        mode="aggressive"
+                        rules="required"
+                    />
+                    <ErrorMessage name="participante" class="text-red-500" />
+                </div>
     
-                <Textfield 
-                    v-model:campo="formData.institucion" 
-                    :label="'Institución o Dependencia: *'" 
-                    :requerido="true"
-                    :tipo="'text'"
-                />
+                <div class="flex flex-col gap-4 items-center px-4">
+                    <label for="institucion" class="text-xl px-4 md:text-left text-center">
+                        Institución o Dependencia *:
+                    </label>
+                    <Field
+                        type="text" 
+                        name="institucion"
+                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        v-model="formData.institucion"
+                        mode="aggressive"
+                        rules="required"
+                    />
+                    <ErrorMessage name="institucion" class="text-red-500" />
+                </div>
     
-                <Textfield 
-                    v-model:campo="formData.cargo" 
-                    :label="'Cargo: *'" 
-                    :requerido="true" 
-                    :tipo="'text'"
-                />
+                <div class="flex flex-col gap-4 items-center px-4">
+                    <label for="cargo" class="text-xl px-4 md:text-left text-center">
+                        Cargo *:
+                    </label>
+                    <Field
+                        type="text" 
+                        name="cargo"
+                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        v-model="formData.cargo"
+                        mode="aggressive"
+                        rules="required"
+                    />
+                    <ErrorMessage name="cargo" class="text-red-500" />
+                </div>
     
-                <Textfield 
-                    v-model:campo="formData.dui" 
-                    :label="'DUI: *'" 
-                    :requerido="true" 
-                    :tipo="'text'"
-                    :pattern="regexDui"
-                    :mascara="'########-#'"
-                />
+                <div class="flex flex-col gap-4 items-center px-4">
+                    <label for="doc_identidad" class="text-xl px-4 md:text-left text-center">
+                        DUI *:
+                    </label>
+                    <Field
+                        type="text" 
+                        name="doc_identidad"
+                        placeholder="########-#"
+                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        v-model="formData.doc_identidad"
+                        mode="aggressive"
+                        rules="required|dui"
+                    />
+                    <ErrorMessage name="doc_identidad" class="text-red-500" />
+                </div>
                 
-                <Textfield 
-                    v-model:campo="formData.telefono" 
-                    :label="'Teléfono: *'" 
-                    :requerido="true"
-                    :tipo="'text'"
-                    :pattern="regexTel"
-                />
+                <div class="flex flex-col gap-4 items-center px-4">
+                    <label for="telefono" class="text-xl px-4 md:text-left text-center">
+                        Teléfono *:
+                    </label>
+                    <Field
+                        type="text" 
+                        name="telefono"
+                        placeholder="########"
+                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        v-model="formData.telefono"
+                        mode="aggressive"
+                        rules="required|telefono"
+                    />
+                    <ErrorMessage name="telefono" class="text-red-500" />
+                </div>
                     
-                <Textfield 
-                    v-model:campo="formData.correo" 
-                    :label="'Correo Electrónico: *'" 
-                    :requerido="true" 
-                    :tipo="'email'"
-                />
+                <div class="flex flex-col gap-4 items-center px-4">
+                    <label for="correo" class="text-xl px-4 md:text-left text-center">
+                        Correo Electrónico *:
+                    </label>
+                    <Field
+                        type="text" 
+                        name="correo"
+                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        v-model="formData.correo"
+                        mode="aggressive"
+                        rules="required|email"
+                    />
+                    <ErrorMessage name="correo" class="text-red-500" />
+                </div>
 
             </div>
             <div class="mx-auto mt-6 w-full lg:w-32">
                 <BtnSubmit />
             </div>
 
-        </form>
+        </Form>
     </div>
 </template>
 
 <script setup>
     import { useReunionStore } from '@/stores/reuniones';
-    import { uid } from 'uid';
-    import { onMounted, reactive, ref } from 'vue';
+    import { ref } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
-    import Textfield from '@/components/Textfield.vue';
+    import { Form, Field, ErrorMessage } from 'vee-validate';
     import BtnSubmit from '@/components/BtnSubmit.vue';
 
     const route = useRoute()
@@ -82,9 +128,6 @@
             correo: '',
             id_reunion: idReunion,
         })
-    //Representan cadenas de validacion para textfield
-    const regexDui = "[0-9]{8}-[0-9]{1}$"
-    const regexTel = "[2,6,7]{1}[0-9]{7}$"
 
     const agregarParticipante = async () => {
         

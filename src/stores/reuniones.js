@@ -9,6 +9,17 @@ export const useReunionStore = defineStore('reuniones', () => {
         mensaje: '' 
     })
 
+    async function obtenerReunionActual(codigo){
+        try{
+            const {status, data} = await apiServiceReunion.ObtenerReunionActual(codigo)
+            if(status === 200){
+                return data;
+            }
+        }catch(e){
+            console.error(e)
+        }    
+    }
+
     async function obtenerUltimaReunion(){
         try{
             const {status, data} = await apiServiceReunion.consultarUltimaReunion()
@@ -289,7 +300,8 @@ export const useReunionStore = defineStore('reuniones', () => {
         GuardarMinuta,
         obtenerMinuta,
         FinalizarReunion,
-        obtenerUltimaReunion
+        obtenerUltimaReunion,
+        obtenerReunionActual
     }
 }
 )

@@ -25,11 +25,11 @@
     })
 
     onMounted(async ()=>{
-        // if(sessionStorage.getItem('token') == null){
-        //     router.push({name: 'login'})
-        // }
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
 
-        if(usuarioId != 4){
+        if(usuarioRol != 1){
             reuniones.value = await store.obtenerReuniones(null,null,null, null, usuarioId)
         }else{
             reuniones.value = await store.obtenerReuniones(null,null,null, null)

@@ -1,17 +1,11 @@
 <script setup>
-import { RouterLink, useRouter } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { useUsuarioStore } from '@/stores/usuarios';
 import { onMounted, onUnmounted } from 'vue';
 
 const store = useUsuarioStore()
 const id = sessionStorage.getItem('id')
-
-defineProps({
-    rol:{
-        type: String,
-        required:true
-    }
-})
+const rol = Number(sessionStorage.getItem('rol'))
 
 onMounted(()=>{
     store.detectarActividad()
@@ -49,7 +43,7 @@ onUnmounted(()=>{
             <RouterLink  :to="{name: 'contraseña'}" class="hover:text-purple-300 transition-colors duration-300">
                 Cambiar Contraseña
             </RouterLink>
-            <RouterLink v-if="rol !== 'estandar'"  :to="{name: 'usuarios'}" class="hover:text-purple-300 transition-colors duration-300">
+            <RouterLink v-if="rol === 1"  :to="{name: 'usuarios'}" class="hover:text-purple-300 transition-colors duration-300">
                 Usuarios
             </RouterLink>
             <button @click="store.cerrarSesion(id)" class="hover:text-purple-300 transition-colors duration-300">

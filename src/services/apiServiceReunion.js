@@ -2,33 +2,37 @@ import api from "@/lib/axios";
 
 export default {
     
+    ObtenerReunionActual(codigo){
+        return api.get(`/reunion-actual/${codigo}`);
+    },
+
     //Puede consultar todas las reuniones de acuerdo al estado, código, proyecto o usuario
     consultarReuniones(estado, limite, codigo, proyecto, usuario){
         let url = '/reuniones?'
 
         //Agrega un estado a la URL base en caso que exista
         if(estado){
-            url = url + `&estado=${estado}`
+            url = url + `estado=${estado}&`
         }
 
         //Agrega un limite a la URL base en caso que exista (Probablemente se elimine este parametro)
         if(limite){
-            url = url + `&_limit=${limite}`
+            url = url + `_limit=${limite}&`
         }
 
         //Agrega un codigo a la URL base en caso que exista
         if(codigo){
-            url = url + `&codigo=${codigo}`
+            url = url + `codigo=${codigo}&`
         }
 
         //Agrega un proyecto a la URL base en caso que exista
         if(proyecto){
-            url = url + `&proyecto=${proyecto}`
+            url = url + `proyecto=${proyecto}&`
         }
 
         //Agrega un usuario que generó a la URL base en caso que exista
         if(usuario){
-            url = url + `&id_usuario=${usuario}`
+            url = url + `id_usuario=${usuario}&`
         }
 
         return api.get(url)
