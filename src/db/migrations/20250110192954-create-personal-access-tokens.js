@@ -16,7 +16,7 @@ module.exports = {
       token: {
         type: Sequelize.STRING(64),
         allowNull: false,
-        unique: true,
+        unique: false,
       },
       last_used_at: {
         type: Sequelize.DATE,

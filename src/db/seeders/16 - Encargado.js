@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.bulkInsert('encargados', 
+    await queryInterface.bulkInsert('encargado', 
       [
         { id_usuario: 1,id_reunion: 1},
         { id_usuario: 2,id_reunion: 1},
@@ -14,6 +14,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete('encargados', null, {});s
+    await queryInterface.bulkDelete('encargado', null, {});s
   }
 };

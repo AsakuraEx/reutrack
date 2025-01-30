@@ -26,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_usuario',
         as: 'usuario de reunion'
       })
+      users.hasMany(models.personal_access_token,{
+        foreignKey: 'id_usuario',
+        as: 'usuario token'
+      })
       users.belongsTo(models.ctl_estado,{
         foreignKey: 'id_estado',
         as: 'estado usuario'

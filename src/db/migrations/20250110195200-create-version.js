@@ -12,6 +12,9 @@ module.exports = {
       nombre: {
         type: Sequelize.STRING(200)
       },
+      descripcion: {
+        type: Sequelize.STRING(250)
+      },
       id_proyecto: {
         type: Sequelize.INTEGER,
         allowNull: false,

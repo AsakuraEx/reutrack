@@ -3,7 +3,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
 const cors = require('cors');
 
 const apiRouter = require('./routes/api')
@@ -14,7 +13,6 @@ app.use(cors({
   origin: '*',
   methods: ['GET','POST','PUT','PATCH','DELETE'],
 }))
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,7 +41,7 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   res.locals.title = 'Error'; // Added title for the error page
-
+  
   // render the error page
   res.status(err.status || 500);
   res.render('error');

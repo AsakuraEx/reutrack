@@ -22,16 +22,6 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       },
-      id_estado: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'ctl_estado', // Nombre de la tabla referenciada
-          key: 'id',        // Columna referenciada
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

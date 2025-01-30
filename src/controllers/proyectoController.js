@@ -3,6 +3,17 @@ const db = require('../models');
 
 const table = db.proyecto
 
+exports.getOne = async (req,res) => {
+    try {
+        const id = req.params.id;
+        const proyecto = await db.proyecto.findByPk(id);
+        res.status(HttpCode.HTTP_OK).json(proyecto);        
+    } catch (err) {
+        console.error('Error: ', err.message || err);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });    
+    }
+}
+
 exports.index = async (req, res) => {
     try {
         const data = await table.findAll({
@@ -12,15 +23,10 @@ exports.index = async (req, res) => {
                     as: 'usuario',
                     attributes: ['name'],
                     required: true,
-                },
-                { model: db.ctl_estado,
-                    as: 'estado',
-                    attributes: ['name'],
-                    required: true,
                 }
             ]
         });
-        res.status(HttpCode.HTTP_OK).json(proyecto);
+        res.status(HttpCode.HTTP_OK).json(data);
     } catch (error) {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
@@ -61,18 +67,14 @@ exports.byStatus = async (req, res) => {
 exports.create = async (req, res) => {
     const {
         nombre,
-        version,
         id_usuario,
-        id_estado,
         acta_aceptacion
     } = req.body;
 
     try {
         const newProyecto = await table.create({ 
             nombre,
-            version,
             id_usuario,
-            id_estado,
             acta_aceptacion
         });
         res.status(HttpCode.HTTP_CREATED).json(newProyecto);

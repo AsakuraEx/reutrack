@@ -1,27 +1,29 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
 
 const db = require("../config/database"); 
 
+const {
+  Model
+} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class password_reset_token extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
+  class personal_access_token extends Model {
     static associate(models) {
-      // define association here
+      personal_access_token.belongsTo(models.users, {
+        foreignKey: 'id_usuario',
+        as: 'usuario'
+      });
     }
   }
-  password_reset_token.init({
-    email: DataTypes.STRING,
-    token: DataTypes.STRING
+  personal_access_token.init({
+    name: DataTypes.STRING,
+    id_usuario: DataTypes.INTEGER,
+    token: DataTypes.STRING,
+    last_used_at: DataTypes.DATE,
+    expires_at: DataTypes.DATE,
   }, {
-    sequelize,
-    modelName: 'password_reset_token',
+    sequelize: db,
+    freezeTableName: true,
+    modelName: 'personal_access_token',
   });
-  return password_reset_token;
+  return personal_access_token;
 };

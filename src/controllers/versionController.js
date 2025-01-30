@@ -3,6 +3,17 @@ const db = require('../models');
 
 const table = db.version
 
+exports.getOne = async (req,res) => {
+    try {
+        const id = req.params.id;
+        const version = await db.version.findByPk(id);
+        res.status(HttpCode.HTTP_OK).json(version);        
+    } catch (err) {
+        console.error('Error: ', err.message || err);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });    
+    }
+}
+
 exports.index = async (req, res) => {
     try {
         const data = await table.findAll({
@@ -32,13 +43,13 @@ exports.index = async (req, res) => {
     }
 }
 
-exports.byStatus = async (req, res) => {
-    const estado = req.params.id
-    if (!estado) {
+exports.byProject = async (req, res) => {
+    let proyecto = req.params
+    if (!proyecto) {
         return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'Estado parameter is required' });
     }
     try {
-        const data = await table.findAll({
+        let data = await table.findAll({
             attributes: {exclude: ['id_usuario','id_estado','id_proyecto', 'updatedAt']},
             include: [
                 { model: db.users,
@@ -58,10 +69,10 @@ exports.byStatus = async (req, res) => {
                 }
             ],
             where: {
-                id_estado: estado 
+                id_proyecto: Number(proyecto.id) 
             }
         });
-        res.status(HttpCode.HTTP_OK).json(proyecto);
+        res.status(HttpCode.HTTP_OK).json(data);
     } catch (error) {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
@@ -71,6 +82,7 @@ exports.byStatus = async (req, res) => {
 exports.create = async (req, res) => {
     const {
         nombre,
+        descripcion,
         id_proyecto,
         id_usuario,
         id_estado,
@@ -80,6 +92,7 @@ exports.create = async (req, res) => {
     try {
         const newData = await table.create({ 
             nombre,
+            descripcion,
             id_proyecto,
             id_usuario,
             id_estado,
@@ -95,6 +108,7 @@ exports.update = async (req, res) => {
     const { id } = req.params;
     const {
         nombre,
+        descripcion,
         id_proyecto,
         id_usuario,
         id_estado,
@@ -103,6 +117,7 @@ exports.update = async (req, res) => {
     try {
         await table.update({
             nombre,
+            descripcion,
             id_proyecto,
             id_usuario,
             id_estado,
@@ -133,8 +148,13 @@ exports.cancelar = async (req, res) => {
 }
 exports.finalizar = async (req, res) => {
     try {
-        const id = req.params.id;
-        const data = await table.update({ 'id_estado': 3 },{ where: {id: id}});
+        let id = req.params.id;
+        let {acta_aceptacion} = req.body
+        let data = await table.update({ 
+            'id_estado': 3,
+            'acta_aceptacion': acta_aceptacion
+        },
+        { where: {id: id}});
         res.status(HttpCode.HTTP_OK).json(data);
     } catch (error) {
         console.error('Error', error.message || error);
@@ -142,4 +162,49 @@ exports.finalizar = async (req, res) => {
     }
 }
 
+exports.getIniciado = async (req, res) => {
+    const {id_proyecto, id_estado} = req.query
+    try {
+        if (!id_proyecto && !id_estado) {
+            return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'Both proyecto and estado parameters are required' });
+        }
+        
+        const whereClause = {};
+        if (id_proyecto) {
+            whereClause.id_proyecto = id_proyecto;
+        }
+        if (id_estado) {
+            whereClause.id_estado = id_estado;
+        }
 
+        const data = await table.findAll({
+            attributes: {exclude: ['id_usuario','id_estado','id_proyecto', 'updatedAt']},
+            include: [
+                { model: db.users,
+                    as: 'usuario',
+                    attributes: ['name'],
+                    required: true,
+                },
+                { model: db.ctl_estado,
+                    as: 'estado',
+                    attributes: ['name'],
+                    required: true,
+                },
+                { model: db.proyecto,
+                    as: 'proyecto',
+                    attributes: ['nombre'],
+                    required: true,
+                }
+            ],
+            where: whereClause
+        });
+        if (data.length === 0) {
+            return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'No versions found for the given parameters' });
+        }
+        
+        res.status(HttpCode.HTTP_OK).json(data);
+    } catch (error) {
+        console.error('Error', error.message || error);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
+}

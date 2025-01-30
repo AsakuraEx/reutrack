@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   version.init({
     nombre: DataTypes.STRING,  
+    descripcion: DataTypes.STRING,
     id_proyecto: DataTypes.INTEGER,
     id_usuario: DataTypes.INTEGER,
     id_estado: DataTypes.INTEGER,

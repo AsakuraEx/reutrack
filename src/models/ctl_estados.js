@@ -15,13 +15,17 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_estado',
         as: 'estado reunion'
       })
-      ctl_estados.hasMany(models.proyecto,{
+      /* ctl_estados.hasMany(models.proyecto,{
         foreignKey: 'id_estado',
         as: 'estado proyecto'
-      })
+      }) */
       ctl_estados.hasMany(models.users,{
         foreignKey: 'id_estado',
         as: 'estado usuario'
+      })
+      ctl_estados.hasMany(models.version, {
+        foreignKey: 'id_estado',
+        as: 'estado version'
       })
     }
   }

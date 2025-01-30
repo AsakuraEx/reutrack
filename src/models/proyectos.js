@@ -13,10 +13,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      proyecto.belongsTo(models.ctl_estado,{
+      /* proyecto.belongsTo(models.ctl_estado,{
         foreignKey: 'id_estado',
         as: 'estado'
-      })
+      }) */
       proyecto.belongsTo(models.users,{
         foreignKey: 'id_usuario',
         as: 'usuario'
@@ -31,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
   proyecto.init({
     nombre: DataTypes.STRING,
     id_usuario: DataTypes.INTEGER,
-    id_estado: DataTypes.INTEGER
   }, {
     sequelize: db,
     freezeTableName: true,

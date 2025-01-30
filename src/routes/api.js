@@ -15,17 +15,18 @@ const versionRouter = require('../routes/version')
 const authRouter = require('../routes/auth');
 const { verifyToken } = require('../middlewares/verifyToken');
 
-app.use('/',indexRouter);
-app.use('/usuarios', usersRouter);
-app.use('/estado', estadoRouter);
-app.use('/proyectos', proyectoRouter);
-app.use('/reuniones', reunionRouter);
-app.use('/encargados', encargadoRouter);
-app.use('/acuerdocompromiso',acuerdoCompromisoRouter)
-app.use('/asistencia', listaAsistenciaRouter)
-app.use('/minutareunion', minutaReunionRouter)
-app.use('/puntoreunion', puntoreunionRouter)
-app.use('/auth', authRouter)
-app.use('/version', versionRouter)
+app.use('/auth', authRouter),
+app.use('/',[verifyToken],indexRouter);
+app.use('/usuarios',[verifyToken], usersRouter);
+app.use('/estado', [verifyToken], estadoRouter);
+app.use('/proyectos', [verifyToken],proyectoRouter);
+app.use('/reuniones', [verifyToken],reunionRouter);
+app.use('/encargados', [verifyToken], encargadoRouter);
+app.use('/acuerdocompromiso',[verifyToken],acuerdoCompromisoRouter)
+app.use('/asistencia', [verifyToken], listaAsistenciaRouter)
+app.use('/minutareunion', [verifyToken], minutaReunionRouter)
+app.use('/puntoreunion', [verifyToken], puntoreunionRouter)
+app.use('/versiones', [verifyToken], versionRouter);
+
 
 module.exports = app

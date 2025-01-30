@@ -13,11 +13,11 @@ exports.index = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
-    const {name, email, password, perfi, id_estado, rol, remember_token } = req.body;
+    const {name, email, password, remember_token, id_estado, id_rol} = req.body;
 
     try {
         const newUser = await db.users.create({ 
-            name, email, password: bcrypt.hashSync(password, 16), perfi, id_estado, rol, remember_token
+            name, email, password: bcrypt.hashSync(password, 16), id_estado, id_rol, remember_token
         });
         res.status(HttpCode.HTTP_CREATED).json(newUser);
     } catch (error) {
