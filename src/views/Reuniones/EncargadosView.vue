@@ -5,9 +5,9 @@
     import { useUsuarioStore } from '@/stores/usuarios';
     import { useRoute } from 'vue-router';
     import { uid } from 'uid';
-    import Header from '../../src/components/Header.vue'
-    import Footer from '../../src/components/Footer.vue'
-    import Stepper from '../../src/components/Stepper.vue'
+    import Header from '@/components/Header.vue'
+    import Footer from '@/components/Footer.vue'
+    import Stepper from '@/components/Stepper.vue'
     import Select from '@/components/Select.vue';
 
     //imports para iconos
@@ -22,6 +22,7 @@
     const storeReu = useReunionStore();
     const route = useRoute();
     const usuarioRol = sessionStorage.getItem('rol')
+    const usuarioId = sessionStorage.getItem('id')
 
     //variables o statements de la vista
     const arrayEncargados = ref([]);
@@ -29,7 +30,6 @@
     const {id} = route.params;     //Se obtiene el id de la reunion actual
     const idReunion = id;
     const formData = reactive({
-        id: '',
         id_usuario: 0,
         id_reunion: id
 
@@ -44,20 +44,26 @@
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
         }
-        formData.id = uid()
+        
         arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
         listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
     })
 
     const agregarEncargado = async () => {
-        await storeReu.agregarEncargado(formData, id)   
-        listaEncargados.value = await storeReu.obtenerEncargados(id) 
 
-        Object.assign(formData, {
-            id: uid(),
-            id_usuario: 0,
-            id_reunion: id
-        })
+        if (listaEncargados.value.some(encargado => encargado.id_usuario === Number(formData.id_usuario))) {
+            alert('El encargado ya fue agregado anteriormente');
+            return;
+        }else{
+            await storeReu.agregarEncargado(formData, id)   
+            listaEncargados.value = await storeReu.obtenerEncargados(id) 
+    
+            Object.assign(formData, {
+                id_usuario: 0,
+                id_reunion: id
+            })
+        }
+        
     }
 
     const eliminarEncargado = async (encargado) => {
@@ -112,7 +118,7 @@
                         <td class="py-2" colspan="2">No existen encargados para esta reunión...</td>
                     </tr>
                     <tr class="border-b" v-for="encargado in listaEncargados">
-                        <td class="py-2">{{ encargado.id }} {{ encargado.id_usuario }} {{ encargado.id_reunion }}</td>
+                        <td class="py-2">{{ encargado.usuario.nombre }}</td>
                         <td class="py-2">
                             <button 
                                 class="bg-red-500 hover:bg-red-400 p-1 rounded"

@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: '/usuarios/nuevo',
       name: 'nuevousuario',
-      component: () => import('../viewsUsuarios//NuevoUsuarioView.vue'),
+      component: () => import('../views/Usuarios/NuevoUsuarioView.vue'),
     },
     {
       path: '/usuarios/editar/:id',

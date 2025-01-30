@@ -7,9 +7,9 @@
             <span class="font-light italic">{{ fecha }}</span>
             <div 
                 class="w-fit px-3 py-1 rounded font-bold"
-                :class="claseEstado(estado.name)"
+                :class="claseEstado(estado.nombre)"
             >
-                {{ estado.name }}
+                {{ estado.nombre }}
             </div>
         </div>
 
@@ -17,14 +17,14 @@
             <RouterLink 
                 :to="{name:'detalle', params:{id: props.id}}" 
                 class="border rounded bg-transparent hover:bg-sky-400 hover:border-sky-400 inline-flex gap-2  px-3 py-1 transition-colors duration-300 text-center"
-                v-if="estado.name === 'Finalizado'"
+                v-if="estado.nombre=== 'Finalizado'"
             >
                 <svg-icon type="mdi" :path="path2"></svg-icon>
                 Detalle de Reunión
             </RouterLink>
             <button 
                 class="bg-transparent hover:border-purple-500 hover:bg-purple-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
-                v-if="estado.name === 'Finalizado'"
+                v-if="estado.nombre=== 'Finalizado'"
             >
                 <svg-icon type="mdi" :path="path1"></svg-icon>
                 Generar PDF
@@ -32,7 +32,7 @@
             <button
                 onclick="modal.showModal()"
                 class="bg-transparent hover:border-red-500 hover:bg-red-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
-                v-if="estado.name === 'Iniciado' " 
+                v-if="estado.nombre=== 'Iniciado' " 
                 @click="$emit('modal-mostrado')"   
             >
                 <svg-icon type="mdi" :path="path"></svg-icon>

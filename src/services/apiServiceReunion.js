@@ -34,14 +34,18 @@ export default {
         return api.get(url)
     },
 
+    consultarUltimaReunion(){
+        return api.get('/reuniones/ultima')
+    },
+
     //Crea una reunion con la data requerida
     guardarReunion(data){
-        return api.post('/reuniones', data)
+        return api.post('/reuniones/create', data)
     },
 
     //Marca la reunión como cancelada y no puede realizar ninguna otra acción
     cancelarReunion(id){
-        return api.patch(`/reuniones/${id}`, {estado: 2})
+        return api.patch(`/reuniones/delete/${id}`, {estado: 2})
     },
 
     //Consulta una reunión especifica mediante su id
@@ -51,27 +55,27 @@ export default {
 
     //Marca la reunión como finalizada
     finalizarReunion(idReunion){
-        return api.patch(`/reuniones/${idReunion}`, {estado: 'Finalizado'})
+        return api.patch(`/reuniones/finalizar/${idReunion}`)
     },
 
     //Consulta todos los encargados que fueron registrados en una reunión especifica
-    consultarEncargados(reunion){
-        return api.get(`/encargados/${reunion}`)
+    consultarEncargados(codigoReu){
+        return api.get(`/encargados/${codigoReu}`)
     },
 
     //Guarda encargados agregados mediante el formulario
     agregarEncargado(data){
-        return api.post('/encargados', data)
+        return api.post('/encargados/create', data)
     },
 
     //Elimina permanentemente un encargado mientra la reunión esta activa
     eliminarEncargado(id){
-        return api.delete(`/encargados/${id}`)
+        return api.delete(`/encargados/delete/${id}`)
     },
 
     //Se utiliza para registrar asistencia de la reunión, ya sea desde usuario registrado, como usuario sin cuenta
     agregarParticipante(data){
-        return api.post('/asistencia', data)
+        return api.post('/asistencia/create', data)
     },
 
     //Permite visualizar los participantes que se estan agregando en una reunión, solicita un id de reunión
@@ -81,12 +85,12 @@ export default {
 
     //Elimina completamente la asistencia de un participante mientras la reunión está activa.
     eliminarAsistencia(id){
-        return api.delete(`/asistencia/${id}`)
+        return api.delete(`/asistencia/delete/${id}`)
     },
 
     //Agrega los puntos tratados en la reunión
     agregarPuntos(data){
-        return api.post('/puntoreunion', data)
+        return api.post('/puntoreunion/create', data)
     },
     
     //Consulta los puntos tratados en la reunión
@@ -96,12 +100,12 @@ export default {
 
     //Elimina de forma permanente los puntos tratados en la reunión, durante la misma
     eliminarPuntos(id){
-        return api.delete(`/puntoreunion/${id}`)
+        return api.delete(`/puntoreunion/delete/${id}`)
     },
 
     //Agrega los acuerdos tratados en la reunión
     agregarAcuerdo(data){
-        return api.post('/acuerdocompromiso', data)
+        return api.post('/acuerdocompromiso/create', data)
     },
 
     //Consultalos acuerdos tratados en la reunión
@@ -111,12 +115,12 @@ export default {
 
     //Elimina permanentemente los acuerdos tratados en la reunión
     eliminarAcuerdo(id){
-        return api.delete(`/acuerdocompromiso/${id}`)
+        return api.delete(`/acuerdocompromiso/delete/${id}`)
     },
 
     // Guarda la información del campo "Descripción de la reunión", además de finalizar la reunión
     agregarMinuta(data){
-        return api.post('/minutareunion', data)
+        return api.post('/minutareunion/create', data)
     },
 
     // Consulta la información ingresada

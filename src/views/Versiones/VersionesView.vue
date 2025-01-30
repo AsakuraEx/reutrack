@@ -89,23 +89,23 @@
                                 Ver Acta
                             </a>
                         </td>
-                        <td class="py-2 px-3">{{ item.usuario.name }}</td>
+                        <td class="py-2 px-3">{{ item.usuario.nombre }}</td>
                         <td class="py-2 px-3">
-                            <div class="-bold text-center w-24 rounded" :class="claseEstado(item.estado.name)">
-                                {{ item.estado.name }}
+                            <div class="-bold text-center w-24 rounded" :class="claseEstado(item.estado.nombre)">
+                                {{ item.estado.nombre }}
                             </div>
                         </td>
                         <td class="py-2 w-48">
                             <button
                                 onclick="modalFinalizar.showModal()"
-                                v-if="item.estado.name === 'Iniciado'" 
+                                v-if="item.estado.nombre === 'Iniciado'" 
                                 class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300"
                                 @click="mostrarModal(item.id)"
                             >
                                 Finalizar
                             </button>
                             <button 
-                                v-if="item.estado.name === 'Pendiente'"
+                                v-if="item.estado.nombre === 'Iniciado'"
                                 onclick="modalCancelar.showModal()" 
                                 class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300"
                                 @click="mostrarModal(item.id)"

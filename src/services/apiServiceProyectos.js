@@ -28,16 +28,16 @@ export default {
     getVersiones(idProyecto, estado){
         
         //Se parte de una dirección base
-        var url = `/versiones`
+        var url = `/versiones?`
         
         //En caso que exista el id del proyecto lo agrega a la url
         if(idProyecto){
-            url = url + `/${idProyecto}`
+            url = url + `id_proyecto=${idProyecto}&`
         }
 
         //En caso que exista el estado de la version, lo agrega a la url
         if(estado){
-            url = url + `/${estado}`
+            url = url + `id_estado=${estado}`
         }
 
         //Solicita por get al endpoint construido dinamicamente
@@ -56,7 +56,7 @@ export default {
 
     // Realiza la cancelación de una versión pendiente, el estado se envía directamente debido a que es el único campo que modifica
     cancelarVersion(id){
-        return api.patch(`/versiones/${id}`, { estado: 'Cancelado' })
+        return api.patch(`/versiones/cancelar/${id}`, { estado: 'Cancelado' })
     },
 
     // Realiza la actualización de la versión agregando el acta de aceptación y cambia el estado a finalizado

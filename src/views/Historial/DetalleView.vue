@@ -88,7 +88,7 @@
                     </thead>
                     <tbody>
                         <tr class="border-b" v-for="e in encargados">
-                            <td class="py-2">{{ e.usuario.name }}</td>
+                            <td class="py-2">{{ e.usuario.nombre }}</td>
                         </tr>
                     </tbody>
                 </table>

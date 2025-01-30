@@ -9,6 +9,17 @@ export const useReunionStore = defineStore('reuniones', () => {
         mensaje: '' 
     })
 
+    async function obtenerUltimaReunion(){
+        try{
+            const {status, data} = await apiServiceReunion.consultarUltimaReunion()
+            if(status === 200){
+                return data;
+            }
+        }catch(e){
+            console.error(e)
+        }
+    }
+
     //FUNCION QUE OBTIENE TODAS LAS REUNIONES
     async function obtenerReuniones(estado, limite, codigo, proyecto, usuario){
         try{
@@ -277,7 +288,8 @@ export const useReunionStore = defineStore('reuniones', () => {
         eliminarAcuerdos,
         GuardarMinuta,
         obtenerMinuta,
-        FinalizarReunion
+        FinalizarReunion,
+        obtenerUltimaReunion
     }
 }
 )

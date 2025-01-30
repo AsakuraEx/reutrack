@@ -141,7 +141,7 @@
         }
 
         sessionStorage.setItem('token', tokenApi.value)
-        sessionStorage.setItem('usuario', user.value.name)
+        sessionStorage.setItem('usuario', user.value.nombre)
         sessionStorage.setItem('rol', user.value.id_rol)
         sessionStorage.setItem('id', user.value.id)
 

@@ -24,31 +24,27 @@
 
     //Formulario de minuta
     const minuta = reactive({
-        id: '',
-        descripcion: '',
-        fechaFin: '',
+        minuta: '',
         id_reunion: idReunion
     });
 
     //Formulario del punto de la reunion
     const punto = reactive({
-        id: '',
         nombre: '',
         id_reunion: idReunion
     })
 
     //Formulario del acuerdo de la reunion
     const acuerdo = reactive({
-        id: '',
         nombre: '',
         id_reunion: idReunion
     })
 
     //Guarda el progreso de la minuta en sessionStorage
     const GenerarBackupReunion = () => {
-        sessionStorage.setItem('minuta', minuta.descripcion);
+        sessionStorage.setItem('minuta', minuta.minuta);
         console.log('Guardado en el session storage');
-        minuta.descripcion = sessionStorage.getItem('minuta')
+        minuta.minuta = sessionStorage.getItem('minuta')
     }
 
     onMounted(async ()=>{
@@ -62,42 +58,37 @@
         acuerdos.value = await store.obtenerAcuerdos(idReunion)
         
         //Se obtiene lo que existe en el sesion storage
-        minuta.descripcion = sessionStorage.getItem('minuta')
+        minuta.minuta = sessionStorage.getItem('minuta')
 
         //Si no existe algo guarda vacio
-        if(!minuta.descripcion){
-            minuta.descripcion = ''
+        if(!minuta.minuta){
+            minuta.minuta = ''
         }
 
 
         //Cada 20 segundos genera una copia de la minuta en el SessionStorage
         backup = setInterval(()=>{
             GenerarBackupReunion()
-        }, 20000)
+        }, 5000)
 
     })
 
     const agregarPunto = async () => {
-        punto.id = uid()
         await store.agregarPuntos(punto)
         puntos.value = await store.obtenerPuntos(idReunion)
         Object.assign(punto, {
-            id: '',
             nombre: '',
             id_reunion: idReunion
         })
     }
 
     const agregarAcuerdo = async () => {
-        //Asigna un id al acuerdo a agregar
-        acuerdo.id = uid()
         //realiza el guardado del acuerdo
         await store.agregarAcuerdos(acuerdo)
         //Actualiza el array de acuerdos
         acuerdos.value = await store.obtenerAcuerdos(idReunion)
         //Limpia el objeto de acuerdos
         Object.assign(acuerdo, {
-            id: '',
             nombre: '',
             id_reunion: idReunion
         })
@@ -115,27 +106,19 @@
     }
 
     const finalizarReunion = async () => {
-        //Asigna un id a la minuta
-        minuta.id = uid()
-        //Guarda la hora de finalizacion de la minuta
-        minuta.fechaFin = new Date().toLocaleString()
-
-        //Guarda la minuta
-        await store.GuardarMinuta(minuta)
-
-        //Marca la reunion como finalizada
-        await store.FinalizarReunion(idReunion)
-
         //Elimina el intervalo
         clearInterval(backup)
         //Limpia el session Storage
         sessionStorage.removeItem('minuta')
+        //Guarda la minuta
+        await store.GuardarMinuta(minuta)
+        //Marca la reunion como finalizada
+        await store.FinalizarReunion(idReunion)
+
 
         //Limpia el objeto
         Object.assign(minuta, {
-            id: '',
-            descripcion: '',
-            fechaFin: '',
+            minuta: '',
             id_reunion: idReunion
         })
 
@@ -200,7 +183,7 @@
             <div class="space-y-4">
                 <h2 class="text-xl font-bold">Descripción de la reunión *</h2>
                 <TipTap 
-                    v-model="minuta.descripcion" 
+                    v-model="minuta.minuta" 
                 />
             </div>
 

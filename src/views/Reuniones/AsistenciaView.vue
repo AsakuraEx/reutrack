@@ -1,7 +1,7 @@
 <script setup>
-    import Header from '../../src/components/Header.vue'
-    import Footer from '../../src/components/Footer.vue'
-    import Stepper from '../../src/components/Stepper.vue'
+    import Header from '@/components/Header.vue'
+    import Footer from '@/components/Footer.vue'
+    import Stepper from '@/components/Stepper.vue'
     import Textfield from '@/components/Textfield.vue';
     import BtnSubmit from '@/components/BtnSubmit.vue';
     import SvgIcon from '@jamescoyle/vue-icon';
@@ -26,11 +26,10 @@
         participante: '',
         institucion: '',
         cargo: '',
-        dui: '',
+        doc_identidad: '',
         telefono: '',
         correo: '',
         id_reunion: idReunion,
-        id: ""
     })
 
     //Variable que representa la lista de participantes
@@ -45,7 +44,6 @@
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
         }
-        formData.value.id = uid()
         participantes.value = await store.obtenerParticipantes(idReunion)
         reunion.value = await store.obtenerReunion(idReunion)
     })
@@ -58,11 +56,10 @@
             participante: '',
             institucion: '',
             cargo: '',
-            dui: '',
+            doc_identidad: '',
             telefono: '',
             correo: '',
             id_reunion: idReunion,
-            id: uid()
             
         })
     }
@@ -119,7 +116,7 @@
                 />
     
                 <Textfield 
-                    v-model:campo="formData.dui" 
+                    v-model:campo="formData.doc_identidad" 
                     :label="'DUI: *'" 
                     :requerido="true" 
                     :tipo="'text'"
@@ -170,7 +167,7 @@
                     </tr>
                     <tr class="border-b" v-for="x in participantes">
                         <td class="py-2">{{ x.participante }}</td>
-                        <td class="py-2">{{ x.dui }}</td>
+                        <td class="py-2">{{ x.doc_identidad }}</td>
                         <td class="py-2">{{ x.cargo }}</td>
                         <td class="py-2">{{ x.institucion }}</td>
                         <td class="py-2">{{ x.telefono }}</td>

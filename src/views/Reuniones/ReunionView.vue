@@ -6,30 +6,30 @@
     import { useReunionStore } from '@/stores/reuniones';
     import { useRouter } from 'vue-router';
     import { uid } from 'uid';
-    import Header from '../../src/components/Header.vue'
-    import Footer from '../../src/components/Footer.vue'
-    import Stepper from '../../src/components/Stepper.vue'
+    import Header from '@/components/Header.vue';
+    import Footer from '@/components/Footer.vue';
+    import Stepper from '@/components/Stepper.vue'
     import Textfield from '@/components/Textfield.vue';
-    import Select from '@/components/Select.vue';
+import { ErrorMessage, Field, Form } from 'vee-validate';
 
     //definición de variables
     const store = useProyectoStore()
     const storeReu = useReunionStore()
     const router = useRouter()
+    const reunion = ref({})
     const arrayVersiones = ref([]);
     const arrayProyectos = ref([])
     const usuarioRol = sessionStorage.getItem('rol')
     const usuarioId = sessionStorage.getItem('id')
     const formData = reactive({
-        id: uid(8),
-        proyecto: 0,
+        id_proyecto: 0,
+        id_version: 0,
         nombre: '',
         lugar: '',
         id_usuario: usuarioId,
         codigo: '',
-        fecha: '',
         expiracion: '',
-        estado: 'Iniciado'
+        id_estado: 1
     })
 
     //instrucciones que se cargan al mostrar la vista
@@ -37,9 +37,9 @@
         //Se genera el codigo aleatorio con la libreria uid
         formData.codigo = uid(6);
         //Se solicita la lista de proyectos "Pendiente" (no cancelados ni finalizados)
-        
         arrayProyectos.value = await store.mostrarProyectos(1)
         
+        reunion.value = await storeReu.obtenerUltimaReunion()
         //Se asigna la hora de expiracion del codigo
         expiracionCodigo()
     })
@@ -53,9 +53,12 @@
         formData.expiracion = expiracion.toLocaleString()
     }
 
-    const crearReunion = () => {
-        storeReu.iniciarReunion(formData)        
-        router.push({name: 'encargados', params: {id: formData.id}})
+    const crearReunion = async () => {
+        //Creo la reunion y valido
+        await storeReu.iniciarReunion(formData)       
+        //Consulto la reunión creada        
+        reunion.value = await storeReu.obtenerUltimaReunion()
+        await router.push({name: 'encargados', params: {id: reunion.value.id }})
     }
 
     const formularioVacio = computed(()=>{
@@ -85,52 +88,77 @@
         
         <h1 class="text-2xl font-black text-center py-12 px-4 text-purple-500">Codigo de Reunión: {{ formData.codigo }}</h1>  
         
-        <form class="flex flex-col gap-4 md:gap-8" @submit.prevent="crearReunion()">
+        <Form class="flex flex-col gap-4 md:gap-8" @submit="crearReunion()">
 
             <!-- SELECT PERSONALIZADO  -->
             <div 
                 class="w-full flex flex-col gap-4 items-center px-4" 
             >
-                <label class="text-xl px-4 md:text-left text-center">Proyecto: *</label>
-                <select 
+                <label for="id_proyecto" class="text-xl px-4 md:text-left text-center">Proyecto: *</label>
+                <Field as="select"
+                    name="id_proyecto" 
                     class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
-                    :required="true"
-                    @change="consultarVersiones(formData.proyecto)"
-                    v-model="formData.proyecto"
+                    mode="aggressive"
+                    rules="required"
+                    @change="consultarVersiones(formData.id_proyecto)"
+                    v-model="formData.id_proyecto"
                 >
-                    <option class="text-gray-900" value="0" disabled selected>Seleccione...</option>
+                    <option class="text-gray-900" value="0" selected>Seleccione...</option>
                     <option v-for="opcion in arrayProyectos" class="text-gray-900" :value="opcion.id"> {{ opcion.nombre }} </option>
-                </select>
+                </Field>
+
+                <ErrorMessage name="id_proyecto" class="text-red-500" />
             </div>
 
             <!-- SELECT PERSONALIZADO  -->
             <div 
                 class="w-full flex flex-col gap-4 items-center px-4" 
             >
-                <label class="text-xl px-4 md:text-left text-center">Version: *</label>
-                <select 
+                <label for="id_version" class="text-xl px-4 md:text-left text-center">Version: *</label>
+                <Field as="select"
+                    name="id_version"
                     class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
+                    mode="aggressive"
+                    rules="required"
                     :required="true"
-                    v-model="formData.proyecto"
+                    v-model="formData.id_version"
                 >
-                    <option class="text-gray-900" value="0" disabled selected>Seleccione...</option>
-                    <option v-for="opcion in arrayVersiones" class="text-gray-900" :value="opcion.id"> {{ opcion.id_proyecto }} {{ opcion.version }}</option>
-                </select>
+                    <option class="text-gray-900" value="0" selected>Seleccione...</option>
+                    <option v-for="opcion in arrayVersiones" class="text-gray-900" :value="opcion.id"> {{ opcion.proyecto.nombre }} {{ opcion.nombre }}</option>
+                </Field>
+
+                <ErrorMessage name="id_version" class="text-red-500" />
             </div>
 
-            <Textfield 
-                :label="'Nombre de la reunión: *'"
-                :requerido="true" 
-                v-model:campo="formData.nombre"
-                :tipo="'text'"
-            />
+            <div class="flex flex-col gap-4 items-center px-4">
+                <label for="nombre" class="text-xl px-4 md:text-left text-center">
+                    Nombre de la reunión *:
+                </label>
+                <Field
+                    type="text" 
+                    name="nombre"
+                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                    v-model="formData.nombre"
+                    mode="aggressive"
+                    rules="required"
+                />
+                <ErrorMessage name="nombre" class="text-red-500" />
+            </div>
 
-            <Textfield 
-                :label="'Lugar de la reunión: *'" 
-                :requerido="true"
-                v-model:campo="formData.lugar"
-                :tipo="'text'"
-            />
+            <div class="flex flex-col gap-4 items-center px-4">
+                <label for="lugar" class="text-xl px-4 md:text-left text-center">
+                    Lugar de la reunión *:
+                </label>
+                <Field
+                    type="text" 
+                    name="lugar"
+                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                    v-model="formData.lugar"
+                    mode="aggressive"
+                    rules="required"
+                />
+                <ErrorMessage name="lugar" class="text-red-500" />
+            </div>
 
             <div class="flex justify-end px-4">
 

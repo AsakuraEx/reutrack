@@ -1,6 +1,7 @@
 <script setup>
 
     import { onMounted, reactive } from 'vue';
+    import { Form, ErrorMessage, Field } from 'vee-validate';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import Textfield from '@/components/Textfield.vue';
@@ -43,23 +44,37 @@
     <div class="container mx-auto px-4 mt-16 min-h-[75vh]">
         <h1 class="text-purple-300 font-extrabold text-center text-2xl uppercase">Detalla la nueva versión</h1>
 
-        <form @submit.prevent="guardarVersion(nuevaVersion)">
+        <Form @submit="guardarVersion(nuevaVersion)">
 
             <div class="space-y-4 mt-8">
 
-                <Textfield 
-                    :label="'Nombre de versión: *'"
-                    v-model:campo="nuevaVersion.nombre"
-                    :requerido="true"
-                    :tipo="'text'"
-                />
+                <div class="flex flex-col gap-4 items-center px-4">
+                    <label for="version" class="text-xl px-4 md:text-left text-center">
+                        Nombre de versión *:
+                    </label>
+                    <Field
+                        type="text" 
+                        name="version"
+                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        v-model="nuevaVersion.nombre"
+                        mode="aggressive"
+                        rules="required|min:4"
+                    />
+                    <ErrorMessage name="version" class="text-red-500" />
+                </div>
 
-                <Textfield
-                    :label="'Descripción de version: *'"
-                    v-model:campo="nuevaVersion.descripcion"
-                    :requerido="true"
-                    :tipo="'text'"
-                />
+                <div class="flex flex-col gap-4 items-center px-4">
+                    <label for="descripcion" class="text-xl px-4 md:text-left text-center">
+                        Descripción de la versión *:
+                    </label>
+                    <Field
+                        type="text" 
+                        name="descripcion"
+                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        v-model="nuevaVersion.descripcion"
+                    />
+                    <ErrorMessage name="descripcion" class="text-red-500" />
+                </div>
 
             </div>
 

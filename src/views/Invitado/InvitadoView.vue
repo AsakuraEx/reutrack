@@ -81,15 +81,10 @@
             telefono: '',
             correo: '',
             id_reunion: idReunion,
-            id: ''
         })
     //Representan cadenas de validacion para textfield
     const regexDui = "[0-9]{8}-[0-9]{1}$"
     const regexTel = "[2,6,7]{1}[0-9]{7}$"
-
-    onMounted(()=>{
-        formData.value.id = uid()
-    })
 
     const agregarParticipante = async () => {
         
