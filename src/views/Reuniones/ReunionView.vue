@@ -10,7 +10,7 @@
     import Footer from '@/components/Footer.vue';
     import Stepper from '@/components/Stepper.vue'
     import Textfield from '@/components/Textfield.vue';
-import { ErrorMessage, Field, Form } from 'vee-validate';
+    import { ErrorMessage, Field, Form } from 'vee-validate';
 
     //definición de variables
     const store = useProyectoStore()
@@ -38,8 +38,6 @@ import { ErrorMessage, Field, Form } from 'vee-validate';
         formData.codigo = uid(6);
         //Se solicita la lista de proyectos "Pendiente" (no cancelados ni finalizados)
         arrayProyectos.value = await store.mostrarProyectos(1)
-        
-        reunion.value = await storeReu.obtenerUltimaReunion()
         //Se asigna la hora de expiracion del codigo
         expiracionCodigo()
     })
@@ -58,6 +56,7 @@ import { ErrorMessage, Field, Form } from 'vee-validate';
         await storeReu.iniciarReunion(formData)       
         //Consulto la reunión creada        
         reunion.value = await storeReu.obtenerUltimaReunion()
+        // Una vez consultada la reunión, redirijo a esa reunión recien creada
         await router.push({name: 'encargados', params: {id: reunion.value.id }})
     }
 

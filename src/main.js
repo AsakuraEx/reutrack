@@ -30,7 +30,7 @@ defineRule('dui', value => {
     const regexDui = /^[0-9]{8}-[0-9]{1}$/;
 
     if(!regexDui.test(value)){
-        return 'El formato de dui es el siguiente: ########-#'
+        return 'El formato de dui es el siguiente: 00000000-0'
     }
     return true
 })

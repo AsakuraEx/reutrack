@@ -3,7 +3,7 @@ import api from "@/lib/axios";
 export default {
     
     ObtenerReunionActual(codigo){
-        return api.get(`/reunion-actual/${codigo}`);
+        return api.get(`/reuniones/reunion-actual/${codigo}`);
     },
 
     //Puede consultar todas las reuniones de acuerdo al estado, código, proyecto o usuario

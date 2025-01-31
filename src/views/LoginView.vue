@@ -40,10 +40,13 @@
                 >
                 <p v-if="errorContra" class="text-red-700">La contraseña es obligatoria</p>
                 <button 
-                    class="bg-purple-500 border w-full lg:max-w-72 py-2 rounded-md hover:bg-purple-600 focus:scale-95 transition-all duration-300"
+                    class="bg-purple-500 border w-full lg:max-w-72 py-2 rounded-md hover:bg-purple-600 transition-all duration-300"
                     type="submit"
                 >
-                    Iniciar Sesión
+                    <Spinner v-if="spinnerActivo" />
+                    <p v-if="!spinnerActivo">
+                        Iniciar Sesión
+                    </p>
                 </button>
             </form>
 
@@ -84,6 +87,9 @@
     import { uid } from 'uid';
     import { useRouter } from 'vue-router';
     import { useReunionStore } from '@/stores/reuniones';
+    import Spinner from '@/components/Spinner.vue';
+
+    const spinnerActivo = ref(false)
 
     const store = useUsuarioStore()
     const storeReu = useReunionStore()
@@ -104,51 +110,60 @@
 
     const iniciarSesion = async () => {
 
-        if(!login.correo){
-            errorCorreo.value = true
-            return
-        }
+        spinnerActivo.value = true
 
-        if(!login.contraseña){
-            errorContra.value = true
-            return
-        }
+        try {
+            if(!login.correo){
+                errorCorreo.value = true
+                return
+            }
 
-        const {token, usuario} = await store.iniciarSesion(login.correo, login.contraseña)
-        user.value = usuario
-        tokenApi.value = token
+            if(!login.contraseña){
+                errorContra.value = true
+                return
+            }
 
-        console.log(user.value)
+            const {token, usuario} = await store.iniciarSesion(login.correo, login.contraseña)
+            user.value = usuario
+            tokenApi.value = token
 
-        if(!user.value){
-            error.value = "No existe el usuario al que intenta acceder."
+            console.log(user.value)
 
-            setTimeout(()=>{
-                error.value = ""
-            },3000)
+            if(!user.value){
+                error.value = "No existe el usuario al que intenta acceder."
 
-            return
-        }
+                setTimeout(()=>{
+                    error.value = ""
+                },3000)
 
-        if(usuario.id_estado === 5){
-            error.value = "El usuario al que intenta acceder está deshabilitado."
+                return
+            }
 
-            setTimeout(()=>{
-                error.value = ""
-            },3000)
+            if(usuario.id_estado === 5){
+                error.value = "El usuario al que intenta acceder está deshabilitado."
 
-            return
-        }
+                setTimeout(()=>{
+                    error.value = ""
+                },3000)
 
-        sessionStorage.setItem('token', tokenApi.value)
-        sessionStorage.setItem('usuario', user.value.nombre)
-        sessionStorage.setItem('rol', user.value.id_rol)
-        sessionStorage.setItem('id', user.value.id)
+                return
+            }
 
-        if(login.contraseña.length <= 4){
-            router.push({name:'contraseña'})
-        }else{
-            router.push({name:'home'})
+            sessionStorage.setItem('token', tokenApi.value)
+            sessionStorage.setItem('usuario', user.value.nombre)
+            sessionStorage.setItem('rol', user.value.id_rol)
+            sessionStorage.setItem('id', user.value.id)
+
+            if(login.contraseña.length <= 4){
+                router.push({name:'contraseña'})
+            }else{
+                router.push({name:'home'})
+            }
+
+        }catch(e){
+            error.value = "Se ha presentado el siguiente error: " + e.message
+        } finally {
+            spinnerActivo.value = false
         }
     }
 
