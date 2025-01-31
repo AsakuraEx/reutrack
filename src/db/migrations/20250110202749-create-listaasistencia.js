@@ -13,6 +13,10 @@ module.exports = {
         type: Sequelize.STRING(200),
         allowNull: false
       },
+      institucion: {
+        type: Sequelize.STRING(200),
+        allowNull: false
+      },
       doc_identidad: {
         type: Sequelize.STRING(20),
         allowNull: false

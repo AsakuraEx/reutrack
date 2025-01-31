@@ -3,8 +3,8 @@ var app = express.Router();
 
 const listaAsistenciaController = require('../controllers/listaasistenciaController')
 
-app.get('/:id_reunion',     listaAsistenciaController.index)
+app.get('/:id',     listaAsistenciaController.index)
 app.post('/create',  listaAsistenciaController.create)
-app.delete('/delete', listaAsistenciaController.delete)
+app.delete('/delete/:id', listaAsistenciaController.delete)
 
 module.exports = app;

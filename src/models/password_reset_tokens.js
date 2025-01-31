@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   personal_access_token.init({
-    name: DataTypes.STRING,
     id_usuario: DataTypes.INTEGER,
     token: DataTypes.STRING,
     last_used_at: DataTypes.DATE,

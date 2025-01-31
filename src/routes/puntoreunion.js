@@ -5,6 +5,6 @@ const puntoReunionController = require('../controllers/puntoreunionController')
 
 app.get('/:id_reunion',     puntoReunionController.index)
 app.post('/create',  puntoReunionController.create)
-app.delete('/delete', puntoReunionController.delete)
+app.delete('/delete/:id', puntoReunionController.delete)
 
 module.exports = app;

@@ -4,11 +4,11 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('ctl_estado', 
-      [{name: 'Iniciado'},
-        {name: 'Cancelado'},
-        {name: 'Finalizado'},
-        {name: 'Activo'},
-        {name: 'Inactivo'}
+      [{nombre: 'Iniciado'},
+        {nombre: 'Cancelado'},
+        {nombre: 'Finalizado'},
+        {nombre: 'Activo'},
+        {nombre: 'Inactivo'}
     ], {});
   },
 

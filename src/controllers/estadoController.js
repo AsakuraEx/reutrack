@@ -23,10 +23,10 @@ exports.index = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    const {name, status} = req.body;
+    const {nombre, status} = req.body;
     try {
         const newEstado = await db.ctl_estado.create({
-            name,
+            nombre,
             status
         });
         res.status(HttpCode.HTTP_CREATED).json(newEstado);
@@ -38,9 +38,9 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const {name, status} = req.body;
+        const {nombre, status} = req.body;
         const id = req.params.id;
-        await db.ctl_estado.update({name, status},{ where: {id: id}});
+        await db.ctl_estado.update({nombre, status},{ where: {id: id}});
 
         const updatedData = await db.ctl_estado.findByPk(id);
 

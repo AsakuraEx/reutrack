@@ -21,7 +21,7 @@ exports.index = async (req, res) => {
             include: [
                 { model: db.users,
                     as: 'usuario',
-                    attributes: ['name'],
+                    attributes: ['nombre'],
                     required: true,
                 }
             ]
@@ -44,12 +44,12 @@ exports.byStatus = async (req, res) => {
             include: [
                 { model: db.users,
                     as: 'usuario',
-                    attributes: ['name'],
+                    attributes: ['nombre'],
                     required: true,
                 },
                 { model: db.ctl_estado,
                     as: 'estado',
-                    attributes: ['name'],
+                    attributes: ['nombre'],
                     required: true,
                 }
             ],

@@ -8,7 +8,7 @@ exports.index = async (req, res) => {
             include: [
                 { model: db.users,
                     as: 'usuario',
-                    attributes: ['name'],
+                    attributes: ['nombre'],
                     required: true,
                 },
             ],

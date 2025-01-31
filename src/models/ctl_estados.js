@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   ctl_estados.init({
-    name: DataTypes.STRING
+    nombre: DataTypes.STRING
   }, {
     sequelize: db,
     freezeTableName: true,

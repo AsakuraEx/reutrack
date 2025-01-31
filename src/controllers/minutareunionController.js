@@ -20,7 +20,7 @@ exports.create = async (req, res) => {
         const newMinuta = await db.minutareunion.create({
             minuta,
             id_reunion,
-        });
+        });  
         res.status(HttpCode.HTTP_CREATED).json(newMinuta);
     } catch (error) {
         console.error('Error', error.message || error);

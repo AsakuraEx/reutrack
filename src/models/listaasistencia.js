@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   listaasistencia.init({
     participante: DataTypes.STRING,
+    institucion: DataTypes.STRING,
     doc_identidad: DataTypes.STRING,
     cargo: DataTypes.STRING,
     telefono: DataTypes.STRING,

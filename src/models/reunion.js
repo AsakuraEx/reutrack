@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     nombre: DataTypes.STRING,
     lugar: DataTypes.STRING,
     codigo: DataTypes.STRING,
+    expiracion: DataTypes.DATE,
     id_usuario: DataTypes.INTEGER,
     id_version: DataTypes.INTEGER,
     id_estado: DataTypes.INTEGER

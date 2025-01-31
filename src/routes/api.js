@@ -15,12 +15,13 @@ const versionRouter = require('../routes/version')
 const authRouter = require('../routes/auth');
 const { verifyToken } = require('../middlewares/verifyToken');
 
+
 app.use('/auth', authRouter),
 app.use('/',[verifyToken],indexRouter);
 app.use('/usuarios',[verifyToken], usersRouter);
 app.use('/estado', [verifyToken], estadoRouter);
 app.use('/proyectos', [verifyToken],proyectoRouter);
-app.use('/reuniones', [verifyToken],reunionRouter);
+app.use('/reuniones', reunionRouter);
 app.use('/encargados', [verifyToken], encargadoRouter);
 app.use('/acuerdocompromiso',[verifyToken],acuerdoCompromisoRouter)
 app.use('/asistencia', [verifyToken], listaAsistenciaRouter)

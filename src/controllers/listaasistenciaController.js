@@ -2,7 +2,7 @@ const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
 
 exports.index = async (req, res) => {
-    const id= req.params.id_reunion
+    const {id} = req.params
     try {
         const listaAsistencia = await db.listaasistencia.findAll({
             where: {id_reunion: id}
@@ -15,12 +15,13 @@ exports.index = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    const {participante, doc_identidad, cargo, telefono, correo, id_reunion} = req.body;
+    const {participante, institucion, doc_identidad, cargo, telefono, correo, id_reunion} = req.body;
     try {
         const newListaAsistencia = await db.listaasistencia.create({
             participante,
-            doc_identidad,
+            institucion,
             cargo,
+            doc_identidad,
             telefono,
             correo,
             id_reunion,
