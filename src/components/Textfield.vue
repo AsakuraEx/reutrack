@@ -6,7 +6,7 @@
         <input 
             :type="tipo" 
             name="nombreReunion"
-            class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+            class="p-2 rounded border bg-transparent text-center w-full focus:outline-purple-400"
             :required="requerido"
             @input="$emit('update:campo', $event.target.value)"
             :pattern="pattern"

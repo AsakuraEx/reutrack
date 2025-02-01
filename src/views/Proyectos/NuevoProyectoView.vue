@@ -43,7 +43,7 @@
             @submit="guardarProyecto(nuevoProyecto)"
         >
 
-            <div class="space-y-4 mt-8">
+            <div class="space-y-4 mt-8 max-w-[400px] mx-auto">
 
                 <div class="flex flex-col gap-4 items-center px-4">
                     <label for="nombre" class="text-xl px-4 md:text-left text-center">
@@ -52,10 +52,10 @@
                     <Field
                         type="text" 
                         name="nombre"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        class="p-2 rounded border bg-transparent w-full text-center focus:outline-purple-400"
                         v-model="nuevoProyecto.nombre"
                         mode="aggressive"
-                        rules="required|min:8"
+                        rules="required|min:3"
                     />
                     <ErrorMessage name="nombre" class="text-red-500" />
                 </div>
@@ -64,15 +64,15 @@
 
 
 
-            <div class="flex justify-center gap-4 px-4 mt-8">
+            <div class="flex flex-col max-w-[400px] mx-auto items-center w-full justify-center gap-4 px-4 mt-8">
 
-                <button type="submit" class="bg-purple-400 hover:bg-purple-300 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center">
+                <button type="submit" class="bg-purple-400 hover:bg-purple-300 w-full py-2 transition-colors duration-150 font-bold rounded text-center">
                     Crear
                 </button>
 
                 <RouterLink 
                     :to="{name: 'proyectos'}"
-                    class="bg-slate-200 hover:bg-slate-100 text-black w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center"
+                    class="bg-slate-200 hover:bg-slate-100 text-black w-full py-2 transition-colors duration-150 font-bold rounded text-center"
                 >
                     Cancelar
                 </RouterLink>

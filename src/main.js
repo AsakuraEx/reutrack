@@ -36,10 +36,10 @@ defineRule('dui', value => {
 })
 
 defineRule('telefono', value => {
-    const regexTel = /^[2,6,7]{1}[0-9]{7}$/
+    const regexTel = /^[2,6,7]{1}[0-9]{3}-[0-9]{4}$/
 
     if(!regexTel.test(value)){
-        return 'Ingrese un número de telefono valido.'
+        return 'Ingrese un número de telefono valido, formato: 0000-0000.'
     }
     return true
 })
@@ -55,6 +55,22 @@ defineRule('email', value => {
     return true;
 })
 
+defineRule('equal', (value, [target], ctx) => {
+    if (value === ctx.form[target]){
+        return true
+    }
+
+    return 'Las contraseñas deben coincidir'
+})
+
+defineRule('password', value => {
+    const password = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-{}\[\]:;<>,.?/~]).{8,}$/;
+    if(!password.test(value)){
+        return 'La contraseña debe contener al menos 8 caracteres, una mayúscula, un número y un carácter especial'
+    }
+
+    return true
+})
 
 const app = createApp(App)
 

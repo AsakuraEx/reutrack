@@ -1,7 +1,7 @@
 <template>
     <div 
-        class="w-full" 
-        :class="label ? 'flex flex-col gap-4 items-center px-4':''"
+        class="w-full px-4 lg:px-0" 
+        :class="label ? 'flex flex-col gap-4 items-center':''"
     >
         <label v-if="label" class="text-xl px-4 md:text-left text-center">{{label}}</label>
         <select 

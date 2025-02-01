@@ -42,8 +42,21 @@
     })
 
 
-    const generarPDF = () => {
+    const transformarFecha = (fecha) => {
+        
+        const nuevaFecha = new Date(fecha)
 
+        const fechaFormateada = nuevaFecha.toLocaleString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',   // Hora en formato de dos dígitos
+            minute: '2-digit', // Minutos en formato de dos dígitos
+            second: '2-digit', // Segundos en formato de dos dígitos
+            hour12: true
+        });
+
+        return fechaFormateada
 
 
     }
@@ -74,7 +87,7 @@
             <p class="text-xl font-light text-center">
                 Lugar: <b>{{ reunion.lugar }}</b>
             </p>
-            <p class="text-xl font-light text-center mb-4">Fecha hora inicio de reunión: <b>{{ reunion.createdAt }}</b></p>
+            <p class="text-xl font-light text-center mb-4">Fecha hora inicio de reunión: <b>{{ transformarFecha(reunion.createdAt) }}</b></p>
 
             <hr>
 
@@ -148,7 +161,7 @@
                 </table>
             </div>
 
-            <p class="text-xl font-light text-center lg:text-right mt-8">Fecha hora fin de la reunión: <b>{{ minuta.createdAt }}</b></p>
+            <p class="text-xl font-light text-center lg:text-right mt-8">Fecha hora fin de la reunión: <b>{{ transformarFecha(minuta.createdAt) }}</b></p>
         </div>
 
         <Footer />

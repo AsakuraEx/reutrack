@@ -22,8 +22,8 @@
     const usuarioRol = sessionStorage.getItem('rol')
     const usuarioId = sessionStorage.getItem('id')
     const formData = reactive({
-        id_proyecto: 0,
-        id_version: 0,
+        id_proyecto: '',
+        id_version: '',
         nombre: '',
         lugar: '',
         id_usuario: usuarioId,
@@ -91,17 +91,17 @@
 
             <!-- SELECT PERSONALIZADO  -->
             <div 
-                class="w-full flex flex-col gap-4 items-center px-4" 
+                class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4" 
             >
                 <label for="id_proyecto" class="text-xl px-4 md:text-left text-center">Proyecto: *</label>
                 <select
                     name="id_proyecto" 
-                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
+                    class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400" 
                     @change="consultarVersiones(formData.id_proyecto)"
                     v-model="formData.id_proyecto"
                     required
                 >
-                    <option class="text-gray-900" value="0" selected>Seleccione...</option>
+                    <option class="text-gray-900" value="" selected>Seleccione...</option>
                     <option v-for="opcion in arrayProyectos" class="text-gray-900" :value="opcion.id"> {{ opcion.nombre }} </option>
                 </select>
 
@@ -110,30 +110,30 @@
 
             <!-- SELECT PERSONALIZADO  -->
             <div 
-                class="w-full flex flex-col gap-4 items-center px-4" 
+                class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4" 
             >
-                <label for="id_version" class="text-xl px-4 md:text-left text-center">Version: *</label>
+                <label for="id_version" class="text-xl px-4 md:text-left text-center">Versión: *</label>
                 <select
                     name="id_version"
-                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400" 
+                    class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400" 
                     required
                     v-model="formData.id_version"
                 >
-                    <option class="text-gray-900" value="0" selected>Seleccione...</option>
+                    <option class="text-gray-900" value="" selected>Seleccione...</option>
                     <option v-for="opcion in arrayVersiones" class="text-gray-900" :value="opcion.id"> {{ opcion.proyecto.nombre }} {{ opcion.nombre }}</option>
                 </select>
 
                 <ErrorMessage name="id_version" class="text-red-500" />
             </div>
 
-            <div class="flex flex-col gap-4 items-center px-4">
+            <div class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4">
                 <label for="nombre" class="text-xl px-4 md:text-left text-center">
                     Nombre de la reunión *:
                 </label>
                 <Field
                     type="text" 
                     name="nombre"
-                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                    class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
                     v-model="formData.nombre"
                     mode="aggressive"
                     rules="required"
@@ -141,14 +141,14 @@
                 <ErrorMessage name="nombre" class="text-red-500" />
             </div>
 
-            <div class="flex flex-col gap-4 items-center px-4">
+            <div class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4">
                 <label for="lugar" class="text-xl px-4 md:text-left text-center">
                     Lugar de la reunión *:
                 </label>
                 <Field
                     type="text" 
                     name="lugar"
-                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                    class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
                     v-model="formData.lugar"
                     mode="aggressive"
                     rules="required"
@@ -162,7 +162,7 @@
                     type="submit"
                     class="animate-pulse hover:animate-none bg-purple-400 hover:bg-purple-300 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center"
                     :class="formularioVacio ? 'animate-none bg-gray-400/25 hover:bg-gray-400/25':''"
-                    :disabled="formularioVacio"
+                    v-if="!formularioVacio"
                 >
                     Iniciar Reunión
                 </button>

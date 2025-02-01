@@ -10,7 +10,8 @@
     import { computed, onMounted, reactive, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { uid } from 'uid';
-    import { Field, ErrorMessage, Form } from 'vee-validate';
+    import { Field, ErrorMessage, Form, validate } from 'vee-validate';
+import AlertaError from '@/components/AlertaError.vue';
 
     //Variables del sistema
     const path = mdiTrashCanOutline;
@@ -35,6 +36,9 @@
 
     //Variable que representa la lista de participantes
     const participantes = ref([]);
+    
+    const extranjero = ref(false);
+    const error = ref('')
 
     //Pull de funciones que se cargan al montar el componente
     onMounted(async ()=>{
@@ -46,19 +50,53 @@
     })
 
     // Variables con diferentes funcionalidades del sistema
-    const agregarParticipante = async () => {
-        await store.agregarParticipante(formData.value)
-        participantes.value = await store.obtenerParticipantes(idReunion)
-        Object.assign(formData.value, {
-            participante: '',
-            institucion: '',
-            cargo: '',
-            doc_identidad: '',
-            telefono: '',
-            correo: '',
-            id_reunion: idReunion,
+    const agregarParticipante = async (values, { resetForm }) => {
+        
+        if(participantes.value.find(participante => participante.doc_identidad === formData.value.doc_identidad)){
+            error.value = 'El participante ya fue agregado segun documento de identidad...'
+            setTimeout(()=>{
+                error.value = ''
+            }, 3000)
+            return
+        }
+
+        if(participantes.value.find(participante => participante.telefono === formData.value.telefono)){
+            error.value = 'El participante ya fue agregado segun número de teléfono...'
+            setTimeout(()=>{
+                error.value = ''
+            }, 3000)
+            return
+        }
+        
+        if(participantes.value.find(participante => participante.correo === formData.value.correo)){
+            error.value = 'El participante ya fue agregado segun correo electrónico...'
+            setTimeout(()=>{
+                error.value = ''
+            }, 3000)
+            return
+        }
+
+        try{
+            await store.agregarParticipante(formData.value)
+            participantes.value = await store.obtenerParticipantes(idReunion)
             
-        })
+            
+            resetForm();
+            Object.assign(formData.value, {
+                participante: '',
+                institucion: '',
+                cargo: '',
+                doc_identidad: '',
+                telefono: '',
+                correo: '',
+                id_reunion: idReunion,
+                
+            })
+        }catch(e){
+            console.error('Error al agregar participante: ', error.message)
+        }
+        
+
     }
 
     const eliminarAsistencia = async (id) => {
@@ -84,12 +122,23 @@
         
         <Stepper :step="3"/>
 
-        <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Lista de Asistencia</h1>
-        <h2 class="text-xl font-extrabold text-center text-purple-400">Codigo: {{ reunion.codigo }}</h2>  
+        <h1 class="text-xl font-extrabold text-center pt-12 uppercase px-4">Lista de Asistencia</h1>
+        <div class="flex justify-between py-12">
+            <h2 class="text-xl font-extrabold text-center text-purple-400">Codigo: {{ reunion.codigo }}</h2>  
+            <div class="form-control">
+                <label class="label cursor-pointer">
+                  <span class="label-text text-white px-4">Extranjero</span>
+                  <input type="checkbox" checked="checked" class="checkbox checkbox-primary" v-model="extranjero"/>
+                </label>
+              </div>
+        </div>
         
-        <Form class="flex flex-col gap-8 md:gap-0" @submit="agregarParticipante">
+        <Form class="flex flex-col gap-8 md:gap-0 pb-4" @submit="agregarParticipante" v-slot="{ resetForm, errors }">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div 
+                class="grid grid-cols-1 md:grid-cols-2 gap-4"
+                :class="extranjero ? 'lg:grid-cols-2':'lg:grid-cols-3'"
+            >
 
                 <div class="flex flex-col gap-4 items-center px-4">
                     <label for="participante" class="text-xl px-4 md:text-left text-center">
@@ -98,9 +147,9 @@
                     <Field
                         type="text" 
                         name="participante"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
+                        :class="errors.participante ? 'ring ring-red-500': ''"
                         v-model="formData.participante"
-                        mode="aggressive"
                         rules="required"
                     />
                     <ErrorMessage name="participante" class="text-red-500" />
@@ -113,9 +162,9 @@
                     <Field
                         type="text" 
                         name="institucion"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
+                        :class="errors.institucion ? 'ring ring-red-500': ''"
                         v-model="formData.institucion"
-                        mode="aggressive"
                         rules="required"
                     />
                     <ErrorMessage name="institucion" class="text-red-500" />
@@ -128,41 +177,43 @@
                     <Field
                         type="text" 
                         name="cargo"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
+                        :class="errors.cargo ? 'ring ring-red-500': ''"
                         v-model="formData.cargo"
-                        mode="aggressive"
                         rules="required"
                     />
                     <ErrorMessage name="cargo" class="text-red-500" />
                 </div>
     
-                <div class="flex flex-col gap-4 items-center px-4">
+                <div class="flex flex-col gap-4 items-center px-4" v-if="!extranjero">
                     <label for="doc_identidad" class="text-xl px-4 md:text-left text-center">
                         DUI *:
                     </label>
                     <Field
                         type="text" 
                         name="doc_identidad"
-                        placeholder="########-#"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        placeholder="00000000-0"
+                        maxLength="10"
+                        class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
+                        :class="errors.doc_identidad ? 'ring ring-red-500': ''"
                         v-model="formData.doc_identidad"
-                        mode="aggressive"
                         rules="required|dui"
                     />
                     <ErrorMessage name="doc_identidad" class="text-red-500" />
                 </div>
                 
-                <div class="flex flex-col gap-4 items-center px-4">
+                <div class="flex flex-col gap-4 items-center px-4" v-if="!extranjero">
                     <label for="telefono" class="text-xl px-4 md:text-left text-center">
                         Teléfono *:
                     </label>
                     <Field
                         type="text" 
                         name="telefono"
-                        placeholder="########"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        placeholder="0000-0000"
+                        maxLength="9"
+                        class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
+                        :class="errors.telefono ? 'ring ring-red-500': ''"
                         v-model="formData.telefono"
-                        mode="aggressive"
                         rules="required|telefono"
                     />
                     <ErrorMessage name="telefono" class="text-red-500" />
@@ -175,20 +226,24 @@
                     <Field
                         type="text" 
                         name="correo"
-                        class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
+                        class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
+                        :class="errors.correo ? 'ring ring-red-500': ''"
                         v-model="formData.correo"
-                        mode="aggressive"
                         rules="required|email"
                     />
                     <ErrorMessage name="correo" class="text-red-500" />
                 </div>
 
             </div>
+
+            
             <div class="mx-auto mt-6 w-full lg:w-32">
                 <BtnSubmit />
             </div>
-
+            
         </Form>
+        
+        <AlertaError :error="error" v-if="error"/>
 
         <!-- TABLA DE DATOS DE ASISTENCIA -->
         <div class="overflow-x-auto px-4">
@@ -239,6 +294,7 @@
 
             <RouterLink 
                 :to="{name: 'minuta', params:{id: idReunion}}"
+                v-if="existenParticipantes"
                 class="bg-purple-400 hover:bg-purple-300 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center"
             >
                 Siguiente

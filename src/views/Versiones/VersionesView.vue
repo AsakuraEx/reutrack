@@ -9,8 +9,11 @@
     import ModalCancelar from '@/components/ModalCancelar.vue';
     import { useProyectoStore } from '@/stores/proyectos';
     import { useRouter } from 'vue-router';
+    import svgIcon from '@jamescoyle/vue-icon';
+    import { mdiPlus } from '@mdi/js';
     
     //definición de variables
+    const path2 = mdiPlus
     const router = useRouter()
     const route = useRoute()
     const store = useProyectoStore();
@@ -60,7 +63,13 @@
 
         <div class="flex justify-center flex-col lg:flex-row lg:justify-between items-center border mt-16 p-4 rounded-md">
             <h1 class="text-purple-300 font-extrabold text-2xl uppercase">Versiones de {{ proyecto.nombre }} </h1>
-            <RouterLink :to="{name: 'nuevaversion', params:{id: idProyecto}}" class="border px-3 py-1 bg-purple-400 border-purple-400 hover:bg-purple-300 font-bold rounded">Nueva Version</RouterLink>
+            <RouterLink 
+                :to="{name: 'nuevaversion', params:{id: idProyecto}}" 
+                class="border px-3 py-1 bg-purple-400 border-purple-400 hover:bg-purple-300 font-bold rounded flex gap-2"
+            >
+                <svg-icon type="mdi" :path="path2"></svg-icon>
+                Nueva Version
+            </RouterLink>
         </div>
 
         <div class="overflow-x-auto mt-12">
@@ -95,7 +104,7 @@
                                 {{ item.estado.nombre }}
                             </div>
                         </td>
-                        <td class="py-2 w-48">
+                        <td class="flex gap-2 py-2 w-fit">
                             <button
                                 onclick="modalFinalizar.showModal()"
                                 v-if="item.estado.nombre === 'Iniciado'" 
@@ -110,7 +119,7 @@
                                 class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300"
                                 @click="mostrarModal(item.id)"
                             >
-                                Cancelar
+                                Borrar
                             </button>
 
                         </td>

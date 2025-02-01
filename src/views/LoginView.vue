@@ -5,7 +5,7 @@
 
             <div>
                 <h1 class="font-black text-center text-3xl text-black">REUTRACK</h1>
-                <h2 class="text-gray-600 font-light text-center">Control y Gestión de Reuniones y Asistencia</h2>
+                <h2 class="text-gray-600 font-light text-center">Control y gestión de reuniones y asistencia</h2>
             </div>
 
             <div class="w-full">
@@ -23,16 +23,16 @@
             <form class="space-y-4 text-center" @submit.prevent="iniciarSesion()">
                 <input 
                     type="text" 
-                    class="bg-white border rounded-sm w-full p-2 text-black focus:outline focus:outline-purple-600"
+                    class="bg-white border rounded-sm w-full w-max-[400px] p-2 text-black focus:outline focus:outline-purple-600"
                     :class="errorCorreo ? 'outline-red-300 outline':''"
                     @focus="errorCorreo = false"
-                    placeholder="Correo Electronico"
+                    placeholder="Correo Electrónico"
                     v-model="login.correo"
                 >
                 <p v-if="errorCorreo" class="text-red-700">El correo es obligatorio</p>
                 <input 
                     type="password" 
-                    class="bg-white border rounded-sm w-full p-2 text-black focus:outline focus:outline-purple-600"
+                    class="bg-white border rounded-sm w-full w-max-[400px] p-2 text-black focus:outline focus:outline-purple-600"
                     placeholder="Contraseña"
                     :class="errorContra ? 'outline-red-300 outline':''"
                     @focus="errorContra = false"
@@ -45,7 +45,7 @@
                 >
                     <Spinner v-if="spinnerActivo" />
                     <p v-if="!spinnerActivo">
-                        Iniciar Sesión
+                        Iniciar sesión
                     </p>
                 </button>
             </form>
@@ -57,7 +57,7 @@
 
                 <div class="flex justify-center">
                     <div class="text-black uppercase font-bold border-2 text-center bg-gray-50 rounded-l-md py-3 px-4 w-1/3">
-                        Reunion
+                        Reunión
                     </div>
                     <input type="text" class="bg-gray-100 border rounded-r-md text-black text-center w-2/3" v-model="codigo">
                 </div>
@@ -84,7 +84,6 @@
     import { useUsuarioStore } from '@/stores/usuarios';
     import AlertaError from '@/components/AlertaError.vue';
     import AlertWarning from '@/components/AlertWarning.vue';
-    import { uid } from 'uid';
     import { useRouter } from 'vue-router';
     import { useReunionStore } from '@/stores/reuniones';
     import Spinner from '@/components/Spinner.vue';
@@ -153,6 +152,7 @@
             sessionStorage.setItem('usuario', user.value.nombre)
             sessionStorage.setItem('rol', user.value.id_rol)
             sessionStorage.setItem('id', user.value.id)
+            sessionStorage.setItem('session', user.value.first_session)
 
             if(login.contraseña.length <= 4){
                 router.push({name:'contraseña'})

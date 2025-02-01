@@ -11,21 +11,17 @@
     import { useRouter } from 'vue-router';
 
     import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiGit } from '@mdi/js';
+    import { mdiGit, mdiPlus } from '@mdi/js';
 
+    const path2 = mdiPlus
     const path = mdiGit
     const router = useRouter()
     const usuarioRol = sessionStorage.getItem('rol')
     //definición de variables
     const arrayProyectos = ref([]);
-    const modalActual = ref({
-        nombre: '',
-        version: '',
-        id: ''
-    });
     const store = useProyectoStore();
     const estados = {
-        Pendiente: 'bg-yellow-200 text-yellow-800',
+        Iniciado: 'bg-yellow-200 text-yellow-800',
         Finalizado: 'bg-blue-200 text-blue-800',
         Cancelado: 'bg-red-200 text-red-800'
     }
@@ -36,9 +32,9 @@
 
 
     onMounted(async ()=>{
-        // if(sessionStorage.getItem('token') == null){
-        //     router.push({name: 'login'})
-        // }
+        if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+        }
 
         arrayProyectos.value = await store.mostrarProyectos();
     })
@@ -53,7 +49,13 @@
 
         <div class="flex justify-center flex-col lg:flex-row lg:justify-between items-center border mt-16 p-4 rounded-md">
             <h1 class="text-purple-300 font-extrabold text-2xl uppercase">Proyectos</h1>
-            <RouterLink :to="{name: 'nuevoproyecto'}" class="border px-3 py-1 bg-purple-400 border-purple-400 hover:bg-purple-300 font-bold rounded">Nuevo Proyecto</RouterLink>
+            <RouterLink 
+                :to="{name: 'nuevoproyecto'}" 
+                class="border px-3 py-1 bg-purple-400 border-purple-400 hover:bg-purple-300 font-bold rounded flex gap-2"
+            >
+                <svg-icon type="mdi" :path="path2"></svg-icon>
+                Nuevo Proyecto
+            </RouterLink>
         </div>
 
         <div class="overflow-x-auto mt-12">

@@ -5,7 +5,7 @@
             
             <svg-icon type="mdi" :path="path" class="text-red-400 mx-auto w-16 h-16"></svg-icon>
             
-            <p class="text-lg font-bold py-4 text-center">¿Está seguro de cancelar la version {{ version.nombre }}?
+            <p class="text-lg font-bold py-4 text-center">¿Está seguro de borrar la versión "{{ version.nombre }}"?
                 , Esta acción no se puede deshacer.</p>
 
             <div class="modal-action">

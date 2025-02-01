@@ -18,10 +18,10 @@
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
         }
-        if(usuarioId != 4){
-            reuniones.value = await store.obtenerReuniones('Finalizado', 3, null, null, usuarioId)
+        if(usuarioRol != 1){
+            reuniones.value = await store.obtenerReuniones(3,null,null, null, usuarioId)
         }else{
-            reuniones.value = await store.obtenerReuniones('Finalizado', 3, null, null, null)    
+            reuniones.value = await store.obtenerReuniones(3,null,null, null)
         }
     })
 
