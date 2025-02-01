@@ -22,13 +22,15 @@
                 <svg-icon type="mdi" :path="path2"></svg-icon>
                 Detalle de Reunión
             </RouterLink>
-            <button 
+
+            <!-- <button 
                 class="bg-transparent hover:border-purple-500 hover:bg-purple-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
                 v-if="estado.nombre=== 'Finalizado'"
             >
                 <svg-icon type="mdi" :path="path1"></svg-icon>
                 Generar PDF
-            </button>
+            </button> -->
+
             <button
                 onclick="modal.showModal()"
                 class="bg-transparent hover:border-red-500 hover:bg-red-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"

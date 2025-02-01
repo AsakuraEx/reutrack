@@ -87,7 +87,7 @@
         
         <h1 class="text-2xl font-black text-center py-12 px-4 text-purple-500">Codigo de Reunión: {{ formData.codigo }}</h1>  
         
-        <Form class="flex flex-col gap-4 md:gap-8" @submit="crearReunion()">
+        <Form class="flex flex-col gap-4 md:gap-8" @submit="crearReunion()" v-slot="{ errors }">
 
             <!-- SELECT PERSONALIZADO  -->
             <div 
@@ -135,10 +135,11 @@
                     name="nombre"
                     class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
                     v-model="formData.nombre"
+                    :class="errors.nombre ? 'ring ring-red-500': ''"
                     mode="aggressive"
                     rules="required"
                 />
-                <ErrorMessage name="nombre" class="text-red-500" />
+                <ErrorMessage name="nombre" class="text-red-500 text-sm" />
             </div>
 
             <div class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4">
@@ -149,11 +150,12 @@
                     type="text" 
                     name="lugar"
                     class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
+                    :class="errors.lugar ? 'ring ring-red-500': ''"
                     v-model="formData.lugar"
                     mode="aggressive"
                     rules="required"
                 />
-                <ErrorMessage name="lugar" class="text-red-500" />
+                <ErrorMessage name="lugar" class="text-red-500 text-sm" />
             </div>
 
             <div class="flex justify-end px-4">

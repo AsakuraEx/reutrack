@@ -1,53 +1,100 @@
 <template>
+  <div>
+    <!-- Barra de herramientas con botones -->
+    <div class="flex">
+      <button
+        @click="editor?.chain().focus().toggleBold().run()"
+        :class="{ 'bg-purple-500 text-white': isBoldActive }"
+        class="px-2 py-1 border"
+      >
+        <svg-icon type="mdi" :path="path2"></svg-icon>
+      </button>
+      <button
+        @click="editor?.chain().focus().toggleItalic().run()"
+        :class="{ 'bg-purple-500 text-white': isItalicActive }"
+        class="px-2 py-1 border"
+      >
+        <svg-icon type="mdi" :path="path"></svg-icon>
+      </button>
+      <button
+        @click="editor?.chain().focus().toggleBulletList().run()"
+        :class="{ 'bg-purple-500 text-white': isBulletListActive }"
+        class="px-2 py-1 border"
+      >
+        <svg-icon type="mdi" :path="path3"></svg-icon>
+      </button>
+    </div>
+
     <editor-content :editor="editor" class="border rounded p-2"/>
-  </template>
-  
-  <script setup>
-        import { ref, watch, onMounted, onBeforeUnmount } from 'vue';
-        import { Editor, EditorContent } from '@tiptap/vue-3';
-        import StarterKit from '@tiptap/starter-kit';
 
-        // Definir prop modelValue
-        const props = defineProps({
-        modelValue: {
-            type: String,
-            default: '',
-        },
-        });
+  </div>
 
-        // Definir el emit
-        const emit = defineEmits(['update:modelValue']);
+</template>
 
-        // Editor reactivo
-        const editor = ref(null);
+<script setup>
+import { ref, watch, watchEffect, onMounted, onBeforeUnmount } from 'vue';
+import { Editor, EditorContent } from '@tiptap/vue-3';
+import StarterKit from '@tiptap/starter-kit';
+import svgIcon from '@jamescoyle/vue-icon';
+import { mdiFormatItalic, mdiFormatBold, mdiFormatListBulleted } from '@mdi/js';
 
-        // Watcher para sincronizar contenido con modelValue
-        watch(
-        () => props.modelValue,
-        (value) => {
-            if (editor.value && editor.value.getHTML() !== value) {
-            editor.value.commands.setContent(value, false);
-            }
-        }
-        );
+const path= mdiFormatItalic
+const path2 = mdiFormatBold
+const path3 = mdiFormatListBulleted
 
-        // Inicializar el editor
-        onMounted(() => {
-        editor.value = new Editor({
-            extensions: [StarterKit],
-            content: props.modelValue,
-            onUpdate: ({ editor }) => {
-            emit('update:modelValue', editor.getHTML());
-            },
-        });
-        });
+// Definir props y emit
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
+});
+const emit = defineEmits(['update:modelValue']);
 
-        // Destruir el editor al desmontar
-        onBeforeUnmount(() => {
-        if (editor.value) {
-            editor.value.destroy();
-        }
-        });
+// Editor reactivo
+const editor = ref(null);
+
+// Estados para detectar estilos activos
+const isBoldActive = ref(false);
+const isItalicActive = ref(false);
+const isBulletListActive = ref(false);
+
+// Watch para sincronizar el contenido con modelValue
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (editor.value && editor.value.getHTML() !== value) {
+      editor.value.commands.setContent(value, false);
+    }
+  }
+);
+
+// Inicializar el editor
+onMounted(() => {
+  editor.value = new Editor({
+    extensions: [StarterKit],
+    content: props.modelValue,
+    onUpdate: ({ editor }) => {
+      emit('update:modelValue', editor.getHTML());
+    },
+  });
+
+  // Detectar cambios en los estilos activos
+  watchEffect(() => {
+    if (editor.value) {
+      isBoldActive.value = editor.value.isActive('bold');
+      isItalicActive.value = editor.value.isActive('italic');
+      isBulletListActive.value = editor.value.isActive('bulletList'); // Detectar lista desordenada
+    }
+  });
+});
+
+// Destruir el editor al desmontar
+onBeforeUnmount(() => {
+  if (editor.value) {
+    editor.value.destroy();
+  }
+});
 </script>
   
   <style>
@@ -153,6 +200,12 @@
     li {
         margin-bottom: 0.5em;
       }
+
+      /* Evitar borde de focus en el editor */
+    .ProseMirror:focus {
+      outline: none !important;
+    }
+
   }
   </style>
   

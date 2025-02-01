@@ -152,7 +152,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         v-model="formData.participante"
                         rules="required"
                     />
-                    <ErrorMessage name="participante" class="text-red-500" />
+                    <ErrorMessage name="participante" class="text-red-500 text-sm" />
                 </div>
     
                 <div class="flex flex-col gap-4 items-center px-4">
@@ -167,7 +167,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         v-model="formData.institucion"
                         rules="required"
                     />
-                    <ErrorMessage name="institucion" class="text-red-500" />
+                    <ErrorMessage name="institucion" class="text-red-500 text-sm" />
                 </div>
     
                 <div class="flex flex-col gap-4 items-center px-4">
@@ -182,7 +182,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         v-model="formData.cargo"
                         rules="required"
                     />
-                    <ErrorMessage name="cargo" class="text-red-500" />
+                    <ErrorMessage name="cargo" class="text-red-500 text-sm" />
                 </div>
     
                 <div class="flex flex-col gap-4 items-center px-4" v-if="!extranjero">
@@ -199,7 +199,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         v-model="formData.doc_identidad"
                         rules="required|dui"
                     />
-                    <ErrorMessage name="doc_identidad" class="text-red-500" />
+                    <ErrorMessage name="doc_identidad" class="text-red-500 text-sm" />
                 </div>
                 
                 <div class="flex flex-col gap-4 items-center px-4" v-if="!extranjero">
@@ -216,7 +216,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         v-model="formData.telefono"
                         rules="required|telefono"
                     />
-                    <ErrorMessage name="telefono" class="text-red-500" />
+                    <ErrorMessage name="telefono" class="text-red-500 text-sm" />
                 </div>
                     
                 <div class="flex flex-col gap-4 items-center px-4">
@@ -231,7 +231,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         v-model="formData.correo"
                         rules="required|email"
                     />
-                    <ErrorMessage name="correo" class="text-red-500" />
+                    <ErrorMessage name="correo" class="text-red-500 text-sm" />
                 </div>
 
             </div>

@@ -67,13 +67,15 @@
     <Header :rol="usuarioRol"/>
 
     <div class="container mx-auto text-right">
-        <button 
+        
+        <!-- <button 
             class="bg-transparent hover:border-blue-500 hover:bg-blue-500 focus:scale-95 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
             @click="generarPDF()"
         >
             <svg-icon type="mdi" :path="path1"></svg-icon>
             Generar PDF
-        </button>
+        </button> -->
+
     </div>
     <div class="container mx-auto px-4 mt-16" id="pdf">
 

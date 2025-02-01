@@ -9,7 +9,7 @@
     import { onMounted, reactive, ref } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
     import { useReunionStore } from '@/stores/reuniones';
-    import { uid } from 'uid';
+    import { Form, Field, ErrorMessage } from 'vee-validate';
 
     const path = mdiTrashCanOutline;        //Parte del icono
     const route = useRoute()        //Se utiliza para obtener informacion de la URL
@@ -21,6 +21,7 @@
     const router = useRouter()      //Se utiliza para redireccionar a otra vista
     const usuarioRol = sessionStorage.getItem('rol')
     let backup;
+    const error = ref('')
 
     //Formulario de minuta
     const minuta = reactive({
@@ -73,9 +74,10 @@
 
     })
 
-    const agregarPunto = async () => {
+    const agregarPunto = async (values, {resetForm}) => {
         await store.agregarPuntos(punto)
         puntos.value = await store.obtenerPuntos(idReunion)
+        resetForm()
         Object.assign(punto, {
             nombre: '',
             id_reunion: idReunion
@@ -106,6 +108,11 @@
     }
 
     const finalizarReunion = async () => {
+        if(minuta.minuta === '<p></p>'){
+            error.value = 'La descripción de la reunión esta vacia'
+            return
+        }
+
         //Elimina el intervalo
         clearInterval(backup)
         //Limpia el session Storage
@@ -144,7 +151,7 @@
 
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Descripción de la reunión</h1> 
 
-        <form class="px-4 space-y-8">
+        <div class="px-4 space-y-8">
 
             <div class="space-y-4">
                 <h2 class="text-xl font-bold">Puntos de la reunión</h2>
@@ -152,15 +159,19 @@
                 <div class="flex flex-col lg:flex-row gap-4">
 
                     <!-- CAMPO DE TEXTO Y BOTON-->
-                    <form class="flex flex-col gap-2 lg:w-1/2" @submit.prevent="agregarPunto()">
+                    <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarPunto" v-slot="{isSubmitting, resetForm}"> 
                         <div class="flex flex-col gap-2">
                             <label>Punto Tratado:</label>
-                            <input type="text" class="bg-transparent border rounded outline-purple-300 w-full p-2" v-model="punto.nombre" required>
+                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" v-model="punto.nombre" rules="required"/>
                         </div>
-                        <button class="bg-purple-400 hover:bg-purple-500 transition-colors duration-300 py-2 rounded w-full lg:w-52" type="submit">
+                        <ErrorMessage name="nombre" class="text-red-500 text-sm" />
+                        <button 
+                            class="bg-purple-400 hover:bg-purple-500 transition-colors duration-300 py-2 rounded w-full lg:w-52" 
+                            type="submit"
+                        >
                             Agregar
                         </button>
-                    </form>
+                    </Form>
 
                     <!-- LISTADO DE CARDS-->
                     <div class="flex flex-col gap-3 lg:w-1/2">
@@ -185,6 +196,7 @@
                 <TipTap 
                     v-model="minuta.minuta" 
                 />
+                <p class="text-red-500 text-sm" v-if="error">{{ error }}</p>
             </div>
 
             <div class="space-y-4">
@@ -193,15 +205,16 @@
                 <div class="flex flex-col lg:flex-row gap-4">
 
                     <!-- CAMPO DE TEXTO Y BOTON-->
-                    <form class="flex flex-col gap-2 lg:w-1/2" @submit.prevent="agregarAcuerdo()">
+                    <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarAcuerdo()">
                         <div class="flex flex-col gap-2">
                             <label>Acuerdo o Compromiso:</label>
-                            <input type="text" class="bg-transparent border rounded outline-purple-300 w-full p-2" v-model="acuerdo.nombre" required>
+                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" v-model="acuerdo.nombre" rules="required" />
+                            <ErrorMessage name="nombre" class="text-red-500 text-sm" />
                         </div>
                         <button class="bg-purple-400 hover:bg-purple-500 transition-colors duration-300 py-2 rounded w-full lg:w-52" type="submit">
                             Agregar
                         </button>
-                    </form>
+                    </Form>
 
                     <!-- LISTADO DE CARDS-->
                     <div class="flex flex-col gap-3 lg:w-1/2">
@@ -220,7 +233,7 @@
                 </div>
             </div>
 
-        </form>
+        </div>
 
         <div class="flex justify-between px-4 mt-12">
 

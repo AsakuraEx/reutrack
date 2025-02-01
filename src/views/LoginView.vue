@@ -20,25 +20,32 @@
                 />
             </div>
 
-            <form class="space-y-4 text-center" @submit.prevent="iniciarSesion()">
-                <input 
+            <Form class="space-y-4 text-center" @submit="iniciarSesion" v-slot="{ errors, resetForm }">
+                <Field 
                     type="text" 
+                    name="correo"
                     class="bg-white border rounded-sm w-full w-max-[400px] p-2 text-black focus:outline focus:outline-purple-600"
-                    :class="errorCorreo ? 'outline-red-300 outline':''"
-                    @focus="errorCorreo = false"
                     placeholder="Correo Electrónico"
                     v-model="login.correo"
-                >
-                <p v-if="errorCorreo" class="text-red-700">El correo es obligatorio</p>
-                <input 
-                    type="password" 
-                    class="bg-white border rounded-sm w-full w-max-[400px] p-2 text-black focus:outline focus:outline-purple-600"
-                    placeholder="Contraseña"
-                    :class="errorContra ? 'outline-red-300 outline':''"
-                    @focus="errorContra = false"
-                    v-model="login.contraseña"
-                >
-                <p v-if="errorContra" class="text-red-700">La contraseña es obligatoria</p>
+                />
+
+                <!-- ingreso de contraseña -->
+                <div class="relative">
+                    <Field 
+                        :type="passwordVisible ? 'text':'password'" 
+                        name="contraseña"
+                        class="bg-white border rounded-sm w-full w-max-[400px] p-2 text-black focus:outline focus:outline-purple-600"
+                        placeholder="Contraseña"
+                        v-model="login.contraseña"
+                    />
+                    <button type="button" class="absolute right-2 top-2.5" @click="passwordVisible=true" v-if="passwordVisible==false">
+                        <svg-icon type="mdi" class="text-gray-700 hover:text-gray-500" :path="path"></svg-icon>
+                    </button>
+                    <button type="button" class="absolute right-2 top-2.5" @click="passwordVisible=false" v-if="passwordVisible==true">
+                        <svg-icon type="mdi" class="text-gray-700 hover:text-gray-500" :path="path2"></svg-icon>
+                    </button>
+                </div>
+
                 <button 
                     class="bg-purple-500 border w-full lg:max-w-72 py-2 rounded-md hover:bg-purple-600 transition-all duration-300"
                     type="submit"
@@ -48,7 +55,7 @@
                         Iniciar sesión
                     </p>
                 </button>
-            </form>
+            </Form>
 
             <hr>
 
@@ -88,6 +95,17 @@
     import { useReunionStore } from '@/stores/reuniones';
     import Spinner from '@/components/Spinner.vue';
 
+
+    //VEE VALIDATE
+    import { Form, Field, ErrorMessage } from 'vee-validate';
+
+    //ICONOGRAFIA
+    import svgIcon from '@jamescoyle/vue-icon';
+    import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js';
+    const path= mdiEyeOutline
+    const path2 = mdiEyeOffOutline
+    const passwordVisible = ref(false)
+
     const spinnerActivo = ref(false)
 
     const store = useUsuarioStore()
@@ -107,27 +125,31 @@
         contraseña: ''
     })
 
-    const iniciarSesion = async () => {
+    const iniciarSesion = async (values, {resetForm}) => {
 
         spinnerActivo.value = true
 
         try {
             if(!login.correo){
-                errorCorreo.value = true
+                error.value = 'No ha ingresado un correo electronico'
+                setTimeout(()=>{
+                    error.value = ""
+                },3000)
+
                 return
             }
 
             if(!login.contraseña){
-                errorContra.value = true
+                error.value = 'No ha ingresado una contraseña'
+                setTimeout(()=>{
+                    error.value = ""
+                },3000)
+
                 return
             }
 
             const {token, usuario} = await store.iniciarSesion(login.correo, login.contraseña)
             user.value = usuario
-            tokenApi.value = token
-
-            console.log(user.value)
-
             if(!user.value){
                 error.value = "No existe el usuario al que intenta acceder."
 
@@ -137,6 +159,18 @@
 
                 return
             }
+
+            tokenApi.value = token
+            if(!tokenApi.value){
+                error.value = "No fue posible obtener un token."
+
+                setTimeout(()=>{
+                    error.value = ""
+                },3000)
+
+                return
+            }
+
 
             if(usuario.id_estado === 5){
                 error.value = "El usuario al que intenta acceder está deshabilitado."
@@ -161,9 +195,15 @@
             }
 
         }catch(e){
-            error.value = "Se ha presentado el siguiente error: " + e.message
+            error.value = 'El usuario no fue encontrado'
         } finally {
             spinnerActivo.value = false
+
+            resetForm()
+            Object.assign(login, {
+                correo: '',
+                contraseña: ''
+            })
         }
     }
 
