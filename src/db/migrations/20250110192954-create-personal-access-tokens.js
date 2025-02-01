@@ -14,7 +14,7 @@ module.exports = {
         allowNull: false,
       },
       token: {
-        type: Sequelize.STRING(64),
+        type: Sequelize.STRING(5000),
         allowNull: false,
         unique: false,
       },

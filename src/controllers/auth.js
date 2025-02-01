@@ -16,6 +16,7 @@ exports.login = async (req, res) => {
         }
         if(bcrypt.compareSync(password, user.password)){
             const token = jwt.sign({id: user.id}, process.env.SECRET_ACCESS_TOKEN, {expiresIn: "12h"})
+            console.log(process.env.SECRET_ACCESS_TOKEN)
             await accessToken.create(
                 {
                     id_usuario: user.id,

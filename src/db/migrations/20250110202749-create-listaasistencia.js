@@ -19,14 +19,14 @@ module.exports = {
       },
       doc_identidad: {
         type: Sequelize.STRING(20),
-        allowNull: false
+        allowNull: true
       },
       cargo: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
       telefono: {
-        type: Sequelize.STRING(8),
+        type: Sequelize.STRING(9),
         allowNull: true
       },
       correo: {

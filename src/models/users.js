@@ -64,6 +64,10 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  first_session: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   id_estado: {
     type: DataTypes.INTEGER,
     allowNull: false,
