@@ -8,9 +8,8 @@ const accessToken = db.personal_access_token
 exports.login = async (req, res) => {
     try {
         const {email, password} = req.body
-        console.log(req.body)
         const user = await db.users.findOne({where: {email: email}})
-        
+    
         if (!user) {
             return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Usuario no encontrado'})
         }

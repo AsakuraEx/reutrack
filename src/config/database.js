@@ -18,6 +18,7 @@ const sequelize = new Sequelize(
             timestamps: true, //Times and dates for createdAt and updatedAt 
         },
         logging: false,
+
         
     }
 );

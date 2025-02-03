@@ -24,6 +24,12 @@ exports.index = async (req, res) => {
 exports.create = async (req, res) => {
     const {id_usuario, id_reunion} = req.body;
     try {
+        const encargado = await db.encargado.findAll({
+            where: { id_usuario: id_usuario, id_reunion: id_reunion }
+        })
+        if (encargado.length > 0) {
+            res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'El usuario ya está asignado'})
+        }
         const newEncargado = await db.encargado.create({
             id_usuario,
             id_reunion,

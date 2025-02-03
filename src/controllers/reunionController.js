@@ -1,7 +1,10 @@
+const { where } = require('sequelize');
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
 const moment = require('moment');
+const { Op } = require('sequelize');
 
+//Obtiene un registro mediante el id recibido en el parametro de la ruta
 exports.getOne = async (req,res) => {
     try {
         const id = req.params.id;
@@ -15,6 +18,7 @@ exports.getOne = async (req,res) => {
     }
 }
 
+//Obtiene una reunión mediante el codigo de la misma
 exports.actual = async (req,res) => {
     try {
         const {codigo} = req.params ;
@@ -28,6 +32,7 @@ exports.actual = async (req,res) => {
     }
 }
 
+//Obtiene la reunion mas reciente registrada
 exports.ultima = async (req,res) => {
     try {
         const reunion = await db.reunion.findOne({
@@ -40,23 +45,39 @@ exports.ultima = async (req,res) => {
     }
 }
 
+//Muestra todas las reuniones
 exports.index = async (req, res) => {
-    const {id_proyecto, id_estado, id_usuario, codigo} = req.query;
+    const {id_version, id_estado, id_usuario} = req.query;
     try {
         const whereClause = {};
-        if (id_proyecto) {
-            whereClause.id_proyecto = id_proyecto;
+        if (id_version) {
+            whereClause.id_version = id_version;
         }
         if (id_estado) {
             whereClause.id_estado = id_estado;
         }
         if (id_usuario) {
-            whereClause.id_usuario = id_usuario;
-        }
+            const usuario = await db.users.findOne({
+                where: {id: id_usuario}
+            })
+            if(usuario.id_rol !== 1){
+                const encargados = await db.encargado.findAll({
+                    where: {id_usuario: id_usuario},
+                    attributes: ['id_reunion']
+                })
+                if(encargados.length > 0){
+                    whereClause.id = {
+                        [Op.in]: encargados.map(encargado => encargado.id_reunion)
+                    }
+                } else {
+                    return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'No se encontraron reuniones para este usuario' });
+                }
+            }
+        }       
 
         const reunion = await db.reunion.findAll({
             attributes: {exclude: ['id_usuario', 'id_version', 'id_estado', 'updatedAt']},
-            include: [
+            include: [ 
                 { model: db.users,
                     as: 'user',
                     attributes: ['nombre'],
@@ -71,7 +92,7 @@ exports.index = async (req, res) => {
                     as: 'estado',
                     attributes: ['nombre'],
                     required: true,
-                }
+                },
             ],
             order: [['id', 'desc']],
             where: whereClause
