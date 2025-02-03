@@ -22,6 +22,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      first_session: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       remember_token: {
         type: Sequelize.STRING,
         allowNull: true,
@@ -29,6 +33,7 @@ module.exports = {
       id_estado: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 4,
         references: {
           model: 'ctl_estado', // Nombre de la tabla referenciada
           key: 'id',        // Columna referenciada
