@@ -44,8 +44,12 @@ export default {
     },
 
     //Metodo para actualizar la contraseña del usuario
-    actualizarContraseña(id, password){
-        return api.patch(`/usuarios/${id}`, {contraseña: password})
+    actualizarContraseña(id, old, password, first_session){
+        return api.patch(`/usuarios/updatepassword`, {
+            id_usuario:id, 
+            oldpassword: old,
+            password: password, 
+            first_session:first_session})
     },
 
     //Modifica la información del usuario

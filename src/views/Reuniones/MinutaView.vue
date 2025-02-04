@@ -6,7 +6,7 @@
     import SvgIcon from '@jamescoyle/vue-icon';
     import TipTap from '@/components/TipTap.vue';
     import { mdiTrashCanOutline } from '@mdi/js';
-    import { onMounted, reactive, ref } from 'vue';
+    import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
     import { useRoute, useRouter } from 'vue-router';
     import { useReunionStore } from '@/stores/reuniones';
     import { Form, Field, ErrorMessage } from 'vee-validate';
@@ -22,6 +22,7 @@
     const usuarioRol = sessionStorage.getItem('rol')
     let backup;
     const error = ref('')
+    const hora = ref('')
 
     //Formulario de minuta
     const minuta = reactive({
@@ -41,25 +42,33 @@
         id_reunion: idReunion
     })
 
-    //Guarda el progreso de la minuta en sessionStorage
-    const GenerarBackupReunion = () => {
-        sessionStorage.setItem('minuta', minuta.minuta);
-        console.log('Guardado en el session storage');
-        minuta.minuta = sessionStorage.getItem('minuta')
-    }
-
     onMounted(async ()=>{
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
         }
+
+        //Limpia el objeto
+        Object.assign(minuta, {
+            minuta: '',
+            id_reunion: idReunion
+        })
+
+        //Obteniendo minuta
+        const minutaActual = await store.obtenerMinuta(idReunion)
+        
+        minuta.minuta = minutaActual.minuta
+        minuta.id_reunion = minutaActual.id_reunion
+
+        console.log(minutaActual)
+
+        //Se agrega el metodo para evitar que se cierre la ventana
+        window.addEventListener('beforeunload', handleBeforeUnload)
+
         //Obtiene puntos
         puntos.value = await store.obtenerPuntos(idReunion)
         
         //Obtiene acuerdos
         acuerdos.value = await store.obtenerAcuerdos(idReunion)
-        
-        //Se obtiene lo que existe en el sesion storage
-        minuta.minuta = sessionStorage.getItem('minuta')
 
         //Si no existe algo guarda vacio
         if(!minuta.minuta){
@@ -69,10 +78,38 @@
 
         //Cada 20 segundos genera una copia de la minuta en el SessionStorage
         backup = setInterval(()=>{
-            GenerarBackupReunion()
-        }, 5000)
+            //Ejecuta el metodo para realizar patch al registro de la minuta
+            actualizarMinuta()
+
+        }, 60000)
+
 
     })
+    
+    // Función para manejar el evento beforeunload
+    const handleBeforeUnload = (event) => {
+        // Guarda la minuta antes de cerrar
+        actualizarMinuta();
+        console.log("Aqui va el metodo de cierre de ventana...")
+        // Activa el mensaje de confirmación del navegador
+        event.preventDefault();
+        event.returnValue = ''; // Requerido para algunos navegadores
+    };
+
+    onBeforeUnmount(()=>{
+        actualizarMinuta()
+        //Limpia el intervalo
+        clearInterval(backup)
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+    })
+
+    const actualizarMinuta = async () => {
+        //Ejecuta el metodo para actualizar la minuta actual
+        await store.actualizarMinuta(idReunion, minuta)
+        sessionStorage.setItem('minuta', minuta.minuta)
+        hora.value = "Último autoguardado: " + new Date().toLocaleString()
+
+    }
 
     const agregarPunto = async (values, {resetForm}) => {
         await store.agregarPuntos(punto)
@@ -112,22 +149,12 @@
             error.value = 'La descripción de la reunión esta vacia'
             return
         }
+        console.log(minuta)
 
         //Elimina el intervalo
         clearInterval(backup)
-        //Limpia el session Storage
-        sessionStorage.removeItem('minuta')
-        //Guarda la minuta
-        await store.GuardarMinuta(minuta)
         //Marca la reunion como finalizada
         await store.FinalizarReunion(idReunion)
-
-
-        //Limpia el objeto
-        Object.assign(minuta, {
-            minuta: '',
-            id_reunion: idReunion
-        })
 
         //Finalmente envia al historial de reuniones
         router.push({name: 'historial'})
@@ -197,6 +224,7 @@
                     v-model="minuta.minuta" 
                 />
                 <p class="text-red-500 text-sm" v-if="error">{{ error }}</p>
+                <p class="text-gray-300 text-sm">{{ hora }}</p>
             </div>
 
             <div class="space-y-4">

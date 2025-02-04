@@ -23,13 +23,14 @@
                 Detalle de Reunión
             </RouterLink>
 
-            <!-- <button 
-                class="bg-transparent hover:border-purple-500 hover:bg-purple-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
-                v-if="estado.nombre=== 'Finalizado'"
+            <RouterLink 
+                class="bg-transparent hover:border-yellow-500 hover:bg-yellow-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
+                v-if="estado.nombre=== 'Iniciado'"
+                :to="{name:'encargados', params:{id: props.id}}"
             >
                 <svg-icon type="mdi" :path="path1"></svg-icon>
-                Generar PDF
-            </button> -->
+                Continuar Reunión
+            </RouterLink>
 
             <button
                 onclick="modal.showModal()"
@@ -48,10 +49,10 @@
 <script setup>
 
     import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiTrashCanOutline, mdiFilePdfBox, mdiEyeOutline } from '@mdi/js';
+    import { mdiTrashCanOutline, mdiCircleEditOutline, mdiEyeOutline } from '@mdi/js';
 
     const path = mdiTrashCanOutline;
-    const path1 = mdiFilePdfBox;
+    const path1 = mdiCircleEditOutline;
     const path2 = mdiEyeOutline;
 
     const props = defineProps({

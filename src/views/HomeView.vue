@@ -6,7 +6,6 @@
     import CardIndex from '@/components/CardIndex.vue';
     import { onMounted, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
-
     const reuniones = ref([])
     const store = useReunionStore()
     const router = useRouter() 
@@ -18,11 +17,8 @@
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
         }
-        if(usuarioRol != 1){
-            reuniones.value = await store.obtenerReuniones(3,null,null, null, usuarioId)
-        }else{
-            reuniones.value = await store.obtenerReuniones(3,null,null, null)
-        }
+        reuniones.value = await store.obtenerReuniones(3,3,null, null, usuarioId)
+
     })
 
 </script>

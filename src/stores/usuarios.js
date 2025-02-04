@@ -5,6 +5,8 @@ import { useRouter } from "vue-router";
 
 export const useUsuarioStore = defineStore('usuarios', ()=>{
     
+    const User = ref({})
+
     const router = useRouter()
     const limiteInactividad = 15 * 60 * 1000; // 15 minutos
     let inactividad = null;
@@ -77,7 +79,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         try{
             const {status, data} = await apiServiceUsuarios.iniciarSesion(email, password)
             if(status === 200){
-                console.log(data)
+                User.value = data.usuario
                 return data;
             }
             errorInactividad.value = ''
@@ -105,19 +107,21 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
-    async function actualizarContraseña(id, password){
+    async function actualizarContraseña(id, oldpassword, password, sesion){
         try{
-            const {status} = await apiServiceUsuarios.actualizarContraseña(id, password)
-            if(status === 201){
-                message.value.tipo = 'Exito';
-                message.value.mensaje = '¡La contraseña se cambio!'
+            const {status, data} = await apiServiceUsuarios.actualizarContraseña(id, oldpassword, password, sesion)
 
+            if(status === 200){
+                message.value.tipo = 'Exito';
+                message.value.mensaje = '¡Se actualizó la contraseña!'
+                
                 setTimeout(()=>{
                     message.value.tipo = "",
                     message.value.mensaje = ""
                 },3000)
-
-
+                
+                return data.error
+                
             }
         }catch(e){
             console.error(e)
@@ -223,6 +227,6 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         detectarActividad,
         cancelarDeteccionActividad,
         reiniciarTiempo,
-        errorInactividad,
+        errorInactividad
     }
 })

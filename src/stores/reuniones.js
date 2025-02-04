@@ -262,6 +262,27 @@ export const useReunionStore = defineStore('reuniones', () => {
         }
     }
 
+    // Guarda la minuta
+    async function actualizarMinuta(id, data){
+        try{
+            const {status} = await apiServiceReunion.actualizarMinuta(id, data);
+
+            if(status === 200){
+                message.value.tipo = 'Exito';
+                message.value.mensaje = '¡Se actualizo la reunión exitosamente!'
+                console.log("Se actualizó la minuta de reunión")
+
+                setTimeout(()=>{
+                    message.value.tipo = "",
+                    message.value.mensaje = ""
+                },3000)
+            }
+
+        }catch(e){
+            console.error(e)
+        }
+    }
+
     // OBTIENE LA MINUTA
     async function obtenerMinuta(reunion){
         try{
@@ -301,7 +322,8 @@ export const useReunionStore = defineStore('reuniones', () => {
         obtenerMinuta,
         FinalizarReunion,
         obtenerUltimaReunion,
-        obtenerReunionActual
+        obtenerReunionActual,
+        actualizarMinuta
     }
 }
 )

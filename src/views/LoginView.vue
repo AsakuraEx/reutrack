@@ -115,8 +115,6 @@
     const user = ref({})
     const error = ref("")
     const tokenApi = ref("")
-    const errorCorreo = ref(false)
-    const errorContra = ref(false)
     const codigo = ref("")
     const reu = ref([])
 
@@ -195,7 +193,7 @@
             }
 
         }catch(e){
-            error.value = 'El usuario no fue encontrado'
+            error.value = 'El usuario no fue encontrado o las credenciales son incorrectas'
         } finally {
             spinnerActivo.value = false
 

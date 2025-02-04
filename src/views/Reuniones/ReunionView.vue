@@ -32,6 +32,12 @@
         id_estado: 1
     })
 
+    //Formulario de minuta
+    const minuta = reactive({
+        minuta: '',
+        id_reunion: reunion.value.id
+    });
+
     //instrucciones que se cargan al mostrar la vista
     onMounted(async ()=>{
         //Se genera el codigo aleatorio con la libreria uid
@@ -53,9 +59,15 @@
 
     const crearReunion = async () => {
         //Creo la reunion y valido
-        await storeReu.iniciarReunion(formData)       
+        await storeReu.iniciarReunion(formData)
+
         //Consulto la reunión creada        
         reunion.value = await storeReu.obtenerUltimaReunion()
+
+        minuta.id_reunion = reunion.value.id
+        //Genero la minuta de reunión
+        await storeReu.GuardarMinuta(minuta)
+
         // Una vez consultada la reunión, redirijo a esa reunión recien creada
         await router.push({name: 'encargados', params: {id: reunion.value.id }})
     }

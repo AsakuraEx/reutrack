@@ -17,7 +17,7 @@ export default {
 
         //Agrega un limite a la URL base en caso que exista (Probablemente se elimine este parametro)
         if(limite){
-            url = url + `_limit=${limite}&`
+            url = url + `limit=${limite}&`
         }
 
         //Agrega un codigo a la URL base en caso que exista
@@ -125,6 +125,11 @@ export default {
     // Guarda la información del campo "Descripción de la reunión", además de finalizar la reunión
     agregarMinuta(data){
         return api.post('/minutareunion/create', data)
+    },
+
+    // Guarda la información del campo "Descripción de la reunión", además de finalizar la reunión
+    actualizarMinuta(idReunion, data){
+        return api.patch(`/minutareunion/update/${idReunion}`, data)
     },
 
     // Consulta la información ingresada
