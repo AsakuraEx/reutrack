@@ -53,7 +53,7 @@
     const agregarEncargado = async () => {
 
         if (listaEncargados.value.some(encargado => encargado.id_usuario === Number(formData.id_usuario))) {
-            error.value = 'El encargado ya existe'
+            error.value = 'El encargado ya fue agregado en la tabla'
             setTimeout(()=>{
                 error.value = ''
             }, 3000)

@@ -38,11 +38,13 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }        
     }
 
-    async function mostrarUsuarios(){
+    async function mostrarUsuarios(estado,limit, page){
         try{
-            const {status, data} = await apiServiceUsuarios.getUsuarios();
-            if(status === 200){
-                return data;
+            const response = await apiServiceUsuarios.getUsuarios(estado,limit, page);
+            console.log(response)
+            if(response.status === 200){
+                console.log(response)
+                return response.data;
             }
 
         }catch(e){
@@ -64,9 +66,9 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
 
     async function mostrarEncargados(){
         try{
-            const {status, data} = await apiServiceUsuarios.getUsuarios('activo');
+            const {status, data} = await apiServiceUsuarios.getUsuarios(4);
             if(status === 200){
-                return data;
+                return data.data;
             }
 
         }catch(e){

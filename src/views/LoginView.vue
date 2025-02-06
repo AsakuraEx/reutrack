@@ -102,6 +102,8 @@
     //ICONOGRAFIA
     import svgIcon from '@jamescoyle/vue-icon';
     import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js';
+
+    
     const path= mdiEyeOutline
     const path2 = mdiEyeOffOutline
     const passwordVisible = ref(false)

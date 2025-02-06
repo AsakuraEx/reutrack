@@ -1,14 +1,23 @@
 <script setup>
 import Header from '@/components/Header.vue';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, reactive } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useUsuarioStore } from '@/stores/usuarios';
+import Paginacion from '@/components/Paginacion.vue';
 
 const usuarioRol = sessionStorage.getItem('rol')
 const store = useUsuarioStore();
 const listaUsuarios = ref([]);
 const usuarioActivo = sessionStorage.getItem('id');
 const router = useRouter();
+const paginacion = ref({
+    currentPage: 1,
+    totalPages: 1,
+    start: 1,
+    end: 1,
+    totalRecords: 0
+})
+let response
 
 onMounted(async ()=>{
 
@@ -16,7 +25,14 @@ onMounted(async ()=>{
         router.push({name: 'home'})
     }
 
-    listaUsuarios.value = await store.mostrarUsuarios()
+    
+    const {data, currentPage, totalPages, start, end, totalRecords} = await store.mostrarUsuarios(null,5, 1)
+    listaUsuarios.value = data
+    paginacion.value.currentPage = currentPage
+    paginacion.value.totalPages = totalPages
+    paginacion.value.start = start
+    paginacion.value.end = end
+    paginacion.value.totalRecords = totalRecords
 })
 
 const cambiarEstado = async (id, estado) => {
@@ -73,6 +89,8 @@ const cambiarEstado = async (id, estado) => {
                     </tr>
                 </tbody>
             </table>
+
+            <Paginacion :paginacion="paginacion"/>
 
         </div>
     </div>

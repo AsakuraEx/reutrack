@@ -17,8 +17,6 @@ const {id} = route.params
 const usuarioNuevo = reactive({
     nombre: '',
     email: '',
-    rol: 'estandar',
-    estado: 'activo',
     id: id
 })
 
@@ -85,14 +83,14 @@ const actualizarUsuario = async (id, data) => {
             <div class="flex flex-col gap-4 items-center px-4">
                 <label class="text-xl px-4 md:text-left text-center">Contraseña</label>
                 <button 
-                    v-if="!usuarioNuevo.contraseña" 
+                    v-if="!usuarioNuevo.password" 
                     type="button" 
                     class="w-full lg:w-72 text-center py-2 bg-purple-500 hover:bg-purple-700 focus:scale-95 rounded-lg transition-colors duration-500"
                     @click="asignarContra()"
                 >
                     Reestablecer Contraseña
                 </button>
-                <h2 class="text-center font-black text-4xl"> {{ usuarioNuevo.contraseña }} </h2>
+                <h2 class="text-center font-black text-4xl"> {{ usuarioNuevo.password }} </h2>
             </div>
 
             <hr>

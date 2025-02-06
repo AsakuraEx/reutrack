@@ -61,8 +61,6 @@
         minuta.minuta = minutaActual.minuta
         minuta.id_reunion = minutaActual.id_reunion
 
-        console.log(minutaActual)
-
         //Se agrega el metodo para evitar que se cierre la ventana
         window.addEventListener('beforeunload', handleBeforeUnload)
 
@@ -123,11 +121,12 @@
         })
     }
 
-    const agregarAcuerdo = async () => {
+    const agregarAcuerdo = async (values, {resetForm}) => {
         //realiza el guardado del acuerdo
         await store.agregarAcuerdos(acuerdo)
         //Actualiza el array de acuerdos
         acuerdos.value = await store.obtenerAcuerdos(idReunion)
+        resetForm()
         //Limpia el objeto de acuerdos
         Object.assign(acuerdo, {
             nombre: '',
@@ -151,7 +150,6 @@
             error.value = 'La descripción de la reunión esta vacia'
             return
         }
-        console.log(minuta)
 
         //Elimina el intervalo
         clearInterval(backup)
@@ -236,7 +234,7 @@
                 <div class="flex flex-col lg:flex-row gap-4">
 
                     <!-- CAMPO DE TEXTO Y BOTON-->
-                    <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarAcuerdo()">
+                    <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarAcuerdo" v-slot="{ resetForm }">
                         <div class="flex flex-col gap-2">
                             <label>Acuerdo o Compromiso:</label>
                             <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="100" v-model="acuerdo.nombre" rules="required" />

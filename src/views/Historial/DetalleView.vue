@@ -159,7 +159,7 @@
                 </table>
             </div>
 
-            <p class="text-xl font-light text-center lg:text-right mt-8">Fecha hora fin de la reunión: <b>{{ transformarFecha(minuta.createdAt) }}</b></p>
+            <p class="text-xl font-light text-center lg:text-right mt-8">Fecha hora fin de la reunión: <b>{{ transformarFecha(minuta.updatedAt) }}</b></p>
         </div>
 
         <Footer />

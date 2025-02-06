@@ -64,6 +64,7 @@
                         type="text" 
                         name="descripcion"
                         class="p-2 rounded border bg-transparent w-full text-center focus:outline-purple-400"
+                        maxLength="250"
                         v-model="nuevaVersion.descripcion"
                     />
                     <ErrorMessage name="descripcion" class="text-red-500" />

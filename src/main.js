@@ -72,6 +72,16 @@ defineRule('password', value => {
     return true
 })
 
+defineRule('website', value => {
+    const website = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+(\/[^\s]*)?$/
+
+    if(!website.test(value)){
+        return 'Debes ingresar la URL del sitio donde se almacena tu acta de aceptación de prototipo, valida que ingresaste una URL valida'
+    }
+
+    return true
+})
+
 const app = createApp(App)
 
 app.use(createPinia())

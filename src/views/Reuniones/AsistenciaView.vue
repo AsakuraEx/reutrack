@@ -7,7 +7,7 @@
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline } from '@mdi/js';
     import { useRoute, useRouter } from 'vue-router';
-    import { computed, onMounted, reactive, ref } from 'vue';
+    import { computed, onMounted, reactive, ref, watch } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { uid } from 'uid';
     import { Field, ErrorMessage, Form, validate } from 'vee-validate';
@@ -108,6 +108,18 @@ import AlertaError from '@/components/AlertaError.vue';
     const existenParticipantes = computed(()=>{
         return participantes.value.length > 0;
     })
+
+    watch(formData, ()=>{
+        console.log('Wachando...', formData.value.doc_identidad)
+        if (formData.value.doc_identidad.length === 8 && !formData.value.doc_identidad.includes('-')) {
+            formData.value.doc_identidad += '-';
+        }
+
+        if (formData.value.telefono.length === 4 && !formData.value.telefono.includes('-')) {
+            formData.value.telefono += '-';
+        }
+    }, {deep:true})
+
 </script>
 
 <template>

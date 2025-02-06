@@ -3,14 +3,23 @@ import api from "@/lib/axios";
 export default {
     
     //Obtiene los usuarios registrados, además filtra por estado para el caso del empleado
-    getUsuarios(estado){
+    getUsuarios(estado, limit, page){
         
         let url = '/usuarios?'
         
         //Si existe el estado, agrega el parametro de forma dinámica
         if(estado){
-            url = url + `estado=${estado}`
+            url = url + `estado=${estado}&`
         }
+
+        if(limit){
+            url = url + `limit=${limit}&`
+        }
+
+        if(page){
+            url = url + `page=${page}&`
+        }
+
         return api.get(url);
     },
 

@@ -270,7 +270,6 @@ export const useReunionStore = defineStore('reuniones', () => {
             if(status === 200){
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡Se actualizo la reunión exitosamente!'
-                console.log("Se actualizó la minuta de reunión")
 
                 setTimeout(()=>{
                     message.value.tipo = "",
