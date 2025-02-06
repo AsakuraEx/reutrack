@@ -12,7 +12,7 @@ const router = useRouter();
 
 onMounted(async ()=>{
 
-    if(usuarioRol !== 'admin'){
+    if(usuarioRol != 1){
         router.push({name: 'home'})
     }
 
@@ -50,15 +50,15 @@ const cambiarEstado = async (id, estado) => {
                 <tbody>
                     <tr class="border-b" v-for="usuario in listaUsuarios">
                         <td class="py-2 px-3"> {{ usuario.nombre }} </td>
-                        <td class="py-2 px-3"> {{ usuario.correo }} </td>
+                        <td class="py-2 px-3"> {{ usuario.email }} </td>
                         <td class="py-2 px-3">
                             <button 
                                 class="w-24 px-2 rounded-sm hover:scale-95 uppercase transition-transform duration-300"
-                                :class="usuario.estado === 'activo' ? 'bg-green-100 text-green-700':'bg-red-100 text-red-700'"
-                                v-if="!(usuarioActivo === usuario.id)"
-                                @click="cambiarEstado(usuario.id, usuario.estado)"
+                                :class="usuario.id_estado === 4 ? 'bg-green-100 text-green-700':'bg-red-100 text-red-700'"
+                                @click="cambiarEstado(usuario.id, usuario.id_estado)"
+                                :disabled="usuarioActivo == usuario.id"
                             >
-                                {{ usuario.estado }}
+                                {{ usuario.id_estado === 4 ? 'Activo' : 'Inactivo'  }}
                             </button>
                         </td>
                         <td class="py-2">

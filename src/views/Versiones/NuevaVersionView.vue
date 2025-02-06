@@ -63,9 +63,10 @@
 
                 <div class="flex flex-col gap-4 items-center px-4 max-w-[400px] mx-auto">
                     <label for="descripcion" class="text-xl px-4 md:text-left text-center">
-                        Descripción de la versión *:
+                        Descripción de la versión:
                     </label>
                     <Field
+                        as="textarea"
                         type="text" 
                         name="descripcion"
                         class="p-2 rounded border bg-transparent w-full text-center focus:outline-purple-400"

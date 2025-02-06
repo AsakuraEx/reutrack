@@ -4,7 +4,6 @@
     import { useReunionStore } from '@/stores/reuniones';
     import { useUsuarioStore } from '@/stores/usuarios';
     import { useRoute } from 'vue-router';
-    import { uid } from 'uid';
     import Header from '@/components/Header.vue'
     import Footer from '@/components/Footer.vue'
     import Stepper from '@/components/Stepper.vue'
@@ -26,7 +25,8 @@
 
     //variables o statements de la vista
     const arrayEncargados = ref([]);
-    const listaEncargados = ref([]);    
+    const listaEncargados = ref([]);   
+    const reunion = ref({}); 
     const {id} = route.params;     //Se obtiene el id de la reunion actual
     const idReunion = id;
     const formData = reactive({
@@ -47,6 +47,7 @@
         
         arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
         listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
+        reunion.value = await storeReu.obtenerReunion(idReunion)
     })
 
     const agregarEncargado = async () => {
@@ -90,6 +91,7 @@
         <Stepper :step="2"/>
 
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Encargados de la reunión</h1>     
+        <p class="text-purple-500 text-center text-xl">Código: <b>{{ reunion.codigo }}</b></p>
     
         <div role="alert" class="alert alert-error" v-if="error">
             <svg

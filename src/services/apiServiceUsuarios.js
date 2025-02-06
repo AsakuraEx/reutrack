@@ -31,16 +31,16 @@ export default {
 
     //Modifica el estado del usuario (id) con el estado actual
     cambiarEstado(id, estado){
-        if(estado === 'activo'){       
-            return api.patch(`/usuarios/${id}`, {estado: 'inactivo'})
+        if(estado == 4){       
+            return api.patch(`/usuarios/updateStatus`, {id: id, id_estado: 5})
         }else{
-            return api.patch(`/usuarios/${id}`, {estado: 'activo'})
+            return api.patch(`/usuarios/updateStatus`, {id_estado: 4, id: id})
         }
     },
 
     //Crea el usuario con los campos requeridos
     crearUsuario(data){
-        return api.post('/usuarios', data)
+        return api.post('/usuarios/create', data)
     },
 
     //Metodo para actualizar la contraseña del usuario

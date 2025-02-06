@@ -16,23 +16,23 @@ const {id} = route.params
 
 const usuarioNuevo = reactive({
     nombre: '',
-    correo: '',
+    email: '',
     rol: 'estandar',
     estado: 'activo',
     id: id
 })
 
 onMounted(async ()=>{
-    if(usuarioRol !== 'admin'){
+    if(usuarioRol != 1){
         router.push({name: 'home'})
     }
-    const {nombre, correo} = await store.obtenerUsuario(id)
+    const {nombre, email} = await store.obtenerUsuario(id)
     usuarioNuevo.nombre = nombre;
-    usuarioNuevo.correo = correo;
+    usuarioNuevo.email = email;
 })
 
 const asignarContra = () => {
-    usuarioNuevo.contraseña = uid(4)
+    usuarioNuevo.password = uid(4)
 }
 
 const actualizarUsuario = async (id, data) => {
@@ -77,7 +77,7 @@ const actualizarUsuario = async (id, data) => {
 
             <Textfield 
                 :label="'Correo Electronico: *'"
-                v-model:campo="usuarioNuevo.correo"
+                v-model:campo="usuarioNuevo.email"
                 :requerido="true"
                 :tipo="'email'"
             />

@@ -124,7 +124,7 @@ import AlertaError from '@/components/AlertaError.vue';
 
         <h1 class="text-xl font-extrabold text-center pt-12 uppercase px-4">Lista de Asistencia</h1>
         <div class="flex justify-between py-12">
-            <h2 class="text-xl font-extrabold text-center text-purple-400">Codigo: {{ reunion.codigo }}</h2>  
+            <p class="text-purple-500 text-center text-xl">Código: <b>{{ reunion.codigo }}</b></p>
             <div class="form-control">
                 <label class="label cursor-pointer">
                   <span class="label-text text-white px-4">Extranjero</span>
@@ -294,7 +294,7 @@ import AlertaError from '@/components/AlertaError.vue';
 
             <RouterLink 
                 :to="{name: 'minuta', params:{id: idReunion}}"
-                v-if="existenParticipantes"
+                v-if="existenParticipantes || 1===1"
                 class="bg-purple-400 hover:bg-purple-300 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center"
             >
                 Siguiente

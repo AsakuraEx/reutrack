@@ -161,6 +161,7 @@ const cambiarContraseña = async () => {
         if(error.value){
             return
         }
+        alert('Se cerrará su sesión, inicie con su nueva contraseña.')
         store.cerrarSesion(usuarioId)
         router.push({name: 'login'})
     }catch(e){

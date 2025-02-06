@@ -20,6 +20,7 @@
     const acuerdos = ref([])        //Se almacenan todos los acuerdos guardados
     const router = useRouter()      //Se utiliza para redireccionar a otra vista
     const usuarioRol = sessionStorage.getItem('rol')
+    const reunion = ref({})
     let backup;
     const error = ref('')
     const hora = ref('')
@@ -55,6 +56,7 @@
 
         //Obteniendo minuta
         const minutaActual = await store.obtenerMinuta(idReunion)
+        reunion.value = await store.obtenerReunion(idReunion)
         
         minuta.minuta = minutaActual.minuta
         minuta.id_reunion = minutaActual.id_reunion
@@ -177,6 +179,7 @@
         <Stepper :step="4"/>
 
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Descripción de la reunión</h1> 
+        <p class="text-purple-500 text-center text-xl">Código: <b>{{ reunion.codigo }}</b></p>
 
         <div class="px-4 space-y-8">
 

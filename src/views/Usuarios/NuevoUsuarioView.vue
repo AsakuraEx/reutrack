@@ -12,27 +12,24 @@ const usuarioRol = sessionStorage.getItem('rol')
 const router = useRouter();
 const usuarioNuevo = reactive({
     nombre: '',
-    correo: '',
-    contraseña: '',
-    rol: 'estandar',
-    estado: 'activo',
-    id: ''
+    email: '',
+    password: '',
 })
 
 onMounted(()=>{
-    if(usuarioRol !== 'admin'){
+    if(usuarioRol != 1){
         router.push({name: 'home'})
     }
 
 })
 
 const asignarContra = () => {
-    usuarioNuevo.contraseña = uid(4)
+    usuarioNuevo.password = uid(4)
 }
 
 const crearUsuario = async (data) => {
     
-    if(!data.contraseña){
+    if(!data.password){
         
         error.value = 'Se debe generar una contraseña generica para el usuario antes de crearlo.'
         setTimeout(()=>{
@@ -82,7 +79,7 @@ const crearUsuario = async (data) => {
 
             <Textfield 
                 :label="'Correo Electronico: *'"
-                v-model:campo="usuarioNuevo.correo"
+                v-model:campo="usuarioNuevo.email"
                 :requerido="true"
                 :tipo="'email'"
             />
@@ -90,14 +87,14 @@ const crearUsuario = async (data) => {
             <div class="flex flex-col gap-4 items-center px-4">
                 <label class="text-xl px-4 md:text-left text-center">Contraseña</label>
                 <button 
-                    v-if="!usuarioNuevo.contraseña" 
+                    v-if="!usuarioNuevo.password" 
                     type="button" 
                     class="w-full lg:w-72 text-center py-2 bg-purple-500 hover:bg-purple-700 focus:scale-95 rounded-lg transition-colors duration-500"
                     @click="asignarContra()"
                 >
                     Generar Contraseña
                 </button>
-                <h2 class="text-center font-black text-4xl"> {{ usuarioNuevo.contraseña }} </h2>
+                <h2 class="text-center font-black text-4xl"> {{ usuarioNuevo.password }} </h2>
             </div>
 
             <hr>
