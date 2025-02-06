@@ -17,6 +17,10 @@
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
         }
+
+        if(sessionStorage.getItem('session') === '1'){
+            router.push({name: 'contraseña'})
+        }
         reuniones.value = await store.obtenerReuniones(3,3,null, null, usuarioId)
 
     })

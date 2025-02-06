@@ -150,6 +150,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.participante ? 'ring ring-red-500': ''"
                         v-model="formData.participante"
+                        maxLength="100"
                         rules="required"
                     />
                     <ErrorMessage name="participante" class="text-red-500 text-sm" />
@@ -164,6 +165,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         name="institucion"
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.institucion ? 'ring ring-red-500': ''"
+                        maxLength="30"
                         v-model="formData.institucion"
                         rules="required"
                     />
@@ -179,6 +181,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         name="cargo"
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.cargo ? 'ring ring-red-500': ''"
+                        maxLength="30"
                         v-model="formData.cargo"
                         rules="required"
                     />
@@ -228,6 +231,7 @@ import AlertaError from '@/components/AlertaError.vue';
                         name="correo"
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.correo ? 'ring ring-red-500': ''"
+                        maxLength="120"
                         v-model="formData.correo"
                         rules="required|email"
                     />

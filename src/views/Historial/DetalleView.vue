@@ -25,14 +25,10 @@
 
     const store = useReunionStore()
     const route = useRoute()
-    const router = useRouter()
 
     const { id } = route.params
 
     onMounted(async ()=>{
-        // if(sessionStorage.getItem('token') == null){
-        //     router.push({name: 'login'})
-        // }
         reunion.value = await store.obtenerReunion(id)
         encargados.value = await store.obtenerEncargados(id)
         puntos.value = await store.obtenerPuntos(id)

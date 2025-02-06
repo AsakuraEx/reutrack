@@ -25,9 +25,6 @@
     })
 
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
 
         if(usuarioRol != 1){
             reuniones.value = await store.obtenerReuniones(null,null,null, null, usuarioId)
@@ -40,7 +37,11 @@
 
     const cancelarReunion = async (id) => {
         await store.cancelarReunion(id)
-        reuniones.value = await store.obtenerReuniones()
+        if(usuarioRol != 1){
+            reuniones.value = await store.obtenerReuniones(null,null,null, null, usuarioId)
+        }else{
+            reuniones.value = await store.obtenerReuniones(null,null,null, null)
+        }
     }
 
     const modalMostrado = (reunion) => {

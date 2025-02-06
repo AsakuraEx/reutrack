@@ -148,6 +148,7 @@
                     class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
                     v-model="formData.nombre"
                     :class="errors.nombre ? 'ring ring-red-500': ''"
+                    maxLength="100"
                     mode="aggressive"
                     rules="required"
                 />
@@ -164,6 +165,7 @@
                     class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
                     :class="errors.lugar ? 'ring ring-red-500': ''"
                     v-model="formData.lugar"
+                    maxLength="32"
                     mode="aggressive"
                     rules="required"
                 />

@@ -45,10 +45,6 @@
 
 
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
-
         proyecto.value = await store.consultarProyecto(id)
         arrayVersiones.value = await store.mostrarVersiones(id);
     })

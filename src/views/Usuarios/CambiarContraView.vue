@@ -120,7 +120,7 @@
 
 import Header from '@/components/Header.vue';
 import { useUsuarioStore } from '@/stores/usuarios';
-import { computed, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Field, ErrorMessage, Form } from 'vee-validate';
 import Spinner from '@/components/Spinner.vue';
@@ -140,6 +140,11 @@ const sesion = sessionStorage.getItem('session');
 const router = useRouter()
 const store = useUsuarioStore()
 
+onMounted(()=>{
+    if(sessionStorage.getItem('token') == null){
+            router.push({name: 'login'})
+    }
+})
 
 const primeraSesion = computed(()=>{
     return Number(sesion) === 1

@@ -1,6 +1,6 @@
 <script setup>
 
-    import { onMounted, reactive } from 'vue';
+    import { reactive } from 'vue';
     import { Form, ErrorMessage, Field } from 'vee-validate';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
@@ -20,12 +20,6 @@
         id_usuario: usuarioId,
         id_proyecto: id,
         acta_aceptacion: null
-    })
-
-    onMounted(()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
     })
 
     const guardarVersion= async (version) => {

@@ -192,7 +192,7 @@
                     <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarPunto" v-slot="{isSubmitting, resetForm}"> 
                         <div class="flex flex-col gap-2">
                             <label>Punto Tratado:</label>
-                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" v-model="punto.nombre" rules="required"/>
+                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="100" v-model="punto.nombre" rules="required"/>
                         </div>
                         <ErrorMessage name="nombre" class="text-red-500 text-sm" />
                         <button 
@@ -239,7 +239,7 @@
                     <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarAcuerdo()">
                         <div class="flex flex-col gap-2">
                             <label>Acuerdo o Compromiso:</label>
-                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" v-model="acuerdo.nombre" rules="required" />
+                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="100" v-model="acuerdo.nombre" rules="required" />
                             <ErrorMessage name="nombre" class="text-red-500 text-sm" />
                         </div>
                         <button class="bg-purple-400 hover:bg-purple-500 transition-colors duration-300 py-2 rounded w-full lg:w-52" type="submit">
