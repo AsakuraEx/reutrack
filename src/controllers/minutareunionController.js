@@ -30,11 +30,13 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const {minuta, id_reunion} = req.body;
-        const id = req.params.id;
-        await db.minutareunion.update({minuta, id_reunion},{ where: {id: id}});
+        const minuta = req.body.minuta; 
+        const id_reunion = req.params.id
 
-        const updatedData = await db.minutareunion.findByPk(id);
+        await db.minutareunion.update({ 'minuta': minuta }, { where: { id_reunion: id_reunion } });
+        const updatedData = await db.minutareunion.findOne(
+            { where: { id_reunion: id_reunion } }
+        ); 
         res.status(HttpCode.HTTP_OK).json(updatedData)
     } catch (err) {
         console.error('Error', err.message || err);

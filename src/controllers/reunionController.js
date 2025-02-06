@@ -47,7 +47,7 @@ exports.ultima = async (req,res) => {
 
 //Muestra todas las reuniones
 exports.index = async (req, res) => {
-    const {id_version, id_estado, id_usuario} = req.query;
+    const {id_version, id_estado, id_usuario, limit} = req.query;
     try {
         const whereClause = {};
         if (id_version) {
@@ -95,7 +95,9 @@ exports.index = async (req, res) => {
                 },
             ],
             order: [['id', 'desc']],
-            where: whereClause
+            where: whereClause,
+            limit: limit ? parseInt(limit) : null
+            
         });
         res.status(HttpCode.HTTP_OK).json(reunion);
     } catch (err) {

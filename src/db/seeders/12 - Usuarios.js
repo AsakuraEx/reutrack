@@ -18,6 +18,28 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date()
       },
+      {
+        nombre: 'Salvador Flamenco',
+        email: 'salvador.flamenco@salud.gob.sv',
+        password: bcrypt.hashSync('123', 16),
+        remember_token: '',
+        first_session: 1,
+        id_estado: 4,
+        id_rol: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        nombre: 'Walter Alcides Romero Portillo',
+        email: 'walter.romero@salud.gob.sv',
+        password: bcrypt.hashSync('123', 16),
+        remember_token: '',
+        first_session: 1,
+        id_estado: 4,
+        id_rol: 2,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
 
       
       

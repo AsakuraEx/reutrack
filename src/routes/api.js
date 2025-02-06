@@ -17,14 +17,15 @@ const { verifyToken } = require('../middlewares/verifyToken');
 
 
 app.use('/auth', authRouter),
+app.use('/reuniones', reunionRouter);
+app.use('/asistencia', listaAsistenciaRouter)
+
 app.use('/',[verifyToken],indexRouter);
 app.use('/usuarios',[verifyToken], usersRouter);
 app.use('/estado', [verifyToken], estadoRouter);
 app.use('/proyectos', [verifyToken],proyectoRouter);
-app.use('/reuniones', reunionRouter);
 app.use('/encargados', [verifyToken], encargadoRouter);
 app.use('/acuerdocompromiso',[verifyToken],acuerdoCompromisoRouter)
-app.use('/asistencia', [verifyToken], listaAsistenciaRouter)
 app.use('/minutareunion', [verifyToken], minutaReunionRouter)
 app.use('/puntoreunion', [verifyToken], puntoreunionRouter)
 app.use('/versiones', [verifyToken], versionRouter);

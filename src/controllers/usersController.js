@@ -26,11 +26,16 @@ exports.index = async (req, res) => {
 }
 
 exports.create = async (req, res) => {
-    const {nombre, email, password, remember_token, id_estado, id_rol} = req.body;
+    const {nombre, email, password} = req.body;
 
     try {
         const newUser = await db.users.create({ 
-            nombre, email, password: bcrypt.hashSync(password, 16), id_estado, id_rol, remember_token
+            nombre,
+            email,
+            password: bcrypt.hashSync(password, 16),
+            id_estado: 4,
+            id_rol: 2,
+            first_session: 1
         });
         res.status(HttpCode.HTTP_CREATED).json(newUser);
     } catch (error) {
@@ -60,17 +65,34 @@ exports.update = async (req, res) => {
 }
 
 exports.updatePassword = async (req, res) => {
-    const { id_usuario } = req.query;
-    const { password } = req.query;
+    const { id_usuario, password, oldpassword, first_session } = req.body;
+    
+    const oldPassword = await db.users.findByPk(id_usuario); 
     try {
+        if (!bcrypt.compareSync(oldpassword, oldPassword.password)) {
+            return res.status(HttpCode.HTTP_OK).json({ error: 'Las contraseñas no coinciden'})}
+        if(first_session == 1){
+            await db.users.update({ first_session: 2 },
+            { where: { id: id_usuario } }
+        )}
         const user = await db.users.update({ password: bcrypt.hashSync(password, 16) },
-        { where: { id_usuario: id_usuario } }
-        );
+        { where: { id: id_usuario }});
         res.status(HttpCode.HTTP_OK).json(user);
     } catch (error) {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 
+}
+
+exports.status = async (req, res) => {
+    const {id_estado, id} = req.body
+    try {
+        await db.users.update({'id_estado': id_estado}, {where: {id: id}})
+        res.status(HttpCode.HTTP_OK).json('Estado actualizado con exito');
+    } catch (error) {
+        console.error('Error', error.message || error);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
 }
 
