@@ -4,7 +4,7 @@
         <div class="max-w-[420px] min-w-32 mx-auto bg-white border shadow-md py-8 px-4 space-y-4">
 
             <div>
-                <h1 class="font-black text-center text-3xl text-black">REUTRACK</h1>
+                <img src="/public/images/Logo-reutrack-fondo-blanco.svg" alt="">
                 <h2 class="text-gray-600 font-light text-center">Control y gestión de reuniones y asistencia</h2>
             </div>
 
@@ -116,7 +116,6 @@
     
     const user = ref({})
     const error = ref("")
-    const tokenApi = ref("")
     const codigo = ref("")
     const reu = ref([])
 
@@ -148,45 +147,9 @@
                 return
             }
 
-            const {token, usuario} = await store.iniciarSesion(login.correo, login.contraseña)
+            const {usuario, errores} = await store.iniciarSesion(login.correo, login.contraseña)
             user.value = usuario
-            if(!user.value){
-                error.value = "No existe el usuario al que intenta acceder."
-
-                setTimeout(()=>{
-                    error.value = ""
-                },3000)
-
-                return
-            }
-
-            tokenApi.value = token
-            if(!tokenApi.value){
-                error.value = "No fue posible obtener un token."
-
-                setTimeout(()=>{
-                    error.value = ""
-                },3000)
-
-                return
-            }
-
-
-            if(usuario.id_estado === 5){
-                error.value = "El usuario al que intenta acceder está deshabilitado."
-
-                setTimeout(()=>{
-                    error.value = ""
-                },3000)
-
-                return
-            }
-
-            sessionStorage.setItem('token', tokenApi.value)
-            sessionStorage.setItem('usuario', user.value.nombre)
-            sessionStorage.setItem('rol', user.value.id_rol)
-            sessionStorage.setItem('id', user.value.id)
-            sessionStorage.setItem('session', user.value.first_session)
+            error.value = errores
 
             if(login.contraseña.length <= 4){
                 router.push({name:'contraseña'})

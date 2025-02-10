@@ -9,7 +9,7 @@
         Cambio de Contraseña
     </h1>
 
-    <div class="container mx-auto min-h-screen">
+    <div class="container mx-auto min-h-[55vh]">
 
         <Form class="mt-16 space-y-8" @submit="cambiarContraseña()" v-slot="{ errors }">
 
@@ -114,6 +114,8 @@
         </Form>
 
     </div>
+
+    <Footer />
 </template>
 
 <script setup>
@@ -124,6 +126,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Field, ErrorMessage, Form } from 'vee-validate';
 import Spinner from '@/components/Spinner.vue';
+import Footer from '@/components/Footer.vue';
 
 import svgIcon from '@jamescoyle/vue-icon';
 import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js';
@@ -136,18 +139,23 @@ const spinnerActivo = ref(false)
 
 const usuarioRol = sessionStorage.getItem('rol')
 const usuarioId = sessionStorage.getItem('id')
-const sesion = sessionStorage.getItem('session');
+
 const router = useRouter()
 const store = useUsuarioStore()
 
-onMounted(()=>{
+const sesion = ref({})
+
+onMounted(async ()=>{
     if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
     }
+
+    sesion.value = await store.obtenerUsuario(usuarioId)
+
 })
 
 const primeraSesion = computed(()=>{
-    return Number(sesion) === 1
+    return Number(sesion.value.first_session) === 1
 })
 
 const error = ref("");

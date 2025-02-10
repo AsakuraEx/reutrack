@@ -16,6 +16,11 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/401',
+      name: 'NoAutenticado',
+      component: ()=>import('../views/NoAuthenticated.vue')
+    },
+    {
       path: '/usuarios',
       name: 'usuarios',
       component: () => import('../views/Usuarios/UsuariosView.vue'),

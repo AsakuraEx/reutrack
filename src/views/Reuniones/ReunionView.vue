@@ -8,8 +8,7 @@
     import { uid } from 'uid';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
-    import Stepper from '@/components/Stepper.vue'
-    import Textfield from '@/components/Textfield.vue';
+    import Stepper from '@/components/Stepper.vue';
     import { ErrorMessage, Field, Form } from 'vee-validate';
 
     //definición de variables

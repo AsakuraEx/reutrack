@@ -10,7 +10,6 @@
     import { useReunionStore } from '@/stores/reuniones';
     import { useRouter } from 'vue-router';
     import { useProyectoStore } from '@/stores/proyectos';
-    const router = useRouter()
 
     const store = useReunionStore()
     const reuniones = ref([])

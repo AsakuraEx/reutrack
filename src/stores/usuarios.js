@@ -41,9 +41,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
     async function mostrarUsuarios(estado,limit, page){
         try{
             const response = await apiServiceUsuarios.getUsuarios(estado,limit, page);
-            console.log(response)
             if(response.status === 200){
-                console.log(response)
                 return response.data;
             }
 
@@ -68,7 +66,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         try{
             const {status, data} = await apiServiceUsuarios.getUsuarios(4);
             if(status === 200){
-                return data.data;
+                return data;
             }
 
         }catch(e){
@@ -82,6 +80,17 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
             const {status, data} = await apiServiceUsuarios.iniciarSesion(email, password)
             if(status === 200){
                 User.value = data.usuario
+
+                console.log(User.value)
+                if(User.value.id_estado === 5){
+                    const errores = "El usuario al que intenta acceder está deshabilitado."
+        
+                    return errores
+                }
+    
+                sessionStorage.setItem('token', data.token)
+                sessionStorage.setItem('id', data.usuario.id)
+
                 return data;
             }
             errorInactividad.value = ''
@@ -134,6 +143,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         try{
             const {status, data} = await apiServiceUsuarios.getUsuario(id);
             if(status === 200){
+                User.value = data
                 return data;
             }
 
@@ -229,6 +239,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         detectarActividad,
         cancelarDeteccionActividad,
         reiniciarTiempo,
-        errorInactividad
+        errorInactividad,
+        User
     }
 })

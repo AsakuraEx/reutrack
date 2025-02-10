@@ -6,13 +6,18 @@
     import CardIndex from '@/components/CardIndex.vue';
     import { onMounted, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
+    import { useUsuarioStore } from '@/stores/usuarios';
+    import { FrasesMotivadoras } from '@/assets/frases';
+
     const reuniones = ref([])
     const store = useReunionStore()
+    const storeUs = useUsuarioStore()
     const router = useRouter() 
-    const usuarioNombre = sessionStorage.getItem('usuario')
-    const usuarioRol = sessionStorage.getItem('rol')
+    const usuario = ref({})
     const usuarioId = sessionStorage.getItem('id')
-
+    const arrayFrases = ref([]);
+    const frase = ref({})
+    
     onMounted(async ()=>{
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
@@ -22,28 +27,36 @@
             router.push({name: 'contraseña'})
         }
         reuniones.value = await store.obtenerReuniones(3,3,null, null, usuarioId)
+        usuario.value = await storeUs.obtenerUsuario(usuarioId)
+        MostrarFrase()
 
     })
+
+    function MostrarFrase() {
+        const fechaActual = new Date()
+        arrayFrases.value = FrasesMotivadoras
+        frase.value = arrayFrases.value.find( frase => frase.dia === fechaActual.getDate()).frase
+    }
 
 </script>
 
 <template>
   
-  <Header :rol="usuarioRol"/>
+  <Header />
   
   <div class="container mx-auto py-4 min-h-screen text-white">
       
-      <picture class="flex flex-col md:flex-row gap-4 md:gap-16 justify-end items-center mt-12 py-12">
+      <picture class="flex flex-col md:flex-row-reverse gap-4 md:gap-16 justify-end items-center mt-12 py-12">
           <div class="text-center ">
               <h2 class="text-2xl font-bold uppercase">
-                  Bienvenido/a de nuevo, {{ usuarioNombre }}
+                  Bienvenido/a de nuevo, {{ usuario.nombre }}
               </h2>
               <span class="text-lg">
-                  ¡No sueñes con el éxito, trabaja para lograrlo!
+                  {{ frase }}
               </span>
           </div>
           <img 
-              src="/public/images/home.png" 
+              src="/public/images/Reulito-4.svg" 
               alt="imagen de perfil"
               class="rounded-full aspect-square object-cover max-w-72 lg:max-w-lg"
           >

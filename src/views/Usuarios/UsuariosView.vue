@@ -1,11 +1,11 @@
 <script setup>
 import Header from '@/components/Header.vue';
-import { onMounted, ref, reactive } from 'vue';
+import { onMounted, ref } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useUsuarioStore } from '@/stores/usuarios';
 import Paginacion from '@/components/Paginacion.vue';
+import Footer from '@/components/Footer.vue';
 
-const usuarioRol = sessionStorage.getItem('rol')
 const store = useUsuarioStore();
 const listaUsuarios = ref([]);
 const usuarioActivo = sessionStorage.getItem('id');
@@ -17,11 +17,12 @@ const paginacion = ref({
     end: 1,
     totalRecords: 0
 })
-let response
 
 onMounted(async ()=>{
 
-    if(usuarioRol != 1){
+    const rol = await store.obtenerUsuario(usuarioActivo)
+
+    if(rol.id_rol != 1){
         router.push({name: 'home'})
     }
 
@@ -45,7 +46,7 @@ const cambiarEstado = async (id, estado) => {
 
 <template>
     
-    <Header :rol="usuarioRol" />
+    <Header />
 
     <div class="container mx-auto px-4 min-h-screen">
         <div class="flex justify-center flex-col lg:flex-row lg:justify-between items-center border mt-16 p-4 rounded-md">
@@ -94,5 +95,7 @@ const cambiarEstado = async (id, estado) => {
 
         </div>
     </div>
+
+    <Footer />
 </template>
 

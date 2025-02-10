@@ -47,6 +47,7 @@
         
         arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
         listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
+        console.log(arrayEncargados.value)
         reunion.value = await storeReu.obtenerReunion(idReunion)
     })
 

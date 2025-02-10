@@ -1,9 +1,10 @@
 <template>
     <div class="h-screen flex flex-col md:flex-row gap-2 justify-center items-center">
-        <img src="../../public/images/not-found.svg" alt="" class="w-1/4">
+        <img src="/public/images/Reulito-2.svg" alt="" class="w-1/4">
         <div class="block">
-            <h1 class="text-5xl font-black text-purple-500 mb-4 text-center uppercase">404 Page Not Found</h1>
-            <h2 class="font-black leading-3 text-xl text-center">La página a la que intenta acceder, no existe.</h2>
+            <h1 class="text-5xl font-black text-purple-500 mb-4 text-center uppercase">La página que buscas, no existe...</h1>
+            <h2 class="font-black leading-3 text-xl text-center">Verifíca la URL a la que intentas acceder y vuelve a intentarlo.</h2>
+            <h4 class="font-light leading-3 text-md text-center mt-4">Error: 404 Not Found.</h4>
         </div>
     </div>
 </template>

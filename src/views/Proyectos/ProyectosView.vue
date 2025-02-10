@@ -5,8 +5,6 @@
     import { RouterLink } from 'vue-router';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
-    import ModalFinalizar from '@/components/ModalFinalizar.vue';
-    import ModalCancelar from '@/components/ModalCancelar.vue';
     import { useProyectoStore } from '@/stores/proyectos';
     import { useRouter } from 'vue-router';
 
@@ -15,7 +13,6 @@
 
     const path2 = mdiPlus
     const path = mdiGit
-    const router = useRouter()
     const usuarioRol = sessionStorage.getItem('rol')
     //definición de variables
     const arrayProyectos = ref([]);

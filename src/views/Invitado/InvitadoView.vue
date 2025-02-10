@@ -1,7 +1,7 @@
 <script setup>
     import BtnSubmit from '@/components/BtnSubmit.vue';
     import { useRoute, useRouter } from 'vue-router';
-    import { onMounted, ref, computed } from 'vue';
+    import { onMounted, ref, watch } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { Field, ErrorMessage, Form } from 'vee-validate';
     import AlertaError from '@/components/AlertaError.vue';
@@ -36,6 +36,16 @@
         reunion.value = await store.obtenerReunion(idReunion)
         participantes.value = await store.obtenerParticipantes(idReunion)
     })
+
+    watch(formData, ()=>{
+        if (formData.value.doc_identidad.length === 8 && !formData.value.doc_identidad.includes('-')) {
+            formData.value.doc_identidad += '-';
+        }
+
+        if (formData.value.telefono.length === 4 && !formData.value.telefono.includes('-')) {
+            formData.value.telefono += '-';
+        }
+    }, {deep:true})
 
     // Variables con diferentes funcionalidades del sistema
     const agregarParticipante = async (values, { resetForm }) => {
@@ -100,7 +110,10 @@
     <div class="container mx-auto min-h-screen">
 
         <h1 class="text-xl font-extrabold text-center pt-12 uppercase px-4">Lista de Asistencia</h1>
-        <div class="flex justify-center lg:justify-between py-12">
+        
+        <AlertaError class="mt-8" :error="error" v-if="error"/>
+        
+        <div class="flex justify-center lg:justify-between pt-4 pb-12">
             <div class="form-control">
                 <label class="label cursor-pointer">
                   <span class="label-text text-white px-4">Extranjero</span>
@@ -108,6 +121,7 @@
                 </label>
               </div>
         </div>
+
         
         <Form class="flex flex-col gap-8 md:gap-0 pb-4" @submit="agregarParticipante" v-slot="{ resetForm, errors }">
 
@@ -219,7 +233,7 @@
             
         </Form>
         
-        <AlertaError :error="error" v-if="error"/>
+        
     </div>
 
 
