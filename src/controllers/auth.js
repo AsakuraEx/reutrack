@@ -8,7 +8,9 @@ const accessToken = db.personal_access_token
 exports.login = async (req, res) => {
     try {
         const {email, password} = req.body
-        const user = await db.users.findOne({where: {email: email}})
+        let user = await db.users.findOne({
+            where: {email: email}
+        })
     
         if (!user) {
             return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Usuario no encontrado'})
@@ -22,6 +24,10 @@ exports.login = async (req, res) => {
                     expires_in: new Date(Date.now() + (12 * 60 * 60 * 1000)) // Updated to 12 hours
                 }
             )
+            user = await db.users.findOne({
+                attributes: ['id','nombre','id_rol'],
+                where: {email: email},
+            })
             res.status(HttpCode.HTTP_OK).json({
                 usuario: user,
                 token: token,

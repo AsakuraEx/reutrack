@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       })
       reunion.hasMany(models.puntoreunion,{
         foreignKey: 'id_reunion',
-        as: 'punto de reunion'
+        as: 'puntos de reunion'
       })
       reunion.hasMany(models.encargado,{
         foreignKey: 'id_reunion',
@@ -36,15 +36,15 @@ module.exports = (sequelize, DataTypes) => {
       })
       reunion.hasMany(models.listaasistencia,{
         foreignKey: 'id_reunion',
-        as: 'lista de asistencia reunion'
+        as: 'asistencia reunion'
       })
       reunion.hasMany(models.minutareunion,{
         foreignKey: 'id_reunion',
-        as: 'minuta reunion'
+        as: 'minuta de reunion'
       })
       reunion.hasMany(models.acuerdocompromiso,{
         foreignKey: 'id_reunion',
-        as: 'acuerdo reunion'
+        as: 'acuerdos de reunion'
       })
     }
   }
