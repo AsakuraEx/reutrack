@@ -6,7 +6,7 @@
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import { useProyectoStore } from '@/stores/proyectos';
-    import { useRouter } from 'vue-router';
+    import Paginacion from '@/components/Paginacion.vue';
 
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiGit, mdiPlus } from '@mdi/js';
@@ -16,6 +16,7 @@
     const usuarioRol = sessionStorage.getItem('rol')
     //definición de variables
     const arrayProyectos = ref([]);
+    const paginacion = ref({})
     const store = useProyectoStore();
     const estados = {
         Iniciado: 'bg-yellow-200 text-yellow-800',
@@ -27,10 +28,44 @@
         return `${estados[estado]}`
     }
 
-
+    
     onMounted(async ()=>{
-        arrayProyectos.value = await store.mostrarProyectos();
+        const response = await store.mostrarProyectos(null, 10, 1);
+        arrayProyectos.value = response.data
+        paginacion.value = response
     })
+
+    const control = ref(1)
+
+
+    const siguiente = async () => {
+        
+        
+        if(control.value === paginacion.value.totalPages){
+            console.log("Ya no puede incrementar mas")
+        }else{
+            control.value++;
+            const response = await store.mostrarProyectos(null, 10, control.value);
+            arrayProyectos.value = response.data
+            paginacion.value = response
+        }
+    }
+
+    const anterior = async () => {
+        
+        if(control.value === 1){
+            console.log("Ya no puede decrementar mas")
+        }else{
+            control.value--;
+            console.log(control.value)
+            const response = await store.mostrarProyectos(null, 10, control.value);
+            arrayProyectos.value = response.data
+            console.log(response.data)
+            paginacion.value = response
+        }
+    }
+
+
 
 </script>
 
@@ -75,6 +110,11 @@
                 </tbody>
             </table>
 
+            <Paginacion 
+                :paginacion="paginacion"
+                @siguiente="siguiente"
+                @anterior="anterior"
+            />
         </div>
 
     </div>

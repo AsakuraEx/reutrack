@@ -10,6 +10,7 @@
     import { useReunionStore } from '@/stores/reuniones';
     import { useRouter } from 'vue-router';
     import { useProyectoStore } from '@/stores/proyectos';
+    import Paginacion from '@/components/Paginacion.vue';
 
     const store = useReunionStore()
     const reuniones = ref([])
@@ -26,20 +27,72 @@
     onMounted(async ()=>{
 
         if(usuarioRol != 1){
-            reuniones.value = await store.obtenerReuniones(null,null,null, null, usuarioId)
+            const response = await store.obtenerReuniones(null,5,null, null, usuarioId, 1)
+            console.log(response)
+            reuniones.value = response.data
+            paginacion.value = response
         }else{
-            reuniones.value = await store.obtenerReuniones(null,null,null, null)
+            const response = await store.obtenerReuniones(null,5,null, null, null, 1)
+            console.log(response)
+            reuniones.value = response.data
+            paginacion.value = response
         }
         proyectos.value = await storePro.mostrarProyectos()
 
     })
 
+    const control = ref(1)
+    const paginacion = ref({})
+
+    const siguiente = async () => {
+        
+        
+        if(control.value === paginacion.value.totalPages){
+            console.log("Ya no puede incrementar mas")
+        }else{
+
+            if(usuarioRol != 1){
+                control.value++;
+                const response = await store.obtenerReuniones(null,5,null, null, usuarioId, control.value)
+                console.log(response)
+                reuniones.value = response.data
+                paginacion.value = response
+            } else {
+                control.value++;
+                const response = await store.obtenerReuniones(null,5,null, null, null, control.value)
+                console.log(response)
+                reuniones.value = response.data
+                paginacion.value = response
+            }
+
+        }
+    }
+
+    const anterior = async () => {
+        
+        if(control.value === 1){
+            console.log("Ya no puede decrementar mas")
+        }else{
+            control.value--;
+            const response = await store.obtenerReuniones(null,5,null, null, usuarioId, control.value)
+            console.log(response)
+            reuniones.value = response.data
+            paginacion.value = response
+        }
+    }
+
     const cancelarReunion = async (id) => {
         await store.cancelarReunion(id)
         if(usuarioRol != 1){
-            reuniones.value = await store.obtenerReuniones(null,null,null, null, usuarioId)
-        }else{
-            reuniones.value = await store.obtenerReuniones(null,null,null, null)
+            const response = await store.obtenerReuniones(null,5,null, null, usuarioId, control.value)
+            console.log(response)
+            reuniones.value = response.data
+            paginacion.value = response
+        } else {
+            const response = await store.obtenerReuniones(null,5,null, null, null, control.value)
+            console.log(response)
+            reuniones.value = response.data
+            paginacion.value = response
         }
     }
 
@@ -49,10 +102,16 @@
 
     const filtrarReuniones = async () => {
 
-        if(usuarioId != 4){
-            reuniones.value = await store.obtenerReuniones(null,null,null, filtros.proyecto, usuarioId)
-        }else{
-            reuniones.value = await store.obtenerReuniones(null,null,null, filtros.proyecto)
+        if(usuarioRol != 1){
+            const response = await store.obtenerReuniones(null,5,null, null, usuarioId, control.value)
+            console.log(response)
+            reuniones.value = response.data
+            paginacion.value = response
+        } else {
+            const response = await store.obtenerReuniones(null,5,null, null, null, control.value)
+            console.log(response)
+            reuniones.value = response.data
+            paginacion.value = response
         }
 
         Object.assign(filtros, {
@@ -71,7 +130,7 @@
             Historial de Reuniones
         </h1>
     
-        <div class="flex flex-col lg:flex-row gap-2">
+        <!-- <div class="flex flex-col lg:flex-row gap-2">
 
             <Select2 
                 :label="'Proyecto'" 
@@ -92,7 +151,7 @@
                 <button class="bg-slate-300 w-full hover:bg-slate-500 h-fit font-bold text-black px-4 py-2 rounded" @click="filtrarReuniones()">Filtrar</button>
             </div>
 
-        </div>
+        </div> -->
 
         <!-- LISTADO DE CARDS-->
         <div class="flex flex-col gap-3">
@@ -107,6 +166,12 @@
             />
     
         </div>
+
+        <Paginacion 
+            :paginacion="paginacion"
+            @anterior="anterior"
+            @siguiente="siguiente"
+        />
 
         <ModalCancelarReu 
             :reunion="modal"

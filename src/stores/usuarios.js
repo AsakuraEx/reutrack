@@ -125,13 +125,13 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
             if(status === 200){
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡Se actualizó la contraseña!'
-                
+                console.log(data)
                 setTimeout(()=>{
                     message.value.tipo = "",
                     message.value.mensaje = ""
                 },3000)
                 
-                return data.error
+                return data
                 
             }
         }catch(e){

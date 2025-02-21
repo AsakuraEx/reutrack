@@ -10,13 +10,7 @@ const store = useUsuarioStore();
 const listaUsuarios = ref([]);
 const usuarioActivo = sessionStorage.getItem('id');
 const router = useRouter();
-const paginacion = ref({
-    currentPage: 1,
-    totalPages: 1,
-    start: 1,
-    end: 1,
-    totalRecords: 0
-})
+const paginacion = ref({})
 
 onMounted(async ()=>{
 
@@ -27,20 +21,49 @@ onMounted(async ()=>{
     }
 
     
-    const {data, currentPage, totalPages, start, end, totalRecords} = await store.mostrarUsuarios(null,5, 1)
-    listaUsuarios.value = data
-    paginacion.value.currentPage = currentPage
-    paginacion.value.totalPages = totalPages
-    paginacion.value.start = start
-    paginacion.value.end = end
-    paginacion.value.totalRecords = totalRecords
+    const response = await store.mostrarUsuarios(null,5, 1)
+        listaUsuarios.value = response.data
+        paginacion.value = response
 })
 
 const cambiarEstado = async (id, estado) => {
     await store.cambiarEstado(id,estado);
-    listaUsuarios.value = await store.mostrarUsuarios()
+    const response = await store.mostrarUsuarios(null,5, 1)
+    listaUsuarios.value = response.data
+    paginacion.value = response
     
 }
+
+const control = ref(1)
+
+
+const siguiente = async () => {
+    
+    
+    if(control.value === paginacion.value.totalPages){
+        console.log("Ya no puede incrementar mas")
+    }else{
+        control.value++;
+        const response = await store.mostrarUsuarios(null,5, control.value)
+        listaUsuarios.value = response.data
+        paginacion.value = response
+    }
+}
+
+const anterior = async () => {
+    
+    
+    if(control.value === 1){
+        console.log("Ya no puede decrementar mas")
+    }else{
+        control.value--;
+        const response = await store.mostrarUsuarios(null,5, control.value)
+        listaUsuarios.value = response.data
+        paginacion.value = response
+    }
+}
+
+
 
 </script>
 
@@ -91,7 +114,11 @@ const cambiarEstado = async (id, estado) => {
                 </tbody>
             </table>
 
-            <Paginacion :paginacion="paginacion"/>
+            <Paginacion 
+                :paginacion="paginacion"
+                @siguiente="siguiente"
+                @anterior="anterior"
+            />
 
         </div>
     </div>

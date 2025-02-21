@@ -7,12 +7,12 @@ export default {
     },
 
     //Puede consultar todas las reuniones de acuerdo al estado, código, proyecto o usuario
-    consultarReuniones(estado, limite, codigo, proyecto, usuario){
+    consultarReuniones(estado, limite, codigo, proyecto, usuario, page){
         let url = '/reuniones?'
 
         //Agrega un estado a la URL base en caso que exista
         if(estado){
-            url = url + `estado=${estado}&`
+            url = url + `id_estado=${estado}&`
         }
 
         //Agrega un limite a la URL base en caso que exista (Probablemente se elimine este parametro)
@@ -33,6 +33,10 @@ export default {
         //Agrega un usuario que generó a la URL base en caso que exista
         if(usuario){
             url = url + `id_usuario=${usuario}&`
+        }
+
+        if(page){
+            url = url + `page=${page}&`
         }
 
         return api.get(url)

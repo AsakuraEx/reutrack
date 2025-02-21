@@ -11,6 +11,7 @@
     import { useRouter } from 'vue-router';
     import svgIcon from '@jamescoyle/vue-icon';
     import { mdiPlus } from '@mdi/js';
+    import Paginacion from '@/components/Paginacion.vue';
     
     //definición de variables
     const path2 = mdiPlus
@@ -46,8 +47,40 @@
 
     onMounted(async ()=>{
         proyecto.value = await store.consultarProyecto(id)
-        arrayVersiones.value = await store.mostrarVersiones(id);
+        const response = await store.mostrarVersiones(id, null, 10, 1);
+        console.log(response)
+        arrayVersiones.value = response.data
+        paginacion.value = response
     })
+
+    const control = ref(1)
+    const paginacion = ref({})
+
+    const siguiente = async () => {
+        
+        
+        if(control.value === paginacion.value.totalPages){
+            console.log("Ya no puede incrementar mas")
+        }else{
+            control.value++;
+            const response = await store.mostrarVersiones(id, null, 10, control.value);
+            arrayVersiones.value = response.data
+            paginacion.value = response
+        }
+    }
+
+    const anterior = async () => {
+        
+        if(control.value === 1){
+            console.log("Ya no puede decrementar mas")
+        }else{
+            control.value--;
+            console.log(control.value)
+            const response = await store.mostrarVersiones(id, null, 10, control.value);
+            arrayVersiones.value = response.data
+            paginacion.value = response
+        }
+    }
 
 </script>
 
@@ -122,6 +155,12 @@
                     </tr>
                 </tbody>
             </table>
+
+            <Paginacion 
+                :paginacion="paginacion"
+                @anterior="anterior"
+                @siguiente="siguiente"
+            />
 
             <!-- MODAL PARA FINALIZAR -->
             <ModalFinalizar 

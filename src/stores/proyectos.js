@@ -12,12 +12,12 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
     })
 
     //Función del store asincrona para mostrar proyectos
-    async function mostrarProyectos(estado){
+    async function mostrarProyectos(estado, limit, page){
         try{
-            const {status, data} = await apiServiceProyectos.getProyectos(estado);      //Realiza la petición y extraye por destructuración el status y la data
+            const {status, data} = await apiServiceProyectos.getProyectos(estado, limit, page);      //Realiza la petición y extraye por destructuración el status y la data
             
             //Si la respuesta es 200, retorna la data
-            if(status === 200){                                                
+            if(status === 200){                                               
                 return data;
             }
 
@@ -125,9 +125,9 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
     }
 
     //Muestra las versiones mediante un id de proyecto y un estado
-    async function mostrarVersiones(idProyecto, estado) {
+    async function mostrarVersiones(idProyecto, estado, limit, page) {
         try{
-            const {status, data} = await apiServiceProyectos.getVersiones(idProyecto, estado);
+            const {status, data} = await apiServiceProyectos.getVersiones(idProyecto, estado, limit, page);
             if(status === 200){
                 return data;
             }

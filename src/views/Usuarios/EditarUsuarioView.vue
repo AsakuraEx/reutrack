@@ -21,9 +21,6 @@ const usuarioNuevo = reactive({
 })
 
 onMounted(async ()=>{
-    if(usuarioRol != 1){
-        router.push({name: 'home'})
-    }
     const {nombre, email} = await store.obtenerUsuario(id)
     usuarioNuevo.nombre = nombre;
     usuarioNuevo.email = email;

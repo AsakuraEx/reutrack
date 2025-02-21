@@ -26,9 +26,19 @@
         if(sessionStorage.getItem('session') === '1'){
             router.push({name: 'contraseña'})
         }
-        reuniones.value = await store.obtenerReuniones(3,3,null, null, usuarioId)
+        
         usuario.value = await storeUs.obtenerUsuario(usuarioId)
         MostrarFrase()
+
+        if(usuario.value.id_rol != 1){
+            const response = await store.obtenerReuniones(3,3,null, null, usuarioId, 1)
+            reuniones.value = response.data
+            
+        } else {
+            const response = await store.obtenerReuniones(3,3,null, null, null, 1)
+            reuniones.value = response.data
+        }
+        
 
     })
 

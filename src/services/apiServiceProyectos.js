@@ -3,12 +3,20 @@ import api from "@/lib/axios";
 export default {
 
     //Obtiene todos los proyectos, opcionalmente puede ingresar un estado y realiza la busqueda mediante el estado
-    getProyectos(estado){
+    getProyectos(estado, limit, page){
         var url = '/proyectos?'
 
         //Se agrega dinamicamente el estado si existe
         if(estado){
-            url = url + `estado=${estado}`
+            url = url + `estado=${estado}&`
+        }
+
+        if(limit){
+            url = url + `limit=${limit}&`
+        }
+
+        if(page){
+            url = url + `page=${page}&`
         }
 
         return api.get(url)
@@ -25,7 +33,7 @@ export default {
     },
 
     //Obtiene todas las versiones, opcionalmente puede consultar todas las versiones de un proyecto y el estado que posea
-    getVersiones(idProyecto, estado){
+    getVersiones(idProyecto, estado, limit, page){
         
         //Se parte de una dirección base
         var url = `/versiones?`
@@ -37,7 +45,15 @@ export default {
 
         //En caso que exista el estado de la version, lo agrega a la url
         if(estado){
-            url = url + `id_estado=${estado}`
+            url = url + `id_estado=${estado}&`
+        }
+
+        if(limit){
+            url = url + `limit=${limit}&`
+        }
+
+        if(page){
+            url = url + `page=${page}&`
         }
 
         //Solicita por get al endpoint construido dinamicamente

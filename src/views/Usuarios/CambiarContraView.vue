@@ -146,12 +146,7 @@ const store = useUsuarioStore()
 const sesion = ref({})
 
 onMounted(async ()=>{
-    if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-    }
-
     sesion.value = await store.obtenerUsuario(usuarioId)
-
 })
 
 const primeraSesion = computed(()=>{
@@ -169,7 +164,7 @@ const formData = reactive({
 const cambiarContraseña = async () => {
     try{            
         spinnerActivo.value = true
-        error.value = await store.actualizarContraseña(usuarioId, formData.actual, formData.nueva, sesion)
+        error.value = await store.actualizarContraseña(usuarioId, formData.actual, formData.nueva, sesion.value.first_session)
         spinnerActivo.value = false
         if(error.value){
             return

@@ -43,7 +43,7 @@ export default {
         if(estado == 4){       
             return api.patch(`/usuarios/updateStatus`, {id: id, id_estado: 5})
         }else{
-            return api.patch(`/usuarios/updateStatus`, {id_estado: 4, id: id})
+            return api.patch(`/usuarios/updateStatus`, {id: id, id_estado: 4})
         }
     },
 
@@ -54,6 +54,7 @@ export default {
 
     //Metodo para actualizar la contraseña del usuario
     actualizarContraseña(id, old, password, first_session){
+        console.log('CONSUMIENDO EL ENDPOINT')
         return api.patch(`/usuarios/updatepassword`, {
             id_usuario:id, 
             oldpassword: old,
