@@ -3,7 +3,7 @@ var app = express.Router();
 
 const versionController = require('../controllers/versionController')
 
-app.get('/',     versionController.getIniciado)
+app.get('/',     versionController.index)
 app.get('/version/:id', versionController.getOne)
 app.post('/create',  versionController.create)
 app.patch('/update/:id', versionController.update)

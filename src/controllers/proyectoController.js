@@ -18,8 +18,6 @@ exports.index = async (req, res) => {
     const limit = parseInt(req.query.limit) || null
     const page = parseInt(req.query.page) || 1
 
-    console.log(req.query)
-
     try {
         const {count, rows} = await table.findAndCountAll({
             attributes: {exclude: ['id_usuario','id_estado', 'updatedAt']},

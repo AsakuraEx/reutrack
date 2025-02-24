@@ -70,11 +70,18 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     const { id } = req.params;
     const {nombre, email, password} = req.body;
+    
     try {
+        if(password){
+            await db.users.update({ 
+                nombre,
+                email,
+                password: bcrypt.hashSync(password, 12),
+            }, {where: {id: id}});
+        }
         await db.users.update({ 
             nombre,
             email,
-            password: bcrypt.hashSync(password, 12),
         }, {where: {id: id}});
 
         const updatedData = await db.users.findByPk(id)

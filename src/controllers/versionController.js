@@ -15,8 +15,15 @@ exports.getOne = async (req,res) => {
 }
 
 exports.index = async (req, res) => {
+    const {id_proyecto} = req.query
+    const limit = parseInt(req.query.limit) || null
+    const page = parseInt(req.query.page) || 1 
     try {
-        const data = await table.findAll({
+        const whereClause = {};
+        if (id_proyecto) {
+            whereClause.id_proyecto = id_proyecto;
+        }
+        const {count, rows} = await table.findAndCountAll({
             attributes: {exclude: ['id_usuario','id_estado','id_proyecto', 'updatedAt']},
             include: [
                 { model: db.users,
@@ -34,9 +41,24 @@ exports.index = async (req, res) => {
                     attributes: ['nombre'],
                     required: true,
                 }
-            ]
+            ],
+            limit: limit,
+            offset: (page - 1) * limit,
+            order: [['id', 'DESC']],
+            where: whereClause
         });
-        res.status(HttpCode.HTTP_OK).json(data);
+
+        const start = (page - 1) * limit + 1;
+        const end = Math.min(start + rows.length - 1, count);
+
+        res.status(HttpCode.HTTP_OK).json({
+            totalRecords: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            start: start,
+            end: end,
+            data: rows,
+        });
     } catch (error) {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });

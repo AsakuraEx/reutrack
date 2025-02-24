@@ -1,20 +1,19 @@
 const express = require('express');
 var app = express.Router();
 
-const reunionController = require('../controllers/reunionController')
+const reunionController = require('../controllers/reunionController');
 const { verifyToken } = require('../middlewares/verifyToken');
 
-app.get('/reunion-actual/:codigo', reunionController.actual)
-app.get('/detalle/:codigo', reunionController.detalle)
+app.get('/', reunionController.index);
+app.get('/reunion-actual/:codigo', reunionController.actual);
+app.get('/ultima', reunionController.ultima);
+app.get('/detalle/:codigo', reunionController.detalle);
+app.post('/create', reunionController.create);
+app.patch('/cancelar/:id', reunionController.cancelar);
+app.patch('/finalizar/:id', reunionController.finalizar);
+app.get('/pdf/:id', reunionController.generatePDF);
 
-app.get('/',  reunionController.index)
-app.get('/ultima', reunionController.ultima)
-app.get('/:id',   reunionController.getOne)
-
-app.post('/create',  reunionController.create)
-
-app.patch('/delete/:id', reunionController.cancelar)
-app.patch('/finalizar/:id',reunionController.finalizar)
-
+app.get('/:id', reunionController.getOne);
 
 module.exports = app;
+
