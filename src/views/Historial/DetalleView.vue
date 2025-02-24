@@ -5,6 +5,7 @@
     import { useReunionStore } from '@/stores/reuniones';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
+    import axios from 'axios';
 
     //LIBRERIA PARA PDF
 
@@ -25,6 +26,7 @@
 
     const store = useReunionStore()
     const route = useRoute()
+    const router = useRouter()
 
     const { id } = route.params
 
@@ -53,8 +55,10 @@
         });
 
         return fechaFormateada
+    }
 
-
+    const generarPDF = async () => {
+        window.location.replace(`http://10.100.122.209:3000/api/reuniones/pdf/${id}`)
     }
 </script>
 
@@ -64,13 +68,13 @@
 
     <div class="container mx-auto text-right">
         
-        <!-- <button 
+        <button 
             class="bg-transparent hover:border-blue-500 hover:bg-blue-500 focus:scale-95 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
             @click="generarPDF()"
         >
             <svg-icon type="mdi" :path="path1"></svg-icon>
             Generar PDF
-        </button> -->
+        </button>
 
     </div>
     <div class="container mx-auto px-4 mt-16" id="pdf">

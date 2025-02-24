@@ -22,9 +22,9 @@ export const useReunionStore = defineStore('reuniones', () => {
 
     async function obtenerUltimaReunion(){
         try{
-            const {status, data} = await apiServiceReunion.consultarUltimaReunion()
-            if(status === 200){
-                return data;
+            const response = await apiServiceReunion.consultarUltimaReunion()
+            if(response.status === 200){
+                return response;
             }
         }catch(e){
             console.error(e)

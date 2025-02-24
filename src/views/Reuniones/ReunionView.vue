@@ -42,7 +42,8 @@
         //Se genera el codigo aleatorio con la libreria uid
         formData.codigo = uid(6);
         //Se solicita la lista de proyectos "Pendiente" (no cancelados ni finalizados)
-        arrayProyectos.value = await store.mostrarProyectos(1)
+        const response = await store.mostrarProyectos(1, null, 1);
+        arrayProyectos.value = response.data
         //Se asigna la hora de expiracion del codigo
         expiracionCodigo()
     })
@@ -61,6 +62,7 @@
         await storeReu.iniciarReunion(formData)
 
         //Consulto la reunión creada        
+
         reunion.value = await storeReu.obtenerUltimaReunion()
 
         minuta.id_reunion = reunion.value.id
@@ -77,8 +79,8 @@
     })
 
     const consultarVersiones = async (proyecto) => {
-        console.log("Solicitando las versiones del proyecto con id:" + proyecto)
-        arrayVersiones.value = await store.mostrarVersiones(proyecto,1);
+        const response = await store.mostrarVersiones(proyecto, 1, null, 1);
+        arrayVersiones.value = response.data
     }
 
 </script>
