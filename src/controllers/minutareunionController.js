@@ -31,7 +31,8 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const minuta = req.body.minuta; 
-        const id_reunion = req.params.id
+        const id_reunion = req.params.id_reunion
+
 
         await db.minutareunion.update({ 'minuta': minuta }, { where: { id_reunion: id_reunion } });
         const updatedData = await db.minutareunion.findOne(
@@ -52,4 +53,4 @@ exports.delete = async (req, res) => {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
-}  
+}

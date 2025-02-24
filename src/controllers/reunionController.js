@@ -163,7 +163,8 @@ exports.index = async (req, res) => {
             ],
             limit: limit,
             offset: (page - 1) * limit,
-            order: [['id', 'DESC']], 
+            order: [['id', 'DESC']],
+            where: whereClause
         });
 
         const start = (page - 1) * limit + 1;
