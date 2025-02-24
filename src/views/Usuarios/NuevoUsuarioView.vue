@@ -17,9 +17,9 @@ const usuarioNuevo = reactive({
 })
 
 onMounted(()=>{
-    if(usuarioRol != 1){
-        router.push({name: 'home'})
-    }
+    // if(usuarioRol != 1){
+    //     router.push({name: 'home'})
+    // }
 
 })
 

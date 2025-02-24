@@ -106,7 +106,7 @@
     const actualizarMinuta = async () => {
         //Ejecuta el metodo para actualizar la minuta actual
         await store.actualizarMinuta(idReunion, minuta)
-        sessionStorage.setItem('minuta', minuta.minuta)
+        localStorage.setItem('minuta', minuta.minuta)
         hora.value = "Último autoguardado: " + new Date().toLocaleString()
 
     }

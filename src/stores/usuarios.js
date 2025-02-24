@@ -64,9 +64,10 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
 
     async function mostrarEncargados(){
         try{
-            const {status, data} = await apiServiceUsuarios.getUsuarios(4);
+            const {status, data} = await apiServiceUsuarios.getUsuarios(4,null,1);
             if(status === 200){
-                return data;
+                console.log(data)
+                return data.data;
             }
 
         }catch(e){
