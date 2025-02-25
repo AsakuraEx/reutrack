@@ -346,70 +346,74 @@ exports.generatePDF = async (req, res) => {
                 padding-left: 8px;
                 padding-right: 8px;
                 }
+                .page-break {
+                    page-break-before: always;
+                }
             </style>
         </head>
         <body>
-            <main>
-                <div class="title">${reunion['version']['proyecto']['nombre']} - ${reunion['version']['nombre']}</div>
-                <div class="section">
-                    <h2>
-                    <b>Nombre de reunión: </b>${reunion.nombre}
-                    <br>Lugar: </b>${reunion.lugar}
-                    <br> <b>Fecha:</b> ${moment(reunion.expiracion).format('DD/MM/YYYY HH:mm')}
-                    </h2>
-                </div>
-                <div class="section">
-                    <h2>Puntos de la reunión:</h2>
-                    <ul class="puntos-reunion">
-                    ${reunion['puntos de reunion'].map(punto => `
-                    <li>• ${punto.nombre}</li>
-                    `).join('')}
-                    </ul>
-                </div>
-                <div class="section">
-                    <h2>Minuta:</h2>
-                    <p>${reunion['minuta de reunion'][0].minuta}</p>
-                </div>
-                <div class="section">
-                    <h2>Acuerdos:</h2>
-                    <ul>
-                    ${reunion['acuerdos de reunion'].map(acuerdo => `
-                    <li>${acuerdo.nombre}</li>
-                    `).join('')}
-                    </ul>
-                </div>
-                <div class="section">
-                    <h2>Asistentes:</h2>
-                    <div class= "table">
-                    <table class="asistentes">
-                        <tr>
-                            <th>Participante</th>
-                            <th>Institución</th>
-                            <th>Doc de identidad</th>
-                            <th>Cargo</th>
-                            <th>Teléfono</th>
-                            <th>Correo</th>
-                        </tr>
-                        ${reunion['asistencia reunion'].map(asistente => `
-                        <tr>
-                            <td>${asistente.participante}</td>
-                            <td>${asistente.institucion}</td>
-                            <td>${asistente.doc_identidad}</td>
-                            <td>${asistente.cargo}</td>
-                            <td>${asistente.telefono}</td>
-                            <td>${asistente.correo}</td>
-                        </tr>
-                        `).join('')}
-                    </table>
-                    </div>
-                </div>
-                <div class="section">
-                    <h2>
-                    <b>Generado por Reutrack el: </b>${moment().format('DD/MM/YYYY HH:mm')}
-                    </h2>
-                </div>
-            </main>
-        </body>
+    <main>
+        <div class="title">${reunion['version']['proyecto']['nombre']} - ${reunion['version']['nombre']}</div>
+        <div class="section">
+            <h2>
+            <b>Nombre de reunión: </b>${reunion.nombre}
+            <br>Lugar: </b>${reunion.lugar}
+            <br> <b>Fecha:</b> ${moment(reunion.expiracion).format('DD/MM/YYYY HH:mm')}
+            </h2>
+        </div>
+        <div class="section">
+            <h2>Puntos de la reunión:</h2>
+            <ul class="puntos-reunion">
+            ${reunion['puntos de reunion'].map(punto => `
+            <li>• ${punto.nombre}</li>
+            `).join('')}
+            </ul>
+        </div>
+        <div class="section">
+            <h2>Minuta:</h2>
+            <p>${reunion['minuta de reunion'][0].minuta}</p>
+        </div>
+        <div class="section">
+            <h2>Acuerdos:</h2>
+            <ul>
+            ${reunion['acuerdos de reunion'].map(acuerdo => `
+            <li>${acuerdo.nombre}</li>
+            `).join('')}
+            </ul>
+        </div>
+        <div class="page-break"></div>
+        <div class="section">
+            <h2>Asistentes:</h2>
+            <div class= "table">
+            <table class="asistentes">
+                <tr>
+                    <th>Participante</th>
+                    <th>Institución</th>
+                    <th>Doc de identidad</th>
+                    <th>Cargo</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                </tr>
+                ${reunion['asistencia reunion'].map(asistente => `
+                <tr>
+                    <td>${asistente.participante}</td>
+                    <td>${asistente.institucion}</td>
+                    <td>${asistente.doc_identidad}</td>
+                    <td>${asistente.cargo}</td>
+                    <td>${asistente.telefono}</td>
+                    <td>${asistente.correo}</td>
+                </tr>
+                `).join('')}
+            </table>
+            </div>
+        </div>
+        <div class="section">
+            <h2>
+            <b>Generado por Reutrack el: </b>${moment().format('DD/MM/YYYY HH:mm')}
+            </h2>
+        </div>
+    </main>
+</body>
     </html>
         `
         const browser = await puppeteer.launch();
@@ -435,6 +439,7 @@ exports.generatePDF = async (req, res) => {
             footerTemplate: `
             <div style="width: 100%; text-align: center; margin-top: 20px; opacity: 0.5;">
                 <img src="data:image/png;base64,${base64Logo2}" style="width: 40%; margin: 0 auto;">
+                <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
             </div>
             `,
             pageRanges: '1-999'

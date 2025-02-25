@@ -16,7 +16,7 @@ exports.getOne = async (req,res) => {
 }
 
 exports.index = async (req, res) => {
-    const limit = parseInt(req.query.limit) || 5
+    const limit = parseInt(req.query.limit) || null
     const page = parseInt(req.query.page) || 1
     
     try {

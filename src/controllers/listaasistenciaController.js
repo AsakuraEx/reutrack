@@ -18,12 +18,14 @@ exports.create = async (req, res) => {
     const {participante, institucion, doc_identidad, cargo, telefono, correo, id_reunion} = req.body;
     try {
         const newListaAsistencia = await db.listaasistencia.create({
-            participante,
-            institucion,
-            cargo,
+            participante: participante.split(' ').map(
+                word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' '),
+            institucion: institucion.toUpperCase(),
+            cargo: cargo.split(' ').map(
+                word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' '),
             doc_identidad,
             telefono,
-            correo,
+            correo: correo.toLowerCase(),
             id_reunion,
         });
         res.status(HttpCode.HTTP_CREATED).json(newListaAsistencia);
