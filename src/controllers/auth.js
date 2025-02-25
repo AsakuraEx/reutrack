@@ -16,7 +16,16 @@ exports.login = async (req, res) => {
             return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Usuario no encontrado'})
         }
         if(bcrypt.compareSync(password, user.password)){
-            const token = jwt.sign({id: user.id}, process.env.SECRET_ACCESS_TOKEN, {expiresIn: "12h"})
+            await accessToken.destroy({
+                where: {id_usuario: user.id}
+            })
+            const token = jwt.sign({
+                id: user.id,
+                id_usuario: user.id,
+                nombre: user.nombre,
+                id_rol: user.id_rol,
+                first_session: user.first_session
+            }, process.env.SECRET_ACCESS_TOKEN, {expiresIn: "12h"})
             await accessToken.create(
                 {
                     id_usuario: user.id,
@@ -28,6 +37,7 @@ exports.login = async (req, res) => {
                 attributes: ['id','nombre','id_rol'],
                 where: {email: email},
             })
+
             res.status(HttpCode.HTTP_OK).json({
                 usuario: user,
                 token: token,
