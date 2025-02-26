@@ -1,63 +1,145 @@
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const speakeasy = require('speakeasy'); 
+const nodemailer = require('nodemailer'); 
 
-const accessToken = db.personal_access_token
+const accessToken = db.personal_access_token;
+
+const transporter = nodemailer.createTransport({
+    service: process.env.MAIL_SERVICE,
+    host: process.env.MAIL_HOST,
+    port: process.env.MAIL_PORT,
+    auth: {
+        user: process.env.MAIL_USER, 
+        pass: process.env.MAIL_PASS,
+    }
+});
+
+// Function to send 2FA code via email
+exports.send2FACode = async function send2FACode(user) {
+    try {
+        let secret = user.two_factor_secret;
+
+        // Si el usuario no tiene un secreto 2FA, generarlo y guardarlo
+        if (!secret) {
+            const newSecret = speakeasy.generateSecret();
+            secret = newSecret.base32;
+            await db.users.update({ two_factor_secret: secret }, { where: { id: user.id } });
+        }
+        
+        const code = speakeasy.totp({
+            secret: secret,
+            encoding: process.env.TWO_FACTOR_ENCODING,
+            window: process.env.TWO_FACTOR_WINDOW,
+            step: process.env.TWO_FACTOR_STEP, 
+          });
+              
+        // Send the 2FA code via email
+        const mailOptions = {
+            from: process.env.MAIL_USER,
+            to: user.email,
+            subject: 'Your 2FA Code',
+            text: `Your 2FA code is: ${code}`,
+        };
+        await db.users.update({ 
+            two_factor_secret: secret.base32,
+        },
+            { where: { id: user.id } 
+          });
+
+        await transporter.sendMail(mailOptions);
+        return 
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
 
 exports.login = async (req, res) => {
     try {
-        const {email, password} = req.body
-        let user = await db.users.findOne({
-            where: {email: email}
-        })
-    
+        const { email, password } = req.body;
+
+        let user = await db.users.findOne({ where: { email: email }});
+
         if (!user) {
-            return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Usuario no encontrado'})
+            return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Usuario no encontrado' });
         }
-        if(bcrypt.compareSync(password, user.password)){
-            await accessToken.destroy({
-                where: {id_usuario: user.id}
-            })
+        if (bcrypt.compareSync(password, user.password)) {
+            // Generate and send 2FA code
+            await this.send2FACode(user);
+            res.status(HttpCode.HTTP_OK).json({exito: "El codigo de verificacion se ha enviado al correo"});
+        } else {
+            return res.status(HttpCode.HTTP_UNAUTHORIZED).json({ error: 'Credenciales incorrectas' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
+};
+
+exports.verify2fa = async (req, res) => {
+    try {
+        const { email, code } = req.body; 
+        
+        let user = await db.users.findOne({where: { email: email }});
+        
+        if (!user || !user.two_factor_secret) {
+            return res.status(400).json({ error: "Usuario no encontrado o 2FA no configurado" });
+        }
+        
+        const verified = speakeasy.totp.verify({
+            secret: user.two_factor_secret,
+            token: code,
+            encoding: process.env.TWO_FACTOR_ENCODING,
+            window: process.env.TWO_FACTOR_WINDOW,
+            step: process.env.TWO_FACTOR_STEP,
+          });
+          
+        if (verified) {
+            await accessToken.destroy({where: { id_usuario: user.id }});
+            await db.users.update({ two_factor_secret: null},{ where: { id: user.id }});
+            
             const token = jwt.sign({
                 id: user.id,
                 nombre: user.nombre,
                 id_rol: user.id_rol,
                 first_session: user.first_session
-            }, process.env.SECRET_ACCESS_TOKEN, {expiresIn: "12h"})
-            await accessToken.create(
-                {
-                    id_usuario: user.id,
-                    token: token,
-                    expires_in: new Date(Date.now() + (12 * 60 * 60 * 1000)) // Updated to 12 hours
-                }
-            )
+            }, 
+            process.env.SECRET_ACCESS_TOKEN, 
+            { expiresIn: "12h" });
+            
+            await accessToken.create({ 
+                // Remove the two-factor authentication secret after token creation
+                id_usuario: user.id,
+                token: token,
+                expires_in: new Date(Date.now() + (12 * 60 * 60 * 1000)) // Updated to 12 hours
+            });
+            
             res.status(HttpCode.HTTP_OK).json({
                 token: token,
-            })
-        }
-        else {
-            return res.status(HttpCode.HTTP_UNAUTHORIZED).json({ error: 'Credenciales incorrectas' })
+            });
+        } else {
+            res.status(HttpCode.HTTP_UNAUTHORIZED).json({ error: 'Código de autenticación incorrecto' });
         }
     } catch (error) {
-        console.error(error)
+        console.error(error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
 
-exports.logout = (req, res) => {
-    const usuario = req.body.id
+exports.logout = async (req, res) => {
     try {
-        accessToken.destroy({
-            where: {id_usuario: usuario}
-        })
+        const usuario = req.body.id;
+        await accessToken.destroy({
+            where: { id_usuario: usuario }
+        });
         res.status(200).json({ message: 'You are logged out!' });
     } catch (err) {
-        console.log(err)
         res.status(500).json({
-        status: 'error',
-        message: 'Internal Server Error',
+            status: 'error',
+            message: 'Internal Server Error',
         });
     }
-    res.end();
 }

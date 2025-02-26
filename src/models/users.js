@@ -96,7 +96,12 @@ module.exports = (sequelize, DataTypes) => {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  }, {
+  two_factor_secret: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  },
+  {
     sequelize: db,
     freezeTableName: true,
     modelName: 'users',
