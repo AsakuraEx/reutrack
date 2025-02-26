@@ -154,6 +154,13 @@ exports.index = async (req, res) => {
                     as: 'version',
                     attributes: ['nombre'],
                     required: true,
+                    include: [
+                        {
+                            model: db.proyecto,
+                            as: 'proyecto',
+                            attributes: ['nombre'],
+                        }
+                    ]
                 },
                 { model: db.ctl_estado,
                     as: 'estado',

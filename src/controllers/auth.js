@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const speakeasy = require('speakeasy'); 
 const nodemailer = require('nodemailer'); 
+const path = require('path');
 
 const accessToken = db.personal_access_token;
 
@@ -40,9 +41,33 @@ exports.send2FACode = async function send2FACode(user) {
         const mailOptions = {
             from: process.env.MAIL_USER,
             to: user.email,
-            subject: 'Your 2FA Code',
-            text: `Your 2FA code is: ${code}`,
+            subject: 'REUTRACK - Código de autenticación',
+            html: `
+                <div style="text-align: center; font-family: Arial, sans-serif;">
+                    <div style="background-color: #f9f9f9; border-radius: 10px">
+                        <img src="cid:logo_reutrack" style="width: 300px;">
+                    </div>    
+                    <div style="background-color: #F6EDFF; border-radius: 10px; margin-top: 12px; padding-top:8px; padding-bottom: 8px">
+                        <h2>Su código de autenticación</h2>
+                        <center>
+                            <div style="width: 6.5rem;">
+                                <p style="font-size: 24px; font-weight: bold; color: #A855F7; border: 2px solid #A855F7; ">${code}</p>
+                            </div>
+                        </center>
+                        
+                        <p>Ingrese este código en la plataforma para continuar con su autenticación.</p>
+                    </div>
+                </div>
+            `,
+            attachments: [
+                {
+                    filename: 'Logo-reutrack-fondo-blanco.png',
+                    path: path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png'), 
+                    cid: 'logo_reutrack'
+                }
+            ]
         };
+        
         await db.users.update({ 
             two_factor_secret: secret.base32,
         },
