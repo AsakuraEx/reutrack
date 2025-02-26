@@ -21,7 +21,6 @@ exports.login = async (req, res) => {
             })
             const token = jwt.sign({
                 id: user.id,
-                id_usuario: user.id,
                 nombre: user.nombre,
                 id_rol: user.id_rol,
                 first_session: user.first_session
@@ -33,13 +32,7 @@ exports.login = async (req, res) => {
                     expires_in: new Date(Date.now() + (12 * 60 * 60 * 1000)) // Updated to 12 hours
                 }
             )
-            user = await db.users.findOne({
-                attributes: ['id','nombre','id_rol'],
-                where: {email: email},
-            })
-
             res.status(HttpCode.HTTP_OK).json({
-                usuario: user,
                 token: token,
             })
         }
