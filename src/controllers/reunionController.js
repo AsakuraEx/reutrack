@@ -398,9 +398,9 @@ exports.generatePDF = async (req, res) => {
                 <tr>
                     <td>${asistente.participante}</td>
                     <td>${asistente.institucion}</td>
-                    <td>${asistente.doc_identidad}</td>
+                    <td>${asistente.doc_identidad || '-'}</td>
                     <td>${asistente.cargo}</td>
-                    <td>${asistente.telefono}</td>
+                    <td>${asistente.telefono || '-'}</td>
                     <td>${asistente.correo}</td>
                 </tr>
                 `).join('')}
