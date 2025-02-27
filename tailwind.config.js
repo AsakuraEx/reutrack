@@ -13,7 +13,7 @@ export default {
         'roboto': ["Roboto", "serif"],
       },
       backgroundImage: {
-        'login': "url('../public/images/bg-login.jpg')"
+        'login': "url('../images/bg-login.jpg')"
       }
     },
   },

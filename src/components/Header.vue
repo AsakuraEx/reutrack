@@ -26,7 +26,7 @@ onUnmounted(()=>{
     <header class="flex flex-col md:flex-row items-center items md:justify-between px-8 py-4 text-white gap-12">
             
         <RouterLink :to="{name: 'home'}" class="font-['roboto'] text-2xl font-extrabold">
-            <img src="/public/images/Logo-reutrack-fondo-negro.svg" alt="" class="max-w-52">
+            <img src="/images/Logo-reutrack-fondo-negro.svg" alt="" class="max-w-52">
         </RouterLink>
 
         <ul class="flex flex-col md:flex-row gap-4 text-lg justify-center items-center">

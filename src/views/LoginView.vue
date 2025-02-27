@@ -4,7 +4,7 @@
         <div class="max-w-[420px] min-w-32 mx-auto bg-white border shadow-md py-8 px-4 space-y-4">
 
             <div>
-                <img src="/public/images/Logo-reutrack-fondo-blanco.svg" alt="">
+                <img src="/images/Logo-reutrack-fondo-blanco.svg" alt="">
                 <h2 class="text-gray-600 font-light text-center">Control y gestión de reuniones y asistencia</h2>
             </div>
 

@@ -1,6 +1,6 @@
 <template>
     <div class="h-screen flex flex-col md:flex-row gap-2 justify-center items-center">
-        <img src="/public/images/Reulito-2.svg" alt="" class="w-1/4">
+        <img src="/images/Reulito-2.svg" alt="" class="w-1/4">
         <div class="block">
             <h1 class="text-5xl font-black text-purple-500 mb-4 text-center uppercase">La página que buscas, no existe...</h1>
             <h2 class="font-black leading-3 text-xl text-center">Verifíca la URL a la que intentas acceder y vuelve a intentarlo.</h2>

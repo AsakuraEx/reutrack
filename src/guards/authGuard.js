@@ -1,6 +1,14 @@
 const authGuard = (to, from, next) => {
     const isAuthenticated = !!sessionStorage.getItem('token'); //Verifica si hay un token
 
+    if(to.name === 'home'){
+        if(!isAuthenticated){
+            next({name: 'login'})
+        }else {
+            next()
+        }
+    }
+
     if (to.meta.requiresAuth && !isAuthenticated) {
         next({ name: 'NoAutenticado' }) // Redirige al login si no está autenticado
       } else {

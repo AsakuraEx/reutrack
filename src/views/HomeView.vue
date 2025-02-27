@@ -60,7 +60,7 @@
               </span>
           </div>
           <img 
-              src="/public/images/Reulito-4.svg" 
+              src="/images/Reulito-4.svg" 
               alt="imagen de perfil"
               class="rounded-full aspect-square object-cover max-w-72 lg:max-w-lg"
           >
