@@ -117,9 +117,6 @@ exports.index = async (req, res) => {
         if (id_version) {
             whereClause.id_version = id_version;
         }
-        if (id_proyecto) {
-            whereClause.id_proyecto = id_proyecto;
-        }
         if (id_estado) {
             whereClause.id_estado = id_estado;
         }
@@ -156,9 +153,10 @@ exports.index = async (req, res) => {
                     required: true,
                     include: [
                         {
-                            model: db.proyecto,
-                            as: 'proyecto',
-                            attributes: ['nombre'],
+                        model: db.proyecto,
+                        as: 'proyecto',
+                        attributes: ['nombre'],
+                        where: id_proyecto ? { id: id_proyecto } : {}
                         }
                     ]
                 },

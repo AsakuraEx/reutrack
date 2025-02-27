@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const speakeasy = require('speakeasy'); 
 const nodemailer = require('nodemailer'); 
 const path = require('path');
+const { error } = require('console');
 
 const accessToken = db.personal_access_token;
 
@@ -89,17 +90,16 @@ exports.login = async (req, res) => {
         let user = await db.users.findOne({ where: { email: email }});
 
         if (!user) {
-            return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Usuario no encontrado' });
+            return res.status(HttpCode.HTTP_OK).json({ error: 'Usuario no encontrado' });
         }
         if (bcrypt.compareSync(password, user.password)) {
             // Generate and send 2FA code
             await this.send2FACode(user);
-            res.status(HttpCode.HTTP_OK).json({exito: "El codigo de verificacion se ha enviado al correo"});
+            res.status(HttpCode.HTTP_OK).json({exito: 'Se ha enviado un código a su correo electronico registrado'});
         } else {
-            return res.status(HttpCode.HTTP_UNAUTHORIZED).json({ error: 'Credenciales incorrectas' });
+            return res.status(HttpCode.HTTP_OK).json({ error: 'Credenciales incorrectas' });
         }
     } catch (error) {
-        console.error(error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 };
@@ -111,7 +111,7 @@ exports.verify2fa = async (req, res) => {
         let user = await db.users.findOne({where: { email: email }});
         
         if (!user || !user.two_factor_secret) {
-            return res.status(400).json({ error: "Usuario no encontrado o 2FA no configurado" });
+            return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: "Usuario no encontrado o 2FA no configurado" });
         }
         
         const verified = speakeasy.totp.verify({
@@ -146,7 +146,7 @@ exports.verify2fa = async (req, res) => {
                 token: token,
             });
         } else {
-            res.status(HttpCode.HTTP_UNAUTHORIZED).json({ error: 'Código de autenticación incorrecto' });
+            res.status(HttpCode.HTTP_OK).json({ error: 'Código de autenticación incorrecto o caducado' });
         }
     } catch (error) {
         console.error(error);
