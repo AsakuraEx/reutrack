@@ -7,13 +7,15 @@
     import Footer from '@/components/Footer.vue';
     import { useProyectoStore } from '@/stores/proyectos';
     import Paginacion from '@/components/Paginacion.vue';
+    import { jwtDecode } from 'jwt-decode';
 
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiGit, mdiPlus } from '@mdi/js';
 
     const path2 = mdiPlus
     const path = mdiGit
-    const usuarioRol = sessionStorage.getItem('rol')
+    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const usuarioRol = decoded.id_rol
     //definición de variables
     const arrayProyectos = ref([]);
     const paginacion = ref({})
@@ -23,11 +25,6 @@
         Finalizado: 'bg-blue-200 text-blue-800',
         Cancelado: 'bg-red-200 text-red-800'
     }
-
-    const claseEstado = (estado) => {
-        return `${estados[estado]}`
-    }
-
     
     onMounted(async ()=>{
         const response = await store.mostrarProyectos(null, 10, 1);
@@ -114,6 +111,7 @@
                 :paginacion="paginacion"
                 @siguiente="siguiente"
                 @anterior="anterior"
+                :control="control"
             />
         </div>
 

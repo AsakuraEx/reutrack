@@ -23,10 +23,13 @@
     const encargados = ref([])
     const minuta = ref({})
     const usuarioRol = sessionStorage.getItem('rol')
+    const pdf = ref('')
 
     const store = useReunionStore()
     const route = useRoute()
     const router = useRouter()
+
+    const baseURL = import.meta.env.VITE_BASE_URL
 
     const { id } = route.params
 
@@ -37,6 +40,7 @@
         acuerdos.value = await store.obtenerAcuerdos(id)
         asistencia.value = await store.obtenerParticipantes(id)
         minuta.value = await store.obtenerMinuta(id)
+        pdf.value = baseURL + `/reuniones/pdf/${id}`
     })
 
 
@@ -58,7 +62,7 @@
     }
 
     const generarPDF = async () => {
-        window.location.replace(`http://10.100.122.209:3000/api/reuniones/pdf/${id}`)
+        window.location.replace(`http://10.168.241.44:3000/api/reuniones/pdf/${id}`)
     }
 </script>
 
@@ -73,7 +77,7 @@
             @click="generarPDF()"
         >
             <svg-icon type="mdi" :path="path1"></svg-icon>
-            Generar PDF
+            Descargar PDF
         </button>
 
     </div>

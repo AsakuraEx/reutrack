@@ -2,13 +2,14 @@
 import Header from '@/components/Header.vue';
 import Textfield from '@/components/Textfield.vue';
 import { useUsuarioStore } from '@/stores/usuarios';
+import { jwtDecode } from 'jwt-decode';
 import { uid } from 'uid';
 import { onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const store = useUsuarioStore()
 const error = ref('');
-const usuarioRol = sessionStorage.getItem('rol')
+const decoded = jwtDecode(sessionStorage.getItem('token'))
 const router = useRouter();
 const usuarioNuevo = reactive({
     nombre: '',
@@ -17,9 +18,10 @@ const usuarioNuevo = reactive({
 })
 
 onMounted(()=>{
-    // if(usuarioRol != 1){
-    //     router.push({name: 'home'})
-    // }
+    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    if(decoded.id_rol != 1){
+        router.push({name: 'home'})
+    }
 
 })
 
@@ -47,7 +49,7 @@ const crearUsuario = async (data) => {
 
 <template>
     
-    <Header :rol="usuarioRol" />
+    <Header :rol="decoded.id_rol" />
     
     <div class="container mx-auto px-4 mt-16 min-h-screen">
 

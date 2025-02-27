@@ -10,6 +10,7 @@
     import Footer from '@/components/Footer.vue';
     import Stepper from '@/components/Stepper.vue';
     import { ErrorMessage, Field, Form } from 'vee-validate';
+    import { jwtDecode } from 'jwt-decode';
 
     //definición de variables
     const store = useProyectoStore()
@@ -18,14 +19,13 @@
     const reunion = ref({})
     const arrayVersiones = ref([]);
     const arrayProyectos = ref([])
-    const usuarioRol = sessionStorage.getItem('rol')
-    const usuarioId = sessionStorage.getItem('id')
+    const decoded = jwtDecode(sessionStorage.getItem('token'))
     const formData = reactive({
         id_proyecto: '',
         id_version: '',
         nombre: '',
         lugar: '',
-        id_usuario: usuarioId,
+        id_usuario: decoded.id,
         codigo: '',
         expiracion: '',
         id_estado: 1
@@ -87,7 +87,7 @@
 
 <template>
     
-    <Header :rol="usuarioRol"/>
+    <Header :rol="decoded.id_rol"/>
 
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>

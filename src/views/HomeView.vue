@@ -1,6 +1,6 @@
 <script setup>
 
-    import {RouterLink, useRouter} from 'vue-router'
+    import {RouterLink} from 'vue-router'
     import Header from '../../src/components/Header.vue'
     import Footer from '../../src/components/Footer.vue'
     import CardIndex from '@/components/CardIndex.vue';
@@ -8,30 +8,24 @@
     import { useReunionStore } from '@/stores/reuniones';
     import { useUsuarioStore } from '@/stores/usuarios';
     import { FrasesMotivadoras } from '@/assets/frases';
+    import { jwtDecode } from 'jwt-decode';
 
     const reuniones = ref([])
     const store = useReunionStore()
     const storeUs = useUsuarioStore()
-    const router = useRouter() 
     const usuario = ref({})
-    const usuarioId = sessionStorage.getItem('id')
     const arrayFrases = ref([]);
     const frase = ref({})
     
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
-
-        if(sessionStorage.getItem('session') === '1'){
-            router.push({name: 'contraseña'})
-        }
         
-        usuario.value = await storeUs.obtenerUsuario(usuarioId)
+        const decoded = jwtDecode(sessionStorage.getItem('token'))
+        console.log(decoded)
+        usuario.value = await storeUs.obtenerUsuario(decoded.id)
         MostrarFrase()
 
         if(usuario.value.id_rol != 1){
-            const response = await store.obtenerReuniones(3,3,null, null, usuarioId, 1)
+            const response = await store.obtenerReuniones(3,3,null, null, decoded.id, 1)
             reuniones.value = response.data
             
         } else {

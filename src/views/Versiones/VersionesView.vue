@@ -8,17 +8,18 @@
     import ModalFinalizar from '@/components/ModalFinalizar.vue';
     import ModalCancelar from '@/components/ModalCancelar.vue';
     import { useProyectoStore } from '@/stores/proyectos';
-    import { useRouter } from 'vue-router';
     import svgIcon from '@jamescoyle/vue-icon';
     import { mdiPlus } from '@mdi/js';
     import Paginacion from '@/components/Paginacion.vue';
+    import { jwtDecode } from 'jwt-decode';
+
     
     //definición de variables
     const path2 = mdiPlus
-    const router = useRouter()
     const route = useRoute()
     const store = useProyectoStore();
-    const usuarioRol = sessionStorage.getItem('rol')
+    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const usuarioRol = decoded.id_rol
 
     const { id } = route.params;
     const idProyecto = id;    
@@ -48,8 +49,9 @@
     onMounted(async ()=>{
         proyecto.value = await store.consultarProyecto(id)
         const response = await store.mostrarVersiones(id, null, 10, 1);
-        console.log(response)
+        console.log(response.data)
         arrayVersiones.value = response.data
+
         paginacion.value = response
     })
 
@@ -160,6 +162,7 @@
                 :paginacion="paginacion"
                 @anterior="anterior"
                 @siguiente="siguiente"
+                :control="control"
             />
 
             <!-- MODAL PARA FINALIZAR -->

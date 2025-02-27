@@ -33,9 +33,14 @@ export default {
         return api.post(`/auth/login`, {email:email, password:password})
     },
 
+    //Metodo para consumir el doble factor de autenticación
+    verify2FA(email, codigo){
+        return api.post(`/auth/verify-2fa`, {email:email, code:codigo})
+    },
+
     //Metodo para realizar el cierre de la sesión de la aplicación
-    cerrarSesion(idToken){
-        return api.post(`/auth/logout`, {id: idToken})
+    cerrarSesion(id){
+        return api.post(`/auth/logout`, {id: id})
     },
 
     //Modifica el estado del usuario (id) con el estado actual

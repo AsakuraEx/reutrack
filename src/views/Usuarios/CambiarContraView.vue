@@ -1,6 +1,6 @@
 <template>
     
-    <Header :rol="usuarioRol" v-if="!primeraSesion" />
+    <Header :rol="decoded.id_rol" v-if="!primeraSesion" />
     
     <h1 
         class="text-purple-300 font-extrabold text-center text-2xl uppercase"
@@ -122,7 +122,7 @@
 
 import Header from '@/components/Header.vue';
 import { useUsuarioStore } from '@/stores/usuarios';
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { Field, ErrorMessage, Form } from 'vee-validate';
 import Spinner from '@/components/Spinner.vue';
@@ -130,6 +130,7 @@ import Footer from '@/components/Footer.vue';
 
 import svgIcon from '@jamescoyle/vue-icon';
 import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js';
+import { jwtDecode } from 'jwt-decode';
 const path= mdiEyeOutline
 const path2 = mdiEyeOffOutline
 const passwordVisible = ref(false)
@@ -137,20 +138,13 @@ const passwordVisible2 = ref(false)
 const passwordVisible3 = ref(false)
 const spinnerActivo = ref(false)
 
-const usuarioRol = sessionStorage.getItem('rol')
-const usuarioId = sessionStorage.getItem('id')
+const decoded = jwtDecode(sessionStorage.getItem('token'))
 
 const router = useRouter()
 const store = useUsuarioStore()
 
-const sesion = ref({})
-
-onMounted(async ()=>{
-    sesion.value = await store.obtenerUsuario(usuarioId)
-})
-
 const primeraSesion = computed(()=>{
-    return Number(sesion.value.first_session) === 1
+    return Number(decoded.first_session) === 1
 })
 
 const error = ref("");
@@ -164,13 +158,13 @@ const formData = reactive({
 const cambiarContraseña = async () => {
     try{            
         spinnerActivo.value = true
-        error.value = await store.actualizarContraseña(usuarioId, formData.actual, formData.nueva, sesion.value.first_session)
+        error.value = await store.actualizarContraseña(decoded.id, formData.actual, formData.nueva, decoded.first_session)
         spinnerActivo.value = false
         if(error.value){
             return
         }
         alert('Se cerrará su sesión, inicie con su nueva contraseña.')
-        store.cerrarSesion(usuarioId)
+        store.cerrarSesion(decoded.id)
         router.push({name: 'login'})
     }catch(e){
         console.error(e)

@@ -48,6 +48,7 @@
 
     const cancelarVersion = async (id, proyecto) => {
         await store.cancelarVersion(id)
-        await emit('update:datos', await store.mostrarVersiones(proyecto))
+        const data = await store.mostrarVersiones(proyecto, null, 10, 1)
+        await emit('update:datos', data.data)
     }
 </script>

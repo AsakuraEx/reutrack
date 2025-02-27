@@ -2,13 +2,14 @@ import { defineStore } from "pinia";
 import apiServiceUsuarios from "@/services/apiServiceUsuarios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { jwtDecode } from "jwt-decode";
 
 export const useUsuarioStore = defineStore('usuarios', ()=>{
     
     const User = ref({})
 
     const router = useRouter()
-    const limiteInactividad = 15 * 60 * 1000; // 15 minutos
+    const limiteInactividad = 120 * 60 * 1000; // 15 minutos
     let inactividad = null;
 
     const errorInactividad = ref('')
@@ -78,19 +79,31 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
 
     async function iniciarSesion(email, password){
         try{
-            const {status, data} = await apiServiceUsuarios.iniciarSesion(email, password)
-            if(status === 200){
-                User.value = data.usuario
+            const response = await apiServiceUsuarios.iniciarSesion(email, password)
+            if(response.status === 200){
 
-                console.log(User.value)
-                if(User.value.id_estado === 5){
+                return response;
+            }
+            errorInactividad.value = ''
+        }catch(e){
+            console.error(e)
+        }
+    }
+
+    async function verify2FA(email, code){
+        try{
+            const {status, data} = await apiServiceUsuarios.verify2FA(email, code)
+            if(status === 200){
+
+                const decoded = jwtDecode(data.token)
+                
+                if(decoded.id_estado === 5){
                     const errores = "El usuario al que intenta acceder está deshabilitado."
         
                     return errores
                 }
     
                 sessionStorage.setItem('token', data.token)
-                sessionStorage.setItem('id', data.usuario.id)
 
                 return data;
             }
@@ -172,10 +185,10 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     } 
 
-    async function cerrarSesion(idToken){
+    async function cerrarSesion(id){
         try{
 
-            const { status } = await apiServiceUsuarios.cerrarSesion(idToken)
+            const { status } = await apiServiceUsuarios.cerrarSesion(id)
 
             if( status === 200) {
                 router.push({name: 'login'})
@@ -190,10 +203,10 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
-    async function cerrarSesionInactividad(){
+    async function cerrarSesionInactividad(id){
         try{
 
-            const { status } = await apiServiceUsuarios.cerrarSesion(idToken)
+            const { status } = await apiServiceUsuarios.cerrarSesion(id)
 
             if( status === 200) {
                 router.push({name: 'login'})
@@ -209,9 +222,11 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
 
     }
 
-    const reiniciarTiempo = () => {
+    const reiniciarTiempo = (id) => {
         clearTimeout(inactividad)
-        inactividad = setTimeout(cerrarSesionInactividad, limiteInactividad)
+        inactividad = setTimeout(()=>{
+            cerrarSesionInactividad(id)
+        }, limiteInactividad)
 
     }
 
@@ -241,6 +256,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         cancelarDeteccionActividad,
         reiniciarTiempo,
         errorInactividad,
-        User
+        User,
+        verify2FA
     }
 })

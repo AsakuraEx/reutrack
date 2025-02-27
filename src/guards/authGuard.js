@@ -1,5 +1,3 @@
-import router from "@/router";
-
 const authGuard = (to, from, next) => {
     const isAuthenticated = !!sessionStorage.getItem('token'); //Verifica si hay un token
 

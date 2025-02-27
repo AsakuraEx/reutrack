@@ -2,13 +2,14 @@
 import Header from '@/components/Header.vue';
 import Textfield from '@/components/Textfield.vue';
 import { useUsuarioStore } from '@/stores/usuarios';
+import { jwtDecode } from 'jwt-decode';
 import { uid } from 'uid';
 import { onMounted, ref, reactive } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const store = useUsuarioStore()
 const error = ref('');
-const usuarioRol = sessionStorage.getItem('rol')
+const decoded = jwtDecode(sessionStorage.getItem('token'))
 const router = useRouter();
 const route = useRoute();
 
@@ -40,7 +41,7 @@ const actualizarUsuario = async (id, data) => {
 
 <template>
     
-    <Header :rol="usuarioRol" />
+    <Header :rol="decoded.id_rol" />
     
     <div class="container mx-auto px-4 mt-16 min-h-screen">
 

@@ -5,30 +5,32 @@ import { RouterLink, useRouter } from 'vue-router';
 import { useUsuarioStore } from '@/stores/usuarios';
 import Paginacion from '@/components/Paginacion.vue';
 import Footer from '@/components/Footer.vue';
+import { jwtDecode } from 'jwt-decode';
 
 const store = useUsuarioStore();
 const listaUsuarios = ref([]);
-const usuarioActivo = sessionStorage.getItem('id');
+const usuarioActivo = ref(0)
 const router = useRouter();
 const paginacion = ref({})
 
 onMounted(async ()=>{
 
-    const rol = await store.obtenerUsuario(usuarioActivo)
-
-    if(rol.id_rol != 1){
+    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    usuarioActivo.value = decoded.id
+    const rol = decoded.id_rol
+    if(rol != 1){
         router.push({name: 'home'})
     }
 
     
-    const response = await store.mostrarUsuarios(null,5, 1)
+    const response = await store.mostrarUsuarios(null,10, 1)
         listaUsuarios.value = response.data
         paginacion.value = response
 })
 
 const cambiarEstado = async (id, estado) => {
     await store.cambiarEstado(id,estado);
-    const response = await store.mostrarUsuarios(null,5, 1)
+    const response = await store.mostrarUsuarios(null,10, 1)
     listaUsuarios.value = response.data
     paginacion.value = response
     
@@ -44,7 +46,7 @@ const siguiente = async () => {
         console.log("Ya no puede incrementar mas")
     }else{
         control.value++;
-        const response = await store.mostrarUsuarios(null,5, control.value)
+        const response = await store.mostrarUsuarios(null,10, control.value)
         listaUsuarios.value = response.data
         paginacion.value = response
     }
@@ -57,7 +59,7 @@ const anterior = async () => {
         console.log("Ya no puede decrementar mas")
     }else{
         control.value--;
-        const response = await store.mostrarUsuarios(null,5, control.value)
+        const response = await store.mostrarUsuarios(null,10, control.value)
         listaUsuarios.value = response.data
         paginacion.value = response
     }
@@ -118,6 +120,7 @@ const anterior = async () => {
                 :paginacion="paginacion"
                 @siguiente="siguiente"
                 @anterior="anterior"
+                :control="control"
             />
 
         </div>

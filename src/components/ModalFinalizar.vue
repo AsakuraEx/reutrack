@@ -62,7 +62,8 @@
 
     async function FinalizarVersion () {
         await store.finalizarVersion(props.version.id, campo.value)
-        await emit('update:datos', await store.mostrarVersiones(props.version.id_proyecto))
+        const data = await store.mostrarVersiones(props.version.id_proyecto, null, 10, 1)
+        await emit('update:datos', data.data)
         modalFinalizar.close()
         campo.value = ""
     }

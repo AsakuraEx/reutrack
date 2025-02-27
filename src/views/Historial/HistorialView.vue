@@ -2,42 +2,50 @@
 
     import Footer from '@/components/Footer.vue';
     import Header from '@/components/Header.vue';
-    import DatePicker from '@/components/DatePicker.vue';
     import CardHistorial from '@/components/CardHistorial.vue';
     import ModalCancelarReu from '@/components/ModalCancelarReu.vue';
     import Select2 from '@/components/Select2.vue';
     import { onMounted, reactive, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
-    import { useRouter } from 'vue-router';
     import { useProyectoStore } from '@/stores/proyectos';
     import Paginacion from '@/components/Paginacion.vue';
+    import { jwtDecode } from 'jwt-decode';
 
     const store = useReunionStore()
     const reuniones = ref([])
     const modal = ref({})
-    const usuarioRol = sessionStorage.getItem('rol')
-    const usuarioId = sessionStorage.getItem('id')
     const storePro = useProyectoStore()
     const proyectos = ref([])
 
+    let usuarioRol
+    let usuarioId
+
     const filtros = reactive({
-        proyecto: 0,
+        id_proyecto: 0,
+        desde: new Date().toISOString().split('T')[0],
+        hasta: new Date().toISOString().split('T')[0]
     })
 
     onMounted(async ()=>{
 
+        const decoded = jwtDecode(sessionStorage.getItem('token'))
+        usuarioRol = decoded.id_rol
+        usuarioId = decoded.id
+
         if(usuarioRol != 1){
-            const response = await store.obtenerReuniones(null,5,null, null, usuarioId, 1)
+            const response = await store.obtenerReuniones(null,10,null, null, usuarioId, 1, filtros)
             console.log(response)
             reuniones.value = response.data
             paginacion.value = response
         }else{
-            const response = await store.obtenerReuniones(null,5,null, null, null, 1)
+            const response = await store.obtenerReuniones(null,10,null, null, null, 1)
             console.log(response)
             reuniones.value = response.data
             paginacion.value = response
         }
-        proyectos.value = await storePro.mostrarProyectos()
+        const { data } = await storePro.mostrarProyectos(1,null,1)
+        proyectos.value = data
+        console.log(proyectos.value)
 
     })
 
@@ -53,13 +61,13 @@
 
             if(usuarioRol != 1){
                 control.value++;
-                const response = await store.obtenerReuniones(null,5,null, null, usuarioId, control.value)
+                const response = await store.obtenerReuniones(null,10,null, null, usuarioId, control.value)
                 console.log(response)
                 reuniones.value = response.data
                 paginacion.value = response
             } else {
                 control.value++;
-                const response = await store.obtenerReuniones(null,5,null, null, null, control.value)
+                const response = await store.obtenerReuniones(null,10,null, null, null, control.value)
                 console.log(response)
                 reuniones.value = response.data
                 paginacion.value = response
@@ -74,7 +82,7 @@
             console.log("Ya no puede decrementar mas")
         }else{
             control.value--;
-            const response = await store.obtenerReuniones(null,5,null, null, usuarioId, control.value)
+            const response = await store.obtenerReuniones(null,10,null, null, usuarioId, control.value)
             console.log(response)
             reuniones.value = response.data
             paginacion.value = response
@@ -84,12 +92,12 @@
     const cancelarReunion = async (id) => {
         await store.cancelarReunion(id)
         if(usuarioRol != 1){
-            const response = await store.obtenerReuniones(null,5,null, null, usuarioId, control.value)
+            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, usuarioId, control.value)
             console.log(response)
             reuniones.value = response.data
             paginacion.value = response
         } else {
-            const response = await store.obtenerReuniones(null,5,null, null, null, control.value)
+            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, null, control.value)
             console.log(response)
             reuniones.value = response.data
             paginacion.value = response
@@ -103,19 +111,21 @@
     const filtrarReuniones = async () => {
 
         if(usuarioRol != 1){
-            const response = await store.obtenerReuniones(null,5,null, null, usuarioId, control.value)
+            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, usuarioId, control.value)
             console.log(response)
             reuniones.value = response.data
             paginacion.value = response
         } else {
-            const response = await store.obtenerReuniones(null,5,null, null, null, control.value)
+            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, null, control.value)
             console.log(response)
             reuniones.value = response.data
             paginacion.value = response
         }
 
         Object.assign(filtros, {
-            proyecto: 0
+            id_proyecto: 0,
+        desde: new Date().toISOString().split('T')[0],
+        hasta: new Date().toISOString().split('T')[0]
         })
     }
 
@@ -130,28 +140,42 @@
             Historial de Reuniones
         </h1>
     
-        <!-- <div class="flex flex-col lg:flex-row gap-2">
+        <div class="flex flex-col lg:flex-row gap-2">
 
             <Select2 
                 :label="'Proyecto'" 
                 :opciones="proyectos" 
-                v-model:campo="filtros.proyecto"
+                v-model:campo="filtros.id_proyecto"
                 :requerido="false"/>
 
-            <DatePicker 
-                :label="'Desde'" 
-            />
-            
+                <div class="flex flex-col w-full">
+                    <label class="text-xl">Desde:</label>
+                    <input 
+                        type="date" 
+                        onclick="this.showPicker()" 
+                        class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
+                        :max="filtros.hasta"
+                        v-model="filtros.desde"
+                    >
+                </div>
 
-            <DatePicker 
-                :label="'Hasta'" 
-            />
+                <div class="flex flex-col w-full">
+                    <label class="text-xl">Hasta:</label>
+                    <input 
+                        type="date" 
+                        onclick="this.showPicker()" 
+                        class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
+                        :min="filtros.desde"
+                        v-model="filtros.hasta"
+                    >
+                </div>
+        
 
             <div class="flex lg:w-1/5 justify-end gap-2 items-end">
                 <button class="bg-slate-300 w-full hover:bg-slate-500 h-fit font-bold text-black px-4 py-2 rounded" @click="filtrarReuniones()">Filtrar</button>
             </div>
 
-        </div> -->
+        </div>
 
         <!-- LISTADO DE CARDS-->
         <div class="flex flex-col gap-3">
@@ -171,6 +195,7 @@
             :paginacion="paginacion"
             @anterior="anterior"
             @siguiente="siguiente"
+            :control="control"
         />
 
         <ModalCancelarReu 

@@ -2,15 +2,16 @@
 import { RouterLink } from 'vue-router'
 import { useUsuarioStore } from '@/stores/usuarios';
 import { onMounted, onUnmounted, ref } from 'vue';
+import { jwtDecode } from 'jwt-decode';
 
 const store = useUsuarioStore()
-const id = sessionStorage.getItem('id')
 const usuario = ref({})
+const decoded = jwtDecode(sessionStorage.getItem('token'))
 
 onMounted(async ()=>{
+    store.reiniciarTiempo(decoded.id)
     store.detectarActividad()
-    store.reiniciarTiempo()
-    usuario.value = await store.obtenerUsuario(id)
+    usuario.value = await store.obtenerUsuario(decoded.id)
 })
 
 onUnmounted(()=>{
@@ -47,7 +48,7 @@ onUnmounted(()=>{
             <RouterLink v-if="usuario.id_rol === 1"  :to="{name: 'usuarios'}" class="hover:text-purple-300 transition-colors duration-300">
                 Usuarios
             </RouterLink>
-            <button @click="store.cerrarSesion(id)" class="hover:text-purple-300 transition-colors duration-300">
+            <button @click="store.cerrarSesion(decoded.id)" class="hover:text-purple-300 transition-colors duration-300">
                 Cerrar Sesión
             </button>
         </ul>

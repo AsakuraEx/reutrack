@@ -7,17 +7,26 @@ export default {
     },
 
     //Puede consultar todas las reuniones de acuerdo al estado, código, proyecto o usuario
-    consultarReuniones(estado, limite, codigo, proyecto, usuario, page){
+    consultarReuniones(estado, limite, codigo, proyecto, usuario, page, desde, hasta){
         let url = '/reuniones?'
+        
+        //Agrega un limite a la URL base en caso que exista (Probablemente se elimine este parametro)
+        if(limite){
+            url = url + `limit=${limite}&`
+        }
 
+        if(page){
+            url = url + `page=${page}&`
+        }
+        
         //Agrega un estado a la URL base en caso que exista
         if(estado){
             url = url + `id_estado=${estado}&`
         }
 
-        //Agrega un limite a la URL base en caso que exista (Probablemente se elimine este parametro)
-        if(limite){
-            url = url + `limit=${limite}&`
+        //Agrega un usuario que generó a la URL base en caso que exista
+        if(usuario){
+            url = url + `id_usuario=${usuario}&`
         }
 
         //Agrega un codigo a la URL base en caso que exista
@@ -27,16 +36,17 @@ export default {
 
         //Agrega un proyecto a la URL base en caso que exista
         if(proyecto){
-            url = url + `proyecto=${proyecto}&`
+            url = url + `id_proyecto=${proyecto}&`
         }
 
-        //Agrega un usuario que generó a la URL base en caso que exista
-        if(usuario){
-            url = url + `id_usuario=${usuario}&`
+        //Agrega un proyecto a la URL base en caso que exista
+        if(desde){
+            url = url + `desde=${desde}&`
         }
 
-        if(page){
-            url = url + `page=${page}&`
+        //Agrega un proyecto a la URL base en caso que exista
+        if(hasta){
+            url = url + `hasta=${hasta}&`
         }
 
         return api.get(url)
@@ -53,7 +63,7 @@ export default {
 
     //Marca la reunión como cancelada y no puede realizar ninguna otra acción
     cancelarReunion(id){
-        return api.patch(`/reuniones/delete/${id}`, {estado: 2})
+        return api.patch(`/reuniones/cancelar/${id}`, {estado: 2})
     },
 
     //Consulta una reunión especifica mediante su id

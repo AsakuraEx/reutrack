@@ -6,18 +6,19 @@
     import Footer from '@/components/Footer.vue';
     import { useProyectoStore } from '@/stores/proyectos';
     import { useRoute, useRouter } from 'vue-router';
+    import { jwtDecode } from 'jwt-decode';
+
     const store = useProyectoStore()
     const router = useRouter()
     const route = useRoute()
-    const usuarioRol = sessionStorage.getItem('rol')
-    const usuarioId = sessionStorage.getItem('id')
+    const decoded = jwtDecode(sessionStorage.getItem('token'))
     const {id} = route.params
 
     const nuevaVersion = reactive({
         descripcion: "",
         nombre: "",
         id_estado: 1,
-        id_usuario: usuarioId,
+        id_usuario: decoded.id,
         id_proyecto: id,
         acta_aceptacion: null
     })
@@ -31,7 +32,7 @@
 
 <template>
     
-    <Header :rol="usuarioRol"/>
+    <Header :rol="decoded.id_rol"/>
 
     <div class="container mx-auto px-4 mt-16 min-h-[75vh]">
         <h1 class="text-purple-300 font-extrabold text-center text-2xl uppercase">Detalla la nueva versión</h1>
