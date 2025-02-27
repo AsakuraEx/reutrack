@@ -39,7 +39,7 @@
         
         
         if(control.value === paginacion.value.totalPages){
-            console.log("Ya no puede incrementar mas")
+            return
         }else{
             control.value++;
             const response = await store.mostrarProyectos(null, 10, control.value);
@@ -51,13 +51,11 @@
     const anterior = async () => {
         
         if(control.value === 1){
-            console.log("Ya no puede decrementar mas")
+            return
         }else{
             control.value--;
-            console.log(control.value)
             const response = await store.mostrarProyectos(null, 10, control.value);
             arrayProyectos.value = response.data
-            console.log(response.data)
             paginacion.value = response
         }
     }
@@ -107,14 +105,14 @@
                 </tbody>
             </table>
 
-            <Paginacion 
-                :paginacion="paginacion"
-                @siguiente="siguiente"
-                @anterior="anterior"
-                :control="control"
-            />
         </div>
-
+        
+        <Paginacion 
+            :paginacion="paginacion"
+            @siguiente="siguiente"
+            @anterior="anterior"
+            :control="control"
+        />
     </div>
 
     <Footer />

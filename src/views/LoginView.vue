@@ -269,7 +269,6 @@
 
         }catch(e){
             error.value = 'El usuario no fue encontrado o las credenciales son incorrectas'
-            console.log(e)
         } finally {
             spinnerActivo.value = false
 

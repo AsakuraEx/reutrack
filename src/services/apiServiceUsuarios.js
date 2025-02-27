@@ -59,7 +59,6 @@ export default {
 
     //Metodo para actualizar la contraseña del usuario
     actualizarContraseña(id, old, password, first_session){
-        console.log('CONSUMIENDO EL ENDPOINT')
         return api.patch(`/usuarios/updatepassword`, {
             id_usuario:id, 
             oldpassword: old,

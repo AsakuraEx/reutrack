@@ -55,7 +55,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         try{
             const {status} = await apiServiceUsuarios.cambiarEstado(id, estado);
             if(status === 200){
-                console.log("Estado actualizado")
+                
             }
 
         }catch(e){
@@ -67,7 +67,6 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         try{
             const {status, data} = await apiServiceUsuarios.getUsuarios(4,null,1);
             if(status === 200){
-                console.log(data)
                 return data.data;
             }
 
@@ -139,7 +138,6 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
             if(status === 200){
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡Se actualizó la contraseña!'
-                console.log(data)
                 setTimeout(()=>{
                     message.value.tipo = "",
                     message.value.mensaje = ""

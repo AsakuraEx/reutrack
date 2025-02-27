@@ -33,19 +33,16 @@
         usuarioId = decoded.id
 
         if(usuarioRol != 1){
-            const response = await store.obtenerReuniones(null,10,null, null, usuarioId, 1, filtros)
-            console.log(response)
+            const response = await store.obtenerReuniones(null,10,null, null, usuarioId, 1)
             reuniones.value = response.data
             paginacion.value = response
         }else{
             const response = await store.obtenerReuniones(null,10,null, null, null, 1)
-            console.log(response)
             reuniones.value = response.data
             paginacion.value = response
         }
         const { data } = await storePro.mostrarProyectos(1,null,1)
         proyectos.value = data
-        console.log(proyectos.value)
 
     })
 
@@ -56,19 +53,17 @@
         
         
         if(control.value === paginacion.value.totalPages){
-            console.log("Ya no puede incrementar mas")
+            return
         }else{
 
             if(usuarioRol != 1){
                 control.value++;
-                const response = await store.obtenerReuniones(null,10,null, null, usuarioId, control.value)
-                console.log(response)
+                const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, usuarioId, control.value, filtros.desde, filtros.hasta)
                 reuniones.value = response.data
                 paginacion.value = response
             } else {
                 control.value++;
-                const response = await store.obtenerReuniones(null,10,null, null, null, control.value)
-                console.log(response)
+                const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, null, control.value, filtros.desde, filtros.hasta)
                 reuniones.value = response.data
                 paginacion.value = response
             }
@@ -79,26 +74,32 @@
     const anterior = async () => {
         
         if(control.value === 1){
-            console.log("Ya no puede decrementar mas")
+            return
         }else{
-            control.value--;
-            const response = await store.obtenerReuniones(null,10,null, null, usuarioId, control.value)
-            console.log(response)
-            reuniones.value = response.data
-            paginacion.value = response
+            if(usuarioRol != 1){
+                control.value--;
+                const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, usuarioId, control.value, filtros.desde, filtros.hasta)
+
+                reuniones.value = response.data
+                paginacion.value = response
+            } else {
+                control.value--;
+                const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, null, control.value, filtros.desde, filtros.hasta)
+
+                reuniones.value = response.data
+                paginacion.value = response
+            }
         }
     }
 
     const cancelarReunion = async (id) => {
         await store.cancelarReunion(id)
         if(usuarioRol != 1){
-            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, usuarioId, control.value)
-            console.log(response)
+            const response = await store.obtenerReuniones(null,10,null, null, usuarioId, control.value)
             reuniones.value = response.data
             paginacion.value = response
         } else {
-            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, null, control.value)
-            console.log(response)
+            const response = await store.obtenerReuniones(null,10,null, null, null, control.value)
             reuniones.value = response.data
             paginacion.value = response
         }
@@ -111,22 +112,33 @@
     const filtrarReuniones = async () => {
 
         if(usuarioRol != 1){
-            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, usuarioId, control.value)
-            console.log(response)
+            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, usuarioId, control.value, filtros.desde, filtros.hasta)
             reuniones.value = response.data
             paginacion.value = response
         } else {
-            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, null, control.value)
-            console.log(response)
+            const response = await store.obtenerReuniones(null,10,null, filtros.id_proyecto, null, control.value, filtros.desde, filtros.hasta)
             reuniones.value = response.data
             paginacion.value = response
         }
 
+    }
+
+    const reiniciarFiltros = async () => {
         Object.assign(filtros, {
             id_proyecto: 0,
-        desde: new Date().toISOString().split('T')[0],
-        hasta: new Date().toISOString().split('T')[0]
+            desde: new Date().toISOString().split('T')[0],
+            hasta: new Date().toISOString().split('T')[0]
         })
+
+        if(usuarioRol != 1){
+            const response = await store.obtenerReuniones(null,10,null, null, usuarioId, 1)
+            reuniones.value = response.data
+            paginacion.value = response
+        }else{
+            const response = await store.obtenerReuniones(null,10,null, null, null, 1)
+            reuniones.value = response.data
+            paginacion.value = response
+        }
     }
 
 </script>
@@ -172,7 +184,8 @@
         
 
             <div class="flex lg:w-1/5 justify-end gap-2 items-end">
-                <button class="bg-slate-300 w-full hover:bg-slate-500 h-fit font-bold text-black px-4 py-2 rounded" @click="filtrarReuniones()">Filtrar</button>
+                <button class="bg-purple-500 w-full hover:bg-purple-700 h-fit font-bold text-white px-4 py-2 rounded transition-colors duration-300" @click="filtrarReuniones()">Filtrar</button>
+                <button class="bg-slate-300 w-full hover:bg-slate-500 h-fit font-bold text-black hover:text-white px-4 py-2 rounded  transition-colors duration-300" @click="reiniciarFiltros()">Limpiar</button>
             </div>
 
         </div>

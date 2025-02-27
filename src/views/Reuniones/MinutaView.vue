@@ -90,7 +90,6 @@
     const handleBeforeUnload = (event) => {
         // Guarda la minuta antes de cerrar
         actualizarMinuta();
-        console.log("Aqui va el metodo de cierre de ventana...")
         // Activa el mensaje de confirmación del navegador
         event.preventDefault();
         event.returnValue = ''; // Requerido para algunos navegadores

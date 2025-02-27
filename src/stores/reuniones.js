@@ -23,7 +23,6 @@ export const useReunionStore = defineStore('reuniones', () => {
     async function obtenerUltimaReunion(){
         try{
             const response = await apiServiceReunion.consultarUltimaReunion()
-            console.log(response)
             if(response.status === 200){
                 return response.data;
             }
@@ -33,9 +32,9 @@ export const useReunionStore = defineStore('reuniones', () => {
     }
 
     //FUNCION QUE OBTIENE TODAS LAS REUNIONES
-    async function obtenerReuniones(estado, limite, codigo, proyecto, usuario, page){
+    async function obtenerReuniones(estado, limite, codigo, proyecto, usuario, page, desde, hasta){
         try{
-            const {status, data} = await apiServiceReunion.consultarReuniones(estado, limite, codigo, proyecto, usuario, page)
+            const {status, data} = await apiServiceReunion.consultarReuniones(estado, limite, codigo, proyecto, usuario, page, desde, hasta)
             if(status === 200){
                 return data;
             }
@@ -49,7 +48,7 @@ export const useReunionStore = defineStore('reuniones', () => {
 
         try{
             const { status } = await apiServiceReunion.guardarReunion(data)
-            console.log(status)
+
             if(status === 201){
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡La reunión se inicio exitosamente!'

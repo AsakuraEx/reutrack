@@ -20,7 +20,6 @@
     onMounted(async ()=>{
         
         const decoded = jwtDecode(sessionStorage.getItem('token'))
-        console.log(decoded)
         usuario.value = await storeUs.obtenerUsuario(decoded.id)
         MostrarFrase()
 
