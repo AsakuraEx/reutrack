@@ -103,7 +103,7 @@
                     type="text" 
                     name="dfa"
                     class="bg-white text-center border rounded-sm w-full w-max-[400px] p-2 text-black focus:outline focus:outline-purple-600"
-                    placeholder="Codigo 2FA"
+                    placeholder="Código 2FA"
                     v-model="dfa.codigo"
                 />
 
@@ -114,7 +114,7 @@
                     >
                         <Spinner v-if="spinnerActivo" />
                         <p v-if="!spinnerActivo">
-                            Ingresar Código
+                            Ingresar código
                         </p>
                     </button>
                     <button 
@@ -268,7 +268,10 @@
             }
 
         }catch(e){
-            error.value = 'El usuario no fue encontrado o las credenciales son incorrectas'
+            error.value = 'El código ingresado ya fue utilizado o no es válido.'
+            setTimeout(()=>{
+                error.value = ""
+            }, 2000)
         } finally {
             spinnerActivo.value = false
 

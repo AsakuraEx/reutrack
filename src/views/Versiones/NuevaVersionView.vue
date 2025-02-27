@@ -82,7 +82,7 @@
                 </button>
 
                 <RouterLink 
-                    :to="{name: 'proyectos'}"
+                    :to="{name: 'versiones', params:{id: id}}"
                     class="bg-slate-200 hover:bg-slate-100 text-black w-full py-2 transition-colors duration-150 font-bold rounded text-center"
                 >
                     Cancelar

@@ -178,6 +178,7 @@
                         onclick="this.showPicker()" 
                         class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
                         :min="filtros.desde"
+                        :max="new Date().toISOString().split('T')[0]"
                         v-model="filtros.hasta"
                     >
                 </div>

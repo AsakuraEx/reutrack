@@ -4,7 +4,7 @@
         <div class="w-[340px] lg:w-fit">
             <p class="text-xl font-bold">{{ titulo }}</p>
             <p class="font-light text-slate-300">Lugar de Reunion: <b>{{ lugar }}</b></p>
-            <span class="font-light italic">{{ fecha }}</span>
+            <span class="font-light italic">{{ transformarFecha(fecha) }}</span>
             <div 
                 class="w-fit px-3 py-1 rounded font-bold"
                 :class="claseEstado(estado.nombre)"
@@ -90,5 +90,21 @@
 
     defineEmits(['modal-mostrado'])
 
+    const transformarFecha = (fecha) => {
+        
+        const nuevaFecha = new Date(fecha)
+
+        const fechaFormateada = nuevaFecha.toLocaleString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',   // Hora en formato de dos dígitos
+            minute: '2-digit', // Minutos en formato de dos dígitos
+            second: '2-digit', // Segundos en formato de dos dígitos
+            hour12: true
+        });
+
+        return fechaFormateada
+    }
 
 </script>
