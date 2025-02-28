@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
 
@@ -17,21 +18,38 @@ exports.getOne = async (req,res) => {
 exports.index = async (req, res) => {
     const limit = parseInt(req.query.limit) || null
     const page = parseInt(req.query.page) || 1
+    const {estado} = req.query
 
+    const whereClause = {}
+    if(estado) {
+        whereClause.id_estado = estado
+    }
     try {
         const {count, rows} = await table.findAndCountAll({
+            
             attributes: {exclude: ['id_usuario','id_estado', 'updatedAt']},
+            distinct: true,
+            col: 'id',
             include: [
                 { model: db.users,
                     as: 'usuario',
                     attributes: ['nombre'],
                     required: true,
+                },
+                {
+                    model: db.version,
+                    as: 'version',
+                    attributes: [],
+                    required: true,
+                    where: whereClause,
                 }
             ],
+            
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],
         });
+
         const start = (page - 1) * limit + 1;
         const end = Math.min(start + rows.length - 1, count);
 
@@ -99,6 +117,7 @@ exports.create = async (req, res) => {
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
+
 exports.update = async (req, res) => {
     const { id } = req.params;
     const {
@@ -149,5 +168,3 @@ exports.finalizar = async (req, res) => {
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
-
-

@@ -15,7 +15,7 @@ exports.getOne = async (req,res) => {
 }
 
 exports.index = async (req, res) => {
-    const {id_proyecto} = req.query
+    const {id_proyecto, id_estado} = req.query
     const limit = parseInt(req.query.limit) || null
     const page = parseInt(req.query.page) || 1 
     try {
@@ -23,6 +23,10 @@ exports.index = async (req, res) => {
         if (id_proyecto) {
             whereClause.id_proyecto = id_proyecto;
         }
+        if (id_estado) {
+            whereClause.id_estado = id_estado;
+        }
+
         const {count, rows} = await table.findAndCountAll({
             attributes: {exclude: ['id_usuario','id_estado','id_proyecto', 'updatedAt']},
             include: [
@@ -66,7 +70,8 @@ exports.index = async (req, res) => {
 }
 
 exports.byProject = async (req, res) => {
-    let proyecto = req.params
+    let { proyecto, id_estado } = req.params
+
     if (!proyecto) {
         return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'Estado parameter is required' });
     }
@@ -91,7 +96,9 @@ exports.byProject = async (req, res) => {
                 }
             ],
             where: {
-                id_proyecto: Number(proyecto.id) 
+                id_proyecto: Number(proyecto.id),
+                ...(id_estado && { id_estado: id_estado })
+
             }
         });
         res.status(HttpCode.HTTP_OK).json(data);

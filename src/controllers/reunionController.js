@@ -120,42 +120,20 @@ exports.index = async (req, res) => {
         if (id_estado) {
             whereClause.id_estado = id_estado;
         }
+if (desde || hasta) {
+    whereClause.createdAt = {};
+    if (desde && hasta) {
+        whereClause.createdAt[Op.between] = [
+            moment(desde).startOf('day').toDate(), 
+            moment(hasta).endOf('day').toDate()
+        ]; 
+    } else if (desde) {
+        whereClause.createdAt[Op.gte] = moment(desde).startOf('day').toDate(); 
+    } else if (hasta) {
+        whereClause.createdAt[Op.lte] = moment(hasta).endOf('day').toDate(); 
+    }
+}
 
-        if (desde && hasta) {
-            const startOfDay = new Date(desde);
-            startOfDay.setHours(0, 0, 0);
-        
-            const endOfDay = new Date(hasta);
-            endOfDay.setHours(23, 59, 59);
-        
-            whereClause.createdAt = {
-                [Op.gte]: startOfDay,
-                [Op.lte]: endOfDay
-            };
-        } else if (desde) {
-            whereClause.createdAt = { [Op.gte]: new Date(desde) };
-        } else if (hasta) {
-            whereClause.createdAt = { [Op.lte]: new Date(hasta) };
-        }
-
-        if (id_usuario) {
-            const usuario = await db.users.findOne({
-                where: {id: id_usuario}
-            })
-            if(usuario.id_rol !== 1){
-                const encargados = await db.encargado.findAll({
-                    where: {id_usuario: id_usuario},
-                    attributes: ['id_reunion']
-                })
-                if(encargados.length > 0){
-                    whereClause.id = {
-                        [Op.in]: encargados.map(encargado => encargado.id_reunion)
-                    }
-                } else {
-                    return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'No se encontraron reuniones para este usuario' });
-                }
-            }
-        }       
 
         const {count, rows} = await db.reunion.findAndCountAll({
             attributes: {exclude: ['id_usuario', 'id_version', 'id_estado', 'updatedAt']},
