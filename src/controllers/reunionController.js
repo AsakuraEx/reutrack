@@ -107,7 +107,7 @@ exports.detalle = async (req, res) => {
 
 //Muestra todas las reuniones
 exports.index = async (req, res) => {
-    const {id_version, id_proyecto,id_estado, id_usuario} = req.query;
+    const {id_version, id_proyecto,id_estado, id_usuario, desde, hasta} = req.query;
 
     const limit = parseInt(req.query.limit) || null
     const page = parseInt(req.query.page) || 1
@@ -120,6 +120,24 @@ exports.index = async (req, res) => {
         if (id_estado) {
             whereClause.id_estado = id_estado;
         }
+
+        if (desde && hasta) {
+            const startOfDay = new Date(desde);
+            startOfDay.setHours(0, 0, 0);
+        
+            const endOfDay = new Date(hasta);
+            endOfDay.setHours(23, 59, 59);
+        
+            whereClause.createdAt = {
+                [Op.gte]: startOfDay,
+                [Op.lte]: endOfDay
+            };
+        } else if (desde) {
+            whereClause.createdAt = { [Op.gte]: new Date(desde) };
+        } else if (hasta) {
+            whereClause.createdAt = { [Op.lte]: new Date(hasta) };
+        }
+
         if (id_usuario) {
             const usuario = await db.users.findOne({
                 where: {id: id_usuario}
@@ -156,7 +174,7 @@ exports.index = async (req, res) => {
                         model: db.proyecto,
                         as: 'proyecto',
                         attributes: ['nombre'],
-                        where: id_proyecto ? { id: id_proyecto } : {}
+                        where: id_proyecto ? { id: id_proyecto } : undefined
                         }
                     ]
                 },
