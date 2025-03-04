@@ -13,15 +13,17 @@
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline } from '@mdi/js';
     import BtnSubmit from '@/components/BtnSubmit.vue';
+import { jwtDecode } from 'jwt-decode';
 
     const path = mdiTrashCanOutline;
 
     //store donde se almacena la logica de la vista
+    const decoded = jwtDecode(sessionStorage.getItem('token'))
     const error = ref('')
     const store = useUsuarioStore();
     const storeReu = useReunionStore();
     const route = useRoute();
-    const usuarioRol = sessionStorage.getItem('rol')
+    const usuarioRol = decoded.id_rol
 
     //variables o statements de la vista
     const arrayEncargados = ref([]);
@@ -35,6 +37,7 @@
 
     })
 
+
     //Funcion que monitorea cuando un array 
     const existenEncargados = computed(()=>{
         return listaEncargados.value.length > 0
@@ -44,7 +47,7 @@
         if(sessionStorage.getItem('token') == null){
             router.push({name: 'login'})
         }
-        
+
         arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
         listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
         reunion.value = await storeReu.obtenerReunion(idReunion)
@@ -59,7 +62,7 @@
             }, 3000)
             return;
         }else{
-            await storeReu.agregarEncargado(formData, id)   
+            await storeReu.agregarEncargado(formData)   
             listaEncargados.value = await storeReu.obtenerEncargados(id) 
     
             Object.assign(formData, {
@@ -73,6 +76,7 @@
     const eliminarEncargado = async (encargado) => {
         await storeReu.eliminarEncargado(encargado)
         listaEncargados.value = await storeReu.obtenerEncargados(id) 
+
     }
     
 
@@ -142,6 +146,7 @@
                             <td class="py-2">{{ encargado.usuario.nombre }}</td>
                             <td class="py-2">
                                 <button 
+                                    v-if="encargado.id_usuario!==reunion.id_usuario"
                                     class="bg-red-500 hover:bg-red-400 p-1 rounded"
                                     @click="eliminarEncargado(encargado.id)"
                                 >

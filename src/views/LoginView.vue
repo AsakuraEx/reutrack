@@ -222,6 +222,7 @@
 
         }catch(e){
             error.value = "Error de red"
+
         } finally {
             spinnerActivo.value = false
 
@@ -230,6 +231,10 @@
                 correo: '',
                 contraseña: ''
             })
+
+            setTimeout(()=>{
+                error.value = ""
+            },3000)
         }
     }
 
@@ -264,20 +269,21 @@
                 setTimeout(()=>{
                     error.value = ""
                 }, 3000)
-                exitoLogin.value = ""
+
             }
 
         }catch(e){
+            
             error.value = 'El código ingresado ya fue utilizado o no es válido.'
             setTimeout(()=>{
                 error.value = ""
             }, 2000)
+            
+
         } finally {
             spinnerActivo.value = false
 
             Object.assign(dfa, {
-                correo: '',
-                password: '',
                 codigo: ''
             })
         }

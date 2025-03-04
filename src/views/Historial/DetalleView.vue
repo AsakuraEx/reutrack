@@ -62,7 +62,7 @@
     }
 
     const generarPDF = async () => {
-        window.location.replace(`http://10.168.241.44:3000/api/reuniones/pdf/${id}`)
+        window.location.replace(pdf.value)
     }
 </script>
 

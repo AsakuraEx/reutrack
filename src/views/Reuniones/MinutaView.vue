@@ -273,7 +273,7 @@
             </RouterLink>
 
             <button 
-                v-if="minuta.minuta"
+                v-if="minuta.minuta.length >= 40"
                 type="button"
                 @click="finalizarReunion()"
                 class="bg-purple-500 hover:bg-purple-400 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center animate-pulse hover:animate-none"

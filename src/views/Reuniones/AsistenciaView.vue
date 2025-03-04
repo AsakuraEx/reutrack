@@ -7,7 +7,7 @@
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline } from '@mdi/js';
     import { useRoute, useRouter } from 'vue-router';
-    import { computed, onMounted, ref, watch } from 'vue';
+    import { computed, onMounted, ref, watch, reactive } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { Field, ErrorMessage, Form } from 'vee-validate';
 import AlertaError from '@/components/AlertaError.vue';
@@ -35,6 +35,10 @@ import AlertaError from '@/components/AlertaError.vue';
 
     //Variable que representa la lista de participantes
     const participantes = ref([]);
+    const modal = reactive({
+        id: '',
+        nombre: ''
+    })
     
     const extranjero = ref(false);
     const error = ref('')
@@ -108,6 +112,13 @@ import AlertaError from '@/components/AlertaError.vue';
         return participantes.value.length > 0;
     })
 
+    const modalMostrado = (id, participante) => {
+        Object.assign(modal, {
+            id: id,
+            nombre: participante
+        })
+    }
+
     watch(formData, ()=>{
         if (formData.value.doc_identidad.length === 8 && !formData.value.doc_identidad.includes('-')) {
             formData.value.doc_identidad += '-';
@@ -160,8 +171,8 @@ import AlertaError from '@/components/AlertaError.vue';
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.participante ? 'ring ring-red-500': ''"
                         v-model="formData.participante"
-                        maxLength="100"
-                        rules="required"
+                        maxLength="50"
+                        rules="required|alfanumeric"
                     />
                     <ErrorMessage name="participante" class="text-red-500 text-sm" />
                 </div>
@@ -175,9 +186,9 @@ import AlertaError from '@/components/AlertaError.vue';
                         name="institucion"
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.institucion ? 'ring ring-red-500': ''"
-                        maxLength="30"
+                        maxLength="50"
                         v-model="formData.institucion"
-                        rules="required"
+                        rules="required|alfanumeric"
                     />
                     <ErrorMessage name="institucion" class="text-red-500 text-sm" />
                 </div>
@@ -191,9 +202,9 @@ import AlertaError from '@/components/AlertaError.vue';
                         name="cargo"
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.cargo ? 'ring ring-red-500': ''"
-                        maxLength="30"
+                        maxLength="50"
                         v-model="formData.cargo"
-                        rules="required"
+                        rules="required|alfanumeric"
                     />
                     <ErrorMessage name="cargo" class="text-red-500 text-sm" />
                 </div>
@@ -286,10 +297,12 @@ import AlertaError from '@/components/AlertaError.vue';
                         <td class="py-2">{{ x.correo }}</td>
                         <td class="py-2">
                             <button
-                                @click="eliminarAsistencia(x.id)" 
+                                onclick="modalCancelar.showModal()" 
+                                @click="modalMostrado(x.id, x.participante)"
                                 class="bg-red-500 hover:bg-red-400 p-1 rounded">
                                 <svg-icon type="mdi" :path="path"></svg-icon>
                             </button>
+
                         </td>
                     </tr>
 
@@ -297,6 +310,37 @@ import AlertaError from '@/components/AlertaError.vue';
             </table>
         </div>
 
+        <!-- Modal -->
+        <dialog id="modalCancelar" class="modal">
+            <div class="modal-box max-w-[42rem] bg-[#202c33]">
+                <div class="flex justify-center items-center gap-4">
+                    <svg-icon type="mdi" :path="path" class="text-red-400 w-8 h-8"></svg-icon>
+                    
+                    <p class="text-lg font-bold py-1 text-center">
+                        ¿Está seguro de eliminar al participante {{ modal.nombre }}?
+                    </p>
+                </div>
+
+                <div class="modal-action">
+                    <form method="dialog" class="w-full rounded text-center">
+                        <!-- if there is a button in form, it will close the modal -->
+                        <button 
+                            class="btn bg-red-400 border-2 border-red-400 text-white hover:bg-red-700 transition-colors duration-300 mr-1"
+                            @click="eliminarAsistencia(modal.id)"
+                            type="submit"
+                        >
+                            Aceptar
+                        </button>
+                        <button 
+                            class="btn bg-slate-400 border-2 border-slate-400 text-white hover:bg-slate-700 transition-colors duration-300"
+                        >
+                            Cancelar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
+        
         <div class="flex justify-between px-4 mt-12">
 
             <RouterLink 

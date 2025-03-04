@@ -1,4 +1,6 @@
 <template>
+
+    <!-- Se muestra la información relevante de la reunión FINALIZADA -->
     <div class="border p-2 flex flex-col w-full md:w-1/3 gap-4">
         <p class="text-xl font-bold">{{ reunion.nombre }}</p>
         <p class="font-light text-slate-300">Lugar de Reunion: <b>{{ reunion.lugar }}</b></p>
@@ -10,6 +12,7 @@
 
 <script setup>
 
+    // Listado de props pasados desde componente padre
     defineProps({
         reunion: {
             type:Object,
@@ -17,6 +20,7 @@
         }
     })
 
+    //Función que ayuda a transformar cualquier fecha a formato dd-mm-yyyy hh:mm tt
     const transformarFecha = (fecha) => {
         
         const nuevaFecha = new Date(fecha)

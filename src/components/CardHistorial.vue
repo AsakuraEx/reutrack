@@ -1,7 +1,9 @@
 <template>
-    <!-- CARD DE REUNION -->
+    <!-- CARD DE REUNION MOSTRADA EN EL HISTORIAL DE REUNIONES -->
     <div class="border bg-transparent p-3 flex flex-col lg:flex-row gap-4 justify-between items-center rounded">
         <div class="w-[340px] lg:w-fit">
+
+            <!-- SE MUESTRA LA INFORMACIÓN DE LA REUNIÓN MEDIANTE PROPS -->
             <p class="text-xl font-bold">{{ titulo }}</p>
             <p class="font-light text-slate-300">Lugar de Reunion: <b>{{ lugar }}</b></p>
             <span class="font-light italic">{{ transformarFecha(fecha) }}</span>
@@ -13,6 +15,7 @@
             </div>
         </div>
 
+        <!-- BOTONES DE ACCIÓN DE ACUERDO AL ESTADO DE LA REUNIÓN -->
         <div class="flex flex-col gap-2 w-full lg:w-fit">
             <RouterLink 
                 :to="{name:'detalle', params:{id: props.id}}" 
@@ -48,13 +51,16 @@
 
 <script setup>
 
+    // Imports de librería de iconos
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline, mdiCircleEditOutline, mdiEyeOutline } from '@mdi/js';
 
+    // Variables de iconos
     const path = mdiTrashCanOutline;
     const path1 = mdiCircleEditOutline;
     const path2 = mdiEyeOutline;
 
+    // Props recibidos por el componente padre
     const props = defineProps({
         titulo: {
             type: String,
@@ -78,18 +84,23 @@
         }
     })
 
+    // Objeto que ayuda a seleccionar la clase de background color de acuerdo al estado
+    // En caso que se agreguen mas estados, se debe agregar aqui y la clase de tailwindcss correspondiente
     const estados = {
         Iniciado: 'bg-yellow-500',
         Finalizado: 'bg-blue-500',
         Cancelado: 'bg-red-500'
     }
 
+    // Eventos que se pasan a traves del componente padre
+    defineEmits(['modal-mostrado'])
+
+    //Funcion que retorna la clase de color de acuerdo al estado que se pase por parametro
     const claseEstado = (estado) => {
         return `${estados[estado]}`
     }
 
-    defineEmits(['modal-mostrado'])
-
+    //Función que ayuda a transformar cualquier fecha a formato dd-mm-yyyy hh:mm tt
     const transformarFecha = (fecha) => {
         
         const nuevaFecha = new Date(fecha)
@@ -101,7 +112,7 @@
             hour: '2-digit',   // Hora en formato de dos dígitos
             minute: '2-digit', // Minutos en formato de dos dígitos
             second: '2-digit', // Segundos en formato de dos dígitos
-            hour12: true
+            hour12: true        // Asegura que se muestre a.m o p.m
         });
 
         return fechaFormateada

@@ -82,6 +82,24 @@
         }
     }
 
+        //Función que ayuda a transformar cualquier fecha a formato dd-mm-yyyy hh:mm tt
+        const transformarFecha = (fecha) => {
+        
+        const nuevaFecha = new Date(fecha)
+
+        const fechaFormateada = nuevaFecha.toLocaleString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',   // Hora en formato de dos dígitos
+            minute: '2-digit', // Minutos en formato de dos dígitos
+            second: '2-digit', // Segundos en formato de dos dígitos
+            hour12: true
+        });
+
+        return fechaFormateada
+    }
+
 </script>
 
 <template>
@@ -127,7 +145,14 @@
                                 Ver Acta
                             </a>
                         </td>
-                        <td class="py-2 px-3">{{ item.usuario.nombre }}</td>
+                        <td class="py-2 px-3">
+                            <p>
+                                {{ item.usuario.nombre }}
+                            </p>
+                            <p>
+                                {{ transformarFecha(item.createdAt) }}
+                            </p>
+                        </td>
                         <td class="py-2 px-3">
                             <div class="-bold text-center w-24 rounded" :class="claseEstado(item.estado.nombre)">
                                 {{ item.estado.nombre }}

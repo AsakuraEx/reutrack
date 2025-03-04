@@ -69,6 +69,13 @@
         //Genero la minuta de reunión
         await storeReu.GuardarMinuta(minuta)
 
+        //Genera el encargado inicial (quien crea la reunion)
+        const encargadoInicial = {
+            id_reunion: reunion.value.id, 
+            id_usuario: formData.id_usuario
+        }
+        await storeReu.agregarEncargado(encargadoInicial) 
+
         // Una vez consultada la reunión, redirijo a esa reunión recien creada
         await router.push({name: 'encargados', params: {id: reunion.value.id }})
     }
@@ -96,9 +103,7 @@
         
         <Stepper :step="1"/>
 
-        <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Datos Generales de la Reunión</h1> 
-        
-        <h1 class="text-2xl font-black text-center py-12 px-4 text-purple-500">Codigo de Reunión: {{ formData.codigo }}</h1>  
+        <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Datos Generales de la Reunión</h1>   
         
         <Form class="flex flex-col gap-4 md:gap-8" @submit="crearReunion()" v-slot="{ errors }">
 
@@ -133,7 +138,7 @@
                     v-model="formData.id_version"
                 >
                     <option class="text-gray-900" value="" selected>Seleccione...</option>
-                    <option v-for="opcion in arrayVersiones" class="text-gray-900" :value="opcion.id"> {{ opcion.proyecto.nombre }} {{ opcion.nombre }}</option>
+                    <option v-for="opcion in arrayVersiones" class="text-gray-900" :value="opcion.id">{{ opcion.nombre }}</option>
                 </select>
 
                 <ErrorMessage name="id_version" class="text-red-500" />

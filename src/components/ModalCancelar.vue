@@ -3,13 +3,13 @@
     <dialog id="modalCancelar" class="modal">
         <div class="modal-box max-w-[42rem] bg-[#202c33]">
             
-            <svg-icon type="mdi" :path="path" class="text-red-400 mx-auto w-16 h-16"></svg-icon>
+            <svg-icon type="mdi" :path="path" class="text-red-400 mx-auto w-12 h-12"></svg-icon>
             
-            <p class="text-lg font-bold py-4 text-center">¿Está seguro de borrar la versión "{{ version.nombre }}"?
+            <p class="text-lg font-bold py-2 text-center">¿Está seguro de borrar la versión "{{ version.nombre }}"?
                 , Esta acción no se puede deshacer.</p>
 
             <div class="modal-action">
-                <form method="dialog" class="w-full rounded text-center py-2 space-y-4">
+                <form method="dialog" class="w-full rounded text-center">
                     <!-- if there is a button in form, it will close the modal -->
                     <button 
                         class="btn bg-red-400 border-2 border-red-400 text-white hover:bg-red-700 transition-colors duration-300 mr-1"
@@ -31,12 +31,20 @@
 
 <script setup>
     
-    import { useProyectoStore } from '@/stores/proyectos';
+    // Import de librerias externas
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiAlert } from '@mdi/js';
+
+    // Import de stores de pinia
+    import { useProyectoStore } from '@/stores/proyectos';
+    
+    // Variables de librerias externas
     const path = mdiAlert;
+    
+    // Variables de store de pinia
     const store = useProyectoStore()
 
+    // Props o variables recibidos 
     defineProps({
         version: {
             type: Object,
@@ -44,11 +52,13 @@
         }
     })
 
+    // Funciones o eventos recibidos
     const emit = defineEmits(['update:datos'])
 
+    // Metodo para ejecutar la cancelación de versión
     const cancelarVersion = async (id, proyecto) => {
-        await store.cancelarVersion(id)
-        const data = await store.mostrarVersiones(proyecto, null, 10, 1)
-        await emit('update:datos', data.data)
+        await store.cancelarVersion(id)     //Ejecuta metodo asincrono donde se proporciona el id de la versión
+        const data = await store.mostrarVersiones(proyecto, null, 10, 1)    //Una vez cancela la versión, obtiene el nuevo listado
+        await emit('update:datos', data.data)   //Actualiza con el listado nuevo, el array del componente padre
     }
 </script>

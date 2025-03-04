@@ -1,21 +1,30 @@
 <script setup>
+
+// Import de librerias nativas de vue
 import { RouterLink } from 'vue-router'
+import { onMounted, onUnmounted } from 'vue';
+
+// Import de stores de pinia generados
 import { useUsuarioStore } from '@/stores/usuarios';
-import { onMounted, onUnmounted, ref } from 'vue';
+
+// Import de librerias externas
 import { jwtDecode } from 'jwt-decode';
 
+// Variables de stores de pinia
 const store = useUsuarioStore()
-const usuario = ref({})
-const decoded = jwtDecode(sessionStorage.getItem('token'))
 
+// Variables de librerias externas
+const decoded = jwtDecode(sessionStorage.getItem('token')) //Decodifica el token existente en sessionStorage
+
+// hook life que carga las funciones al momento que se monta el header
 onMounted(async ()=>{
-    store.reiniciarTiempo(decoded.id)
-    store.detectarActividad()
-    usuario.value = await store.obtenerUsuario(decoded.id)
+    store.reiniciarTiempo(decoded.id)   //Se reinicia el tiempo en caso que exista o inicia el temporizador
+    store.detectarActividad()           //Se inicia la detección de actividad
 })
 
+// hook life que carga funciones al momento que se desmonta el header
 onUnmounted(()=>{
-    store.cancelarDeteccionActividad()
+    store.cancelarDeteccionActividad()  // Al desmontar el header, se elimina la detección de inactividad, sirve para no generar conflicto al regresar al login
 })
 
 
@@ -45,7 +54,7 @@ onUnmounted(()=>{
             <RouterLink  :to="{name: 'contraseña'}" class="hover:text-purple-300 transition-colors duration-300">
                 Cambiar Contraseña
             </RouterLink>
-            <RouterLink v-if="usuario.id_rol === 1"  :to="{name: 'usuarios'}" class="hover:text-purple-300 transition-colors duration-300">
+            <RouterLink v-if="decoded.id_rol === 1"  :to="{name: 'usuarios'}" class="hover:text-purple-300 transition-colors duration-300">
                 Usuarios
             </RouterLink>
             <button @click="store.cerrarSesion(decoded.id)" class="hover:text-purple-300 transition-colors duration-300">

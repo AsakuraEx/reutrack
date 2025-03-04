@@ -82,6 +82,16 @@ defineRule('website', value => {
     return true
 })
 
+defineRule('alfanumeric', value => {
+    const alfanumeric = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/
+
+    if(!alfanumeric.test(value)){
+        return 'El valor que ha ingresado no es válido.'
+    }
+
+    return true
+})
+
 const app = createApp(App)
 
 app.use(createPinia())

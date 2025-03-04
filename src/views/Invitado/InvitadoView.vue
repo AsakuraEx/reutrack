@@ -137,10 +137,11 @@
                     <Field
                         type="text" 
                         name="participante"
+                        maxLength="50"
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.participante ? 'ring ring-red-500': ''"
                         v-model="formData.participante"
-                        rules="required"
+                        rules="required|alfanumeric"
                     />
                     <ErrorMessage name="participante" class="text-red-500 text-sm" />
                 </div>
@@ -152,6 +153,7 @@
                     <Field
                         type="text" 
                         name="institucion"
+                        maxLength="50"
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.institucion ? 'ring ring-red-500': ''"
                         v-model="formData.institucion"
@@ -170,6 +172,7 @@
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.cargo ? 'ring ring-red-500': ''"
                         v-model="formData.cargo"
+                        maxLength="50"
                         rules="required"
                     />
                     <ErrorMessage name="cargo" class="text-red-500 text-sm" />
@@ -204,7 +207,7 @@
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.telefono ? 'ring ring-red-500': ''"
                         v-model="formData.telefono"
-                        :rules="rulesDui"
+                        rules="required|telefono"
                     />
                     <ErrorMessage name="telefono" class="text-red-500 text-sm" />
                 </div>

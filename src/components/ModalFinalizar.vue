@@ -12,6 +12,10 @@
                         <label for="nombre" class="text-xl px-4 md:text-left text-center">
                             Acta de Aceptacion *:
                         </label>
+
+                        <!-- Campo de Vee-Validate que evalua errores en el campo, rules son las reglas definidas para el campo
+                        mode passive es el modo predeterminado de activacion de validaciones -->
+
                         <Field
                             type="text" 
                             name="campo"
@@ -24,13 +28,15 @@
                         />
                         <ErrorMessage name="campo" class="text-red-500 text-sm" as="p"/>
                     </div>
-                    <!-- if there is a button in form, it will close the modal -->
+                    
                     <button 
                     class="btn bg-purple-400 border-2 text-white hover:bg-purple-700 transition-colors duration-300 mr-1"
                     type="submit"
                     >
                         Finalizar
                     </button>
+
+                    <!-- .close() es un metodo nativo de la libreria que apertura el modal, sirve para cerrar el modal -->
                     <button 
                     class="btn bg-transparent border-2 border-white text-white hover:bg-slate-400 transition-colors duration-300"
                     type="button"
@@ -47,25 +53,39 @@
 
 <script setup>
 
+    // Imports nativos de vue
     import { ref } from 'vue';
+    
+    // Imports de vee validate, libreria externa para realizar validaciones
     import {Form, Field, ErrorMessage} from 'vee-validate'
+    
+    // Imports de stores de pinia
     import { useProyectoStore } from '@/stores/proyectos';
+    
+    // Variables obtenidas por el componente padre
     const props = defineProps({
         version: {
             type: Object,
             required: true
         }
     })
-    const emit = defineEmits(['update:datos'])
-    const store = useProyectoStore()
+
+    // Variables de formulario
     const campo = ref("")
 
+    // Variables utilizando stores
+    const store = useProyectoStore()
+
+    //Eventos obtenidos por el componente padre
+    const emit = defineEmits(['update:datos'])
+
+    //Metodo que actualiza la versión a finalizada
     async function FinalizarVersion () {
-        await store.finalizarVersion(props.version.id, campo.value)
-        const data = await store.mostrarVersiones(props.version.id_proyecto, null, 10, 1)
-        await emit('update:datos', data.data)
-        modalFinalizar.close()
-        campo.value = ""
+        await store.finalizarVersion(props.version.id, campo.value) // Se necesita el id de la versión y el valor del campo
+        const data = await store.mostrarVersiones(props.version.id_proyecto, null, 10, 1)   // Una vez actualizada la versión,  obtiene el nuevo listado
+        await emit('update:datos', data.data)   // Mediante un evento, actualiza la variable del componente padre con el listado obtenido
+        modalFinalizar.close()  //Ejecuta el evento de la libreria que se utilizó para generar el modal
+        campo.value = ""    //Elimina el valor del campo en caso que se vuelva a iniciar
     }
 
 </script>

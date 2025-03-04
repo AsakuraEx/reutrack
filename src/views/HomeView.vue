@@ -16,6 +16,7 @@
     const usuario = ref({})
     const arrayFrases = ref([]);
     const frase = ref({})
+    const dia = ref(0)
     
     onMounted(async ()=>{
         
@@ -39,6 +40,7 @@
         const fechaActual = new Date()
         arrayFrases.value = FrasesMotivadoras
         frase.value = arrayFrases.value.find( frase => frase.dia === fechaActual.getDate()).frase
+        dia.value = fechaActual.getDate()
     }
 
 </script>
@@ -59,16 +61,16 @@
               </span>
           </div>
           <img 
-              src="/images/Reulito-4.svg" 
+              :src="`/images/frases/reu-${dia}.svg`" 
               alt="imagen de perfil"
-              class="rounded-full aspect-square object-cover max-w-72 lg:max-w-lg"
+              class="aspect-square object-cover max-w-72 lg:max-w-lg"
           >
       </picture>
 
       <hr>
 
       <div class="py-8">
-          <h2 class="text-center text-2xl leading-8 uppercase font-bold text-purple-300">Un resumen de tus últimas reuniones</h2>
+          <h2 class="text-center text-2xl leading-8 uppercase font-bold text-purple-300">Un resumen de tus últimas reuniones finalizadas</h2>
 
           <div class="mt-12 flex flex-col md:flex-row gap-4 px-3">
 

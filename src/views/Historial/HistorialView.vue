@@ -22,8 +22,8 @@
 
     const filtros = reactive({
         id_proyecto: 0,
-        desde: new Date().toISOString().split('T')[0],
-        hasta: new Date().toISOString().split('T')[0]
+        desde: '',
+        hasta: ''
     })
 
     onMounted(async ()=>{
@@ -126,8 +126,8 @@
     const reiniciarFiltros = async () => {
         Object.assign(filtros, {
             id_proyecto: 0,
-            desde: new Date().toISOString().split('T')[0],
-            hasta: new Date().toISOString().split('T')[0]
+            desde: '',
+            hasta: ''
         })
 
         if(usuarioRol != 1){
@@ -158,30 +158,31 @@
                 :label="'Proyecto'" 
                 :opciones="proyectos" 
                 v-model:campo="filtros.id_proyecto"
-                :requerido="false"/>
+                :requerido="false"
+            />
 
-                <div class="flex flex-col w-full">
-                    <label class="text-xl">Desde:</label>
-                    <input 
-                        type="date" 
-                        onclick="this.showPicker()" 
-                        class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
-                        :max="filtros.hasta"
-                        v-model="filtros.desde"
-                    >
-                </div>
+            <div class="flex flex-col w-full">
+                <label class="text-xl">Desde:</label>
+                <input 
+                    type="date" 
+                    onclick="this.showPicker()" 
+                    class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
+                    :max="new Date().toISOString().split('T')[0]"
+                    v-model="filtros.desde"
+                >
+            </div>
 
-                <div class="flex flex-col w-full">
-                    <label class="text-xl">Hasta:</label>
-                    <input 
-                        type="date" 
-                        onclick="this.showPicker()" 
-                        class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
-                        :min="filtros.desde"
-                        :max="new Date().toISOString().split('T')[0]"
-                        v-model="filtros.hasta"
-                    >
-                </div>
+            <div class="flex flex-col w-full">
+                <label class="text-xl">Hasta:</label>
+                <input 
+                    type="date" 
+                    onclick="this.showPicker()" 
+                    class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
+                    :min="filtros.desde"
+                    :max="new Date().toISOString().split('T')[0]"
+                    v-model="filtros.hasta"
+                >
+            </div>
         
 
             <div class="flex lg:w-1/5 justify-end gap-2 items-end">
