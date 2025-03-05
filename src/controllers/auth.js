@@ -92,6 +92,9 @@ exports.login = async (req, res) => {
         if (!user) {
             return res.status(HttpCode.HTTP_OK).json({ error: 'Usuario no encontrado' });
         }
+        else if (user.id_estado == 5){
+            return res.status(HttpCode.HTTP_OK).json({ error: 'Usuario inactivo' });
+        }
         if (bcrypt.compareSync(password, user.password)) {
             // Generate and send 2FA code
             await this.send2FACode(user);

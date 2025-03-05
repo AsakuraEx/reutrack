@@ -20,39 +20,48 @@ exports.index = async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const {estado} = req.query
 
-    const whereClause = {}
-    if(estado) {
-        whereClause.id_estado = estado
-    }
+    
     try {
-        const {count, rows} = await table.findAndCountAll({
+        
+        const options = {
+            attributes: {exclude: ['id_usuario','id_estado', 'updatedAt']}, 
+        }
+        const include = [
             
-            attributes: {exclude: ['id_usuario','id_estado', 'updatedAt']},
-            distinct: true,
-            col: 'id',
-            include: [
                 { model: db.users,
                     as: 'usuario',
                     attributes: ['nombre'],
                     required: true,
                 },
+            
+        ]
+        if(estado) {
+            options.distinct= true,
+            options.col= 'id',
+            include.push(
                 {
                     model: db.version,
                     as: 'version',
                     attributes: [],
                     required: true,
-                    where: whereClause,
+                    where: {id_estado: estado}
+                    
                 }
-            ],
-            
+            )   
+        }
+
+        const {count, rows} = await table.findAndCountAll({
+            options,
+            include,
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],
+            
         });
 
         const start = (page - 1) * limit + 1;
         const end = Math.min(start + rows.length - 1, count);
-
+        
         res.status(HttpCode.HTTP_OK).json({
             totalRecords: count,
             totalPages: Math.ceil(count / limit),

@@ -6,8 +6,12 @@ var logger = require('morgan');
 const cors = require('cors');
 
 const apiRouter = require('./routes/api')
+const { swaggerUi, swaggerDocs } = require('./swagger');
 
 var app = express();
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
 
 app.use(cors({
   origin: '*',

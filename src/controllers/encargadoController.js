@@ -28,7 +28,8 @@ exports.create = async (req, res) => {
             where: { id_usuario: id_usuario, id_reunion: id_reunion }
         })
         if (encargado.length > 0) {
-            res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'El usuario ya está asignado'})
+            res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'El usuario ya está asignado'});
+            return; // Added return statement to prevent further execution
         }
         const newEncargado = await db.encargado.create({
             id_usuario,
@@ -63,4 +64,4 @@ exports.delete = async (req, res) => {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
-}  
+}

@@ -127,4 +127,3 @@ exports.status = async (req, res) => {
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
-

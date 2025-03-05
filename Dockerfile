@@ -1,20 +1,22 @@
-# Usa una imagen base oficial de Node.js
-FROM node:20.15
+# Utilizamos la imagen oficial de Node.js como base
+FROM node:20.15.0
 
-# Establece el directorio de trabajo
+# Establecemos el directorio de trabajo en el contenedor
 WORKDIR /src
 
-# Copia el archivo package*.json al contenedor
+# Copiamos el archivo package.json para instalar las dependencias
 COPY package*.json ./
 
-# Instala las dependencias dentro del contenedor
-RUN npm install --omit=dev
+# Instalamos las dependencias
+RUN npm install bcrypt
 
-# Copia los archivos del repositorio al contenedor
+RUN npm install
+
+# Copiamos el resto del código
 COPY . .
 
-# Expone el puerto de la aplicación
+# Exponemos el puerto 
 EXPOSE 3100
 
-# Comando de inicio
+# Definimos el comando para ejecutar la aplicación
 CMD ["npm", "run", "server"]

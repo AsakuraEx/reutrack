@@ -10,8 +10,6 @@ app.post('/create',  usuariosController.create)
 app.patch('/updatepassword', usuariosController.updatePassword)
 app.patch('/updateStatus', usuariosController.status)
 
-
-
 app.patch('/:id', usuariosController.update)
 app.get('/:id',  usuariosController.getOne)
 

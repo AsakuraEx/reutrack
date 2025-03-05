@@ -1,0 +1,12 @@
+version: '3.5'
+
+services:
+  backend-reutrack:
+    image: nginx
+    ports:
+      - "3101:80"
+    container_name: backend-reutrack
+    volumes:
+      - ./:/usr/share/nginx/html/
+    build: .
+    restart: always
