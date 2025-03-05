@@ -11,6 +11,8 @@
     import Stepper from '@/components/Stepper.vue';
     import { ErrorMessage, Field, Form } from 'vee-validate';
     import { jwtDecode } from 'jwt-decode';
+    import vSelect from 'vue-select';
+    import 'vue-select/dist/vue-select.css';
 
     //definición de variables
     const store = useProyectoStore()
@@ -21,8 +23,8 @@
     const arrayProyectos = ref([])
     const decoded = jwtDecode(sessionStorage.getItem('token'))
     const formData = reactive({
-        id_proyecto: '',
-        id_version: '',
+        id_proyecto: null,
+        id_version: null,
         nombre: '',
         lugar: '',
         id_usuario: decoded.id,
@@ -86,6 +88,10 @@
     })
 
     const consultarVersiones = async (proyecto) => {
+        if(!formData.id_proyecto){
+            arrayVersiones.value = []
+            return
+        }
         const response = await store.mostrarVersiones(proyecto, 1, null, 1);
         arrayVersiones.value = response.data
     }
@@ -107,41 +113,47 @@
         
         <Form class="flex flex-col gap-4 md:gap-8" @submit="crearReunion()" v-slot="{ errors }">
 
-            <!-- SELECT PERSONALIZADO  -->
-            <div 
-                class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4" 
-            >
+            <!-- Campo de selección de proyecto con vue-select -->
+            <div class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4">
                 <label for="id_proyecto" class="text-xl px-4 md:text-left text-center">Proyecto: *</label>
-                <select
-                    name="id_proyecto" 
-                    class="select p-2 rounded border border-white bg-transparent w-full focus:outline-purple-400 overflow-y-auto text-center" 
-                    @change="consultarVersiones(formData.id_proyecto)"
+                <v-select
                     v-model="formData.id_proyecto"
+                    :options="arrayProyectos"
+                    label="nombre"
+                    placeholder="Seleccione..."
+                    class="rounded text-black bg-white w-full"
+                    :reduce="(opcion) => opcion.id"
+                    @update:modelValue="consultarVersiones(formData.id_proyecto)"
+                    :clearable="true"
+                    :searchable="true"
                     required
                 >
-                    <option class="text-gray-900" value="" selected>Seleccione...</option>
-                    <option v-for="opcion in arrayProyectos" class="text-gray-900" :value="opcion.id"> {{ opcion.nombre }} </option>
-                </select>
-
+                    <template #no-options>
+                        <div class="text-gray-500">No hay opciones disponibles</div>
+                    </template>
+                </v-select>
                 <ErrorMessage name="id_proyecto" class="text-red-500" />
             </div>
 
-            <!-- SELECT PERSONALIZADO  -->
-            <div 
-                class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4" 
-            >
-                <label for="id_version" class="text-xl px-4 md:text-left text-center">Versión: *</label>
-                <select
-                    name="id_version"
-                    class="select p-2 rounded border border-white bg-transparent w-full focus:outline-purple-400 overflow-y-auto text-center" 
-                    required
+            <!-- Campo de selección de version con vue-select -->
+            <div class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4">
+                <label for="id_proyecto" class="text-xl px-4 md:text-left text-center">Versión: *</label>
+                <v-select
                     v-model="formData.id_version"
+                    :options="arrayVersiones"
+                    label="nombre"
+                    placeholder="Seleccione..."
+                    class="rounded text-black bg-white w-full"
+                    :reduce="(opcion) => opcion.id"
+                    :clearable="true"
+                    :searchable="true"
+                    required
                 >
-                    <option class="text-gray-900" value="" selected>Seleccione...</option>
-                    <option v-for="opcion in arrayVersiones" class="text-gray-900" :value="opcion.id">{{ opcion.nombre }}</option>
-                </select>
-
-                <ErrorMessage name="id_version" class="text-red-500" />
+                    <template #no-options>
+                        <div class="text-gray-500">No hay opciones disponibles</div>
+                    </template>
+                </v-select>
+                <ErrorMessage name="id_proyecto" class="text-red-500" />
             </div>
 
             <div class="max-w-[400px] w-full mx-auto flex flex-col gap-4 items-center px-4">
@@ -199,3 +211,42 @@
 
     <Footer />
 </template>
+
+<style scoped>
+    /* Estilos personalizados para vue-select */
+    .select {
+        background-color: transparent;
+        color: white;
+    }
+
+    .select:focus {
+        outline: 2px solid #a78bfa; /* Color purple-400 */
+    }
+
+    .vs__dropdown-menu {
+        background-color: #1f2937; /* Color de fondo del menú */
+        color: white;
+    }
+
+    .vs__dropdown-option {
+        color: white;
+    }
+
+    .vs__dropdown-option--highlight {
+        background-color: #4f46e5; /* Color de resaltado */
+    }
+
+    .vs__selected {
+        color: white;
+    }
+
+    .vs__search {
+        color: white;
+    }
+
+    .vs__open-indicator {
+        fill: white;
+    }
+</style>
+
+

@@ -21,7 +21,7 @@
     let usuarioId
 
     const filtros = reactive({
-        id_proyecto: 0,
+        id_proyecto: null,
         desde: '',
         hasta: ''
     })
@@ -125,7 +125,7 @@
 
     const reiniciarFiltros = async () => {
         Object.assign(filtros, {
-            id_proyecto: 0,
+            id_proyecto: null,
             desde: '',
             hasta: ''
         })
@@ -148,11 +148,11 @@
     <Header :rol="usuarioRol"/>
 
     <div class="container mx-auto min-h-[75vh] space-y-4 px-2">        
-        <h1 class="uppercase text-2xl font-extrabold text-purple-300 text-center my-12">
+        <h1 class="uppercase text-2xl font-extrabold text-purple-300  text-center my-12">
             Historial de Reuniones
         </h1>
     
-        <div class="flex flex-col lg:flex-row gap-2">
+        <div class="flex flex-col lg:flex-row gap-2 bg-[#f8edff] border border-purple-500 text-purple-500 p-4 rounded">
 
             <Select2 
                 :label="'Proyecto'" 
@@ -166,7 +166,7 @@
                 <input 
                     type="date" 
                     onclick="this.showPicker()" 
-                    class="p-2.5 rounded border bg-transparent w-full focus:outline-purple-400"
+                    class="p-1 rounded border bg-white text-gray-700 w-full focus:outline-purple-400"
                     :max="new Date().toISOString().split('T')[0]"
                     v-model="filtros.desde"
                 >
@@ -177,7 +177,7 @@
                 <input 
                     type="date" 
                     onclick="this.showPicker()" 
-                    class="p-2.5 rounded border bg-transparent w-full focus:outline-purple-400"
+                    class="p-1 rounded border bg-white text-gray-700 w-full focus:outline-purple-400"
                     :min="filtros.desde"
                     :max="new Date().toISOString().split('T')[0]"
                     v-model="filtros.hasta"
@@ -186,7 +186,7 @@
         
 
             <div class="flex lg:w-1/5 justify-end gap-2 items-end">
-                <button class="bg-purple-500 w-full hover:bg-purple-700 h-fit font-bold text-white px-4 py-2 rounded transition-colors duration-300" @click="filtrarReuniones()">Filtrar</button>
+                <button class="bg-purple-500 w-full hover:bg-purple-700 h-fit font-bold border text-white px-4 py-2 rounded transition-colors duration-300" @click="filtrarReuniones()">Filtrar</button>
                 <button class="bg-slate-300 w-full hover:bg-slate-500 h-fit font-bold text-black hover:text-white px-4 py-2 rounded  transition-colors duration-300" @click="reiniciarFiltros()">Limpiar</button>
             </div>
 
