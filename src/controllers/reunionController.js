@@ -7,6 +7,8 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
+
+
 function imageToBase64(imagePath) {
     return fs.readFileSync(imagePath, { encoding: 'base64' });
 }
@@ -107,83 +109,112 @@ exports.detalle = async (req, res) => {
 
 //Muestra todas las reuniones
 exports.index = async (req, res) => {
-    const {id_version, id_proyecto,id_estado, id_usuario, desde, hasta} = req.query;
-
-    const limit = parseInt(req.query.limit) || null
-    const page = parseInt(req.query.page) || 1
-
     try {
+        const { id_version, id_proyecto, id_estado, id_usuario, desde, hasta } = req.query;
+
+        const limit = parseInt(req.query.limit) || 10;
+        const page = parseInt(req.query.page) || 1;
+        const offset = (page - 1) * limit;
+
         const whereClause = {};
-        if (id_version) {
-            whereClause.id_version = id_version;
-        }
-        if (id_estado) {
-            whereClause.id_estado = id_estado;
-        }
-if (desde || hasta) {
-    whereClause.createdAt = {};
-    if (desde && hasta) {
-        whereClause.createdAt[Op.between] = [
-            moment(desde).startOf('day').toDate(), 
-            moment(hasta).endOf('day').toDate()
-        ]; 
-    } else if (desde) {
-        whereClause.createdAt[Op.gte] = moment(desde).startOf('day').toDate(); 
-    } else if (hasta) {
-        whereClause.createdAt[Op.lte] = moment(hasta).endOf('day').toDate(); 
-    }
-}
+        if (id_version) whereClause.id_version = id_version;
+        if (id_estado) whereClause.id_estado = id_estado;
 
+        // Filtro por usuario y rol
+        if (id_usuario) {
+            const usuario = await db.users.findOne({ where: { id: id_usuario } });
 
-        const {count, rows} = await db.reunion.findAndCountAll({
-            attributes: {exclude: ['id_usuario', 'id_version', 'id_estado', 'updatedAt']},
-            include: [ 
-                { model: db.users,
-                    as: 'user',
-                    attributes: ['nombre'],
-                    required: true,
-                },
-                { model: db.version,
-                    as: 'version',
-                    attributes: ['nombre'],
-                    required: true,
-                    include: [
-                        {
-                        model: db.proyecto,
-                        as: 'proyecto',
-                        attributes: ['nombre'],
-                        where: id_proyecto ? { id: id_proyecto } : undefined
-                        }
-                    ]
-                },
-                { model: db.ctl_estado,
-                    as: 'estado',
-                    attributes: ['nombre'],
-                    required: true,
-                },
-            ],
-            limit: limit,
-            offset: (page - 1) * limit,
-            order: [['id', 'DESC']],
-            where: whereClause
+            if (!usuario) {
+                return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: "Usuario no encontrado" });
+            }
+
+            if (usuario.id_rol !== 1) {
+                const encargados = await db.encargado.findAll({
+                    where: { id_usuario },
+                    attributes: ["id_reunion"],
+                });
+
+                if (encargados.length > 0) {
+                    whereClause.id = { [Op.in]: encargados.map(encargado => encargado.id_reunion) };
+                } else {
+                    return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: "No se encontraron reuniones para este usuario" });
+                }
+            }
+        }
+
+        // Filtro de fechas
+        if (desde || hasta) {
+            whereClause.createdAt = {};
+            if (desde) whereClause.createdAt[Op.gte] = moment(desde).startOf("day").toDate();
+            if (hasta) whereClause.createdAt[Op.lte] = moment(hasta).endOf("day").toDate();
+        }
+
+        // Construcción dinámica de includes
+        const include = [
+            {
+                model: db.users,
+                as: "user",
+                attributes: ["nombre"],
+                required: true,
+            },
+            {
+                model: db.version,
+                as: "version",
+                attributes: ["nombre"],
+                required: true,
+                include: [],
+            },
+            {
+                model: db.ctl_estado,
+                as: "estado",
+                attributes: ["nombre"],
+                required: true,
+            },
+        ];
+
+        // Agregar proyecto solo si se pasa id_proyecto
+        if (id_proyecto) {
+            include[1].include.push({
+                model: db.proyecto,
+                as: "proyecto",
+                attributes: ["nombre"],
+                where: { id: id_proyecto },
+            });
+        } else {
+            include[1].include.push({
+                model: db.proyecto,
+                as: "proyecto",
+                attributes: ["nombre"],
+            });
+        }
+
+        // Búsqueda en la base de datos
+        const { count, rows } = await db.reunion.findAndCountAll({
+            attributes: { exclude: ["id_usuario", "id_version", "id_estado", "updatedAt"] },
+            include,
+            where: whereClause,
+            limit,
+            offset,
+            order: [["id", "DESC"]],
         });
 
-        const start = (page - 1) * limit + 1;
+        // Paginación
+        const start = offset + 1;
         const end = Math.min(start + rows.length - 1, count);
 
-        res.status(HttpCode.HTTP_OK).json({
+        return res.status(HttpCode.HTTP_OK).json({
             totalRecords: count,
             totalPages: Math.ceil(count / limit),
             currentPage: page,
-            start: start,
-            end: end,
+            start,
+            end,
             data: rows,
         });
     } catch (err) {
-        console.error('Error', err.message || err);
-        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+        console.error("Error:", err.message || err);
+        return res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
-}
+};
 
 exports.create = async (req, res) => {
     const {
