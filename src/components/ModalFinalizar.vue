@@ -10,7 +10,7 @@
                 <Form method="dialog" class="w-full rounded text-center py-2 space-y-4" v-slot="{ errors }" @submit="FinalizarVersion()">
                     <div class="space-y-4">
                         <label for="nombre" class="text-xl px-4 md:text-left text-center">
-                            Acta de Aceptacion *:
+                            Acta de Aceptación *:
                         </label>
 
                         <!-- Campo de Vee-Validate que evalua errores en el campo, rules son las reglas definidas para el campo

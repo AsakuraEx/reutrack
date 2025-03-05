@@ -1,6 +1,6 @@
 <template>
     <div class="w-full" :class="label ? 'flex flex-col' : ''">
-        <label v-if="label" class="text-xl text-purple-500">{{ label }}</label>
+        <label v-if="label" class="text-xl text-purple-800">{{ label }}</label>
 
         <v-select
             v-model="campoSeleccionado"

@@ -123,7 +123,7 @@
             <table class="w-full">
                 <thead class="uppercase text-xl font-bold border-b-2 w-full">
                     <tr>
-                        <td class="px-3">Version</td>
+                        <td class="px-3">Versión</td>
                         <td class="px-3">Descripción</td>
                         <td class="px-3">Acta</td>
                         <td class="px-3">Creado por</td>

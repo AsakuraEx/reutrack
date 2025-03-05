@@ -72,7 +72,7 @@ const actualizarUsuario = async (id, data) => {
             />
 
             <Textfield 
-                :label="'Correo Electronico: *'"
+                :label="'Correo Electrónico: *'"
                 v-model:campo="usuarioNuevo.email"
                 :requerido="true"
                 :tipo="'email'"

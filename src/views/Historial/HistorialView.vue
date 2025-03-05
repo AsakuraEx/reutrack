@@ -152,7 +152,7 @@
             Historial de Reuniones
         </h1>
     
-        <div class="flex flex-col lg:flex-row gap-2 bg-[#f8edff] border border-purple-500 text-purple-500 p-4 rounded">
+        <div class="flex flex-col lg:flex-row gap-2 bg-purple-300 border-2 border-purple-500 text-purple-800 p-4 rounded">
 
             <Select2 
                 :label="'Proyecto'" 

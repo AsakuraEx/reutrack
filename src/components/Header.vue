@@ -49,7 +49,7 @@ onUnmounted(()=>{
                 Mis Reuniones
             </RouterLink>
             <RouterLink  :to="{name: 'reunion'}" class="hover:text-purple-300 transition-colors duration-300">
-                Nueva Reunion
+                Nueva Reunión
             </RouterLink>
             <RouterLink  :to="{name: 'contraseña'}" class="hover:text-purple-300 transition-colors duration-300">
                 Cambiar Contraseña
