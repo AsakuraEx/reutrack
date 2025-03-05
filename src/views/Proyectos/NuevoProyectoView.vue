@@ -26,8 +26,12 @@
     })
 
     const guardarProyecto = async (proyecto) => {
-        await store.crearProyecto(proyecto)
-        router.push({name:'proyectos'})
+        try {
+            await store.crearProyecto(proyecto)
+            router.push({name:'proyectos'})
+        }catch(e){
+            console.error(e)
+        }
     }
 
 </script>

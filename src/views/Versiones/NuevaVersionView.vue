@@ -24,8 +24,12 @@
     })
 
     const guardarVersion= async (version) => {
-        await store.crearVersion(version)
-        router.push({name:'versiones'})
+        try{
+            await store.crearVersion(version)
+            router.push({name:'versiones'})
+        }catch(e){
+            console.error(e)
+        }
     }
 
 </script>

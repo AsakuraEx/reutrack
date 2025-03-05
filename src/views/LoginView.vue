@@ -300,17 +300,16 @@
             return
         }
 
-        // const fechaActual = new Date().toLocaleString()
+        const fechaActual = new Date().toLocaleString()
+        if(fechaActual > reu.value.expiracion){
+            error.value = "El código de la reunión ha caducado."
+            setTimeout(()=>{
+                error.value = ""
+            },3000)
+            return
+        }
 
-        // if(reu.value[0].expiracion < fechaActual){
-        //     error.value = "El código de la reunión a expirado"
-        //     setTimeout(()=>{
-        //         error.value = ""
-        //     },3000)
-        //     return
-        // }
-
-        router.push({name:'invitado',params:{id: reu.value.id} })
+       router.push({name:'invitado',params:{id: reu.value.id} })
     }
 
 </script>

@@ -41,7 +41,7 @@
             reuniones.value = response.data
             paginacion.value = response
         }
-        const { data } = await storePro.mostrarProyectos(1,null,1)
+        const { data } = await storePro.mostrarProyectos(null,null,1)
         proyectos.value = data
 
     })
@@ -166,7 +166,7 @@
                 <input 
                     type="date" 
                     onclick="this.showPicker()" 
-                    class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
+                    class="p-2.5 rounded border bg-transparent w-full focus:outline-purple-400"
                     :max="new Date().toISOString().split('T')[0]"
                     v-model="filtros.desde"
                 >
@@ -177,7 +177,7 @@
                 <input 
                     type="date" 
                     onclick="this.showPicker()" 
-                    class="p-1.5 rounded border bg-transparent w-full focus:outline-purple-400"
+                    class="p-2.5 rounded border bg-transparent w-full focus:outline-purple-400"
                     :min="filtros.desde"
                     :max="new Date().toISOString().split('T')[0]"
                     v-model="filtros.hasta"

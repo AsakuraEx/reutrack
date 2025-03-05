@@ -114,7 +114,7 @@
                 <label for="id_proyecto" class="text-xl px-4 md:text-left text-center">Proyecto: *</label>
                 <select
                     name="id_proyecto" 
-                    class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400" 
+                    class="select p-2 rounded border border-white bg-transparent w-full focus:outline-purple-400 overflow-y-auto text-center" 
                     @change="consultarVersiones(formData.id_proyecto)"
                     v-model="formData.id_proyecto"
                     required
@@ -133,7 +133,7 @@
                 <label for="id_version" class="text-xl px-4 md:text-left text-center">Versión: *</label>
                 <select
                     name="id_version"
-                    class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400" 
+                    class="select p-2 rounded border border-white bg-transparent w-full focus:outline-purple-400 overflow-y-auto text-center" 
                     required
                     v-model="formData.id_version"
                 >
