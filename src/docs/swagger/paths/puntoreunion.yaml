@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: API de Punto de Reunión
+  version: 1.0.0
+paths:
+  /puntoreunion/{id_reunion}:
+    get:
+      summary: Recuperar todos los puntos para una reunión específica
+      parameters:
+        - name: id_reunion
+          in: path
+          required: true
+          description: ID de la reunión para recuperar los puntos
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Una lista de puntos de reunión
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/puntoreunion.json'
+    post:
+      summary: Crear un nuevo punto de reunión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/puntoreunion.json'
+      responses:
+        '201':
+          description: Punto de reunión creado
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/puntoreunion.json'
+
+  /puntoreunion/delete/{id}:
+    delete:
+      summary: Eliminar un punto de reunión existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del punto de reunión a eliminar
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Punto de reunión eliminado
+tags:
+  - Punto de Reunión

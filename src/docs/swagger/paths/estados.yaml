@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Estados API
+  version: 1.0.0
+paths:
+  /estados:
+    get:
+      summary: Muestra todos los estados
+      responses:
+        '200':
+          description: Lista de estados
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/estado.json'
+
+  /estados/geOne/{id}:
+    get:
+      summary: Muestra estado por id
+      responses:
+        '200':
+          description: Estado recibido
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/estado.json'
+
+  /estados/create:
+    post:
+      summary: Create a new Estado
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/estado.json'
+      responses:
+        '201':
+          description: Estado created
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/estado.json'
+
+  

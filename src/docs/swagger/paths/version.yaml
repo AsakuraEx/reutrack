@@ -1,0 +1,98 @@
+openapi: 3.0.0
+info:
+  title: API de Versiones
+  version: 1.0.0
+paths:
+  /version:
+    get:
+      summary: Recuperar todas las versiones
+      responses:
+        '200':
+          description: Una lista de versiones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/version.json'
+    post:
+      summary: Crear una nueva versión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/version.json'
+      responses:
+        '201':
+          description: Versión creada
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/version.json'
+
+  /version/{id}:
+    get:
+      summary: Recuperar una versión específica por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la versión a recuperar
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Objeto de versión
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/version.json'
+    patch:
+      summary: Actualizar una versión específica por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la versión a actualizar
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/version.json'
+      responses:
+        '200':
+          description: Versión actualizada
+
+  /version/cancelar/{id}:
+    patch:
+      summary: Cancelar una versión por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la versión a cancelar
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Versión cancelada
+
+  /version/finalizar/{id}:
+    patch:
+      summary: Finalizar una versión por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la versión a finalizar
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Versión finalizada
+tags:
+  - Versiones

@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  title: API de Reunión
+  version: 1.0.0
+paths:
+  /reunion:
+    get:
+      summary: Recuperar todas las reuniones
+      responses:
+        '200':
+          description: Una lista de reuniones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/reunion.json'
+    post:
+      summary: Crear una nueva reunión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/reunion.json'
+      responses:
+        '201':
+          description: Reunión creada
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/reunion.json'
+
+  /reunion/reunion-actual/{codigo}:
+    get:
+      summary: Recuperar la reunión actual por código
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          description: Código de la reunión actual
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Objeto de la reunión actual
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/reunion.json'
+
+  /reunion/ultima:
+    get:
+      summary: Recuperar la última reunión
+      responses:
+        '200':
+          description: Objeto de la última reunión
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/reunion.json'
+
+  /reunion/detalle/{codigo}:
+    get:
+      summary: Recuperar detalles de una reunión específica por código
+      parameters:
+        - name: codigo
+          in: path
+          required: true
+          description: Código de la reunión para recuperar detalles
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Objeto de detalles de la reunión
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/reunion.json'
+
+  /reunion/{id}:
+    get:
+      summary: Recuperar una reunión específica por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la reunión a recuperar
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Objeto de reunión
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/reunion.json'
+
+  /reunion/create:
+    post:
+      summary: Crear una nueva reunión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/reunion.json'
+      responses:
+        '201':
+          description: Reunión creada
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/reunion.json'
+
+  /reunion/update/{id}:
+    patch:
+      summary: Actualizar una reunión existente por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la reunión a actualizar
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/reunion.json'
+      responses:
+        '200':
+          description: Reunión actualizada
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/reunion.json'
+
+  /reunion/pdf/{id}:
+    get:
+      summary: Generar un PDF para una reunión específica por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la reunión para generar PDF
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: PDF generado con éxito
+tags:
+  - Reunión

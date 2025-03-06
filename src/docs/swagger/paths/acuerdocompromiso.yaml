@@ -1,0 +1,107 @@
+openapi: 3.0.0
+info:
+  title: Acuerdo Compromiso API
+  version: 1.0.0
+
+tags:
+  - name: Acuerdo Compromiso
+
+components:
+  schemas:
+    AcuerdoCompromiso:
+      type: object
+      properties:
+        id:
+          type: integer
+        nombre:
+          type: string
+        id_reunion:
+          type: integer
+      required:
+        - id
+        - nombre
+        - id_reunion
+
+paths:
+  /acuerdocompromiso:
+    post:
+      summary: Crear acuerdo compromiso
+      tags:
+        - Acuerdo Compromiso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcuerdoCompromiso'
+      responses:
+        '201':
+          description: Acuerdo Compromiso created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcuerdoCompromiso'
+
+  /acuerdocompromiso/{id_reunion}:
+    get:
+      summary: Muestra los acuerdos de una reunión especifica
+      tags:
+        - Acuerdo Compromiso
+      parameters:
+        - name: id_reunion
+          in: params
+          required: true
+          description: ID de la reunion 
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AcuerdoCompromiso'
+
+
+  /acuerdocompromiso/{id}:
+    put:
+      summary: Actualiza un acuerdo compromiso
+      tags:
+        - Acuerdo Compromiso
+      parameters:
+        - name: id
+          in: params
+          required: true
+          description: ID del acuerdo a actualizar
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcuerdoCompromiso'
+      responses:
+        '200':
+          description: Acuerdo Compromiso updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcuerdoCompromiso'
+    delete:
+      summary: Eliminar acuerdo compromiso
+      tags:
+        - Acuerdo Compromiso
+      parameters:
+        - name: id
+          in: params
+          required: true
+          description: ID del acuerdo a eliminar
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Acuerdo Compromiso deleted
+              

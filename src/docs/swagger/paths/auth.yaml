@@ -1,0 +1,58 @@
+openapi: 3.0.0
+info:
+  title: Auth API
+  version: 1.0.0
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/user.json'
+
+  /auth/verify-2fa:
+    post:
+      summary: Verify 2FA code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+              required:
+                - code
+      responses:
+        '200':
+          description: 2FA code verified
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/user.json'
+
+  /auth/logout:
+    post:
+      summary: User logout
+      responses:
+        '204':
+          description: Successful logout

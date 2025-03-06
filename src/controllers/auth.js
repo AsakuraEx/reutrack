@@ -98,7 +98,7 @@ exports.login = async (req, res) => {
         if (bcrypt.compareSync(password, user.password)) {
             // Generate and send 2FA code
             await this.send2FACode(user);
-            res.status(HttpCode.HTTP_OK).json({exito: 'Se ha enviado un código a su correo electronico registrado'});
+            res.status(HttpCode.HTTP_OK).json({exito: 'Se ha enviado un código a su correo electrónico registrado'});
         } else {
             return res.status(HttpCode.HTTP_OK).json({ error: 'Credenciales incorrectas' });
         }

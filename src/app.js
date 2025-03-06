@@ -5,12 +5,14 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const cors = require('cors');
 
-const apiRouter = require('./routes/api')
-const { swaggerUi, swaggerDocs } = require('./swagger');
+const apiRouter = require('./routes/api');
+const { swaggerUi, swaggerDocs } = require('./docs/swagger/swagger');
 
 var app = express();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+
 
 
 app.use(cors({
@@ -28,11 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Rutas
-app.use('/api', apiRouter)
-
-
-
+app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -57,6 +55,5 @@ const host = process.env.HOST
 app.listen(port, host, () => {
   console.log(`Servidor escuchando en http://${host}:${port}`);
 });
-
 
 module.exports = app;

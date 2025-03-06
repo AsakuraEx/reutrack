@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: Minuta de Reunión API
+  version: 1.0.0
+paths:
+  /minutareunion/{id_reunion}:
+    get:
+      summary: Retrieve the minutes for a specific meeting
+      parameters:
+        - name: id_reunion
+          in: path
+          required: true
+          description: ID of the meeting to retrieve the minutes
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A list of meeting minutes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/minutareunion.json'
+  
+  /minutareunion/create:
+    post:
+      summary: Create a new minute for a meeting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/minutareunion.json'
+      responses:
+        '201':
+          description: Minute created
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/minutareunion.json'
+
+  /minutareunion/update/{id_reunion}:
+    patch:
+      summary: Update an existing minute for a specific meeting
+      parameters:
+        - name: id_reunion
+          in: path
+          required: true
+          description: ID of the meeting to update the minute
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/minutareunion.json'
+      responses:
+        '200':
+          description: Minute updated
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/minutareunion.json'
+
+  /minutareunion/delete:
+    delete:
+      summary: Delete an existing minute
+      responses:
+        '204':
+          description: Minute deleted

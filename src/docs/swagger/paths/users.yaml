@@ -1,0 +1,106 @@
+openapi: 3.0.0
+info:
+  title: API de Usuarios
+  version: 1.0.0
+paths:
+  /users:
+    get:
+      summary: Recuperar todos los usuarios
+      responses:
+        '200':
+          description: Una lista de usuarios
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../schemas/users.json'
+    post:
+      summary: Crear un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/users.json'
+      responses:
+        '201':
+          description: Usuario creado
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/users.json'
+
+  /users/{id}:
+    get:
+      summary: Recuperar un usuario específico por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario a recuperar
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Objeto de usuario
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/users.json'
+    patch:
+      summary: Actualizar un usuario específico por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del usuario a actualizar
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../schemas/users.json'
+      responses:
+        '200':
+          description: Usuario actualizado
+
+  /users/updatepassword:
+    patch:
+      summary: Actualizar la contraseña de un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+      responses:
+        '200':
+          description: Contraseña actualizada
+
+  /users/updateStatus:
+    patch:
+      summary: Actualizar el estado de un usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+              required:
+                - status
+      responses:
+        '200':
+          description: Estado de usuario actualizado
+tags:
+  - Usuarios
