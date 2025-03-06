@@ -309,6 +309,18 @@ exports.generatePDF = async (req, res) => {
             where: { id: id },
             include: [
                 {
+                    model: db.encargado,
+                    as: 'encargado de reunion',
+                    attributes: ['id'],
+                    include: [
+                        {
+                            model: db.users,
+                            as: 'usuario',
+                            attributes: ['nombre', 'email']
+                        }
+                    ],
+                },
+                {
                     model: db.listaasistencia,
                     as: 'asistencia reunion',
                     attributes: ['participante', 'institucion', 'doc_identidad', 'cargo', 'telefono', 'correo'],
@@ -320,7 +332,7 @@ exports.generatePDF = async (req, res) => {
                 },
                 {
                     model: db.minutareunion,
-                    as: 'minuta de reunion',
+                    as: 'minutadereunion',
                     attributes: ['minuta'],
                 },
                 {
@@ -414,6 +426,14 @@ exports.generatePDF = async (req, res) => {
             </h2>
         </div>
         <div class="section">
+            <h2>Encargados de la reunión:</h2>
+            <ul class="puntos-reunion">
+                ${reunion['encargado de reunion'] && reunion['encargado de reunion'].length > 0 ? reunion['encargado de reunion'].map(encargado => `
+                <li>• ${encargado.usuario.nombre}</li>
+                `).join('') : ''}
+            </ul>
+        </div>
+        <div class="section">
             <h2>Puntos de la reunión:</h2>
             <ul class="puntos-reunion">
             ${reunion['puntos de reunion'].map(punto => `
@@ -423,7 +443,7 @@ exports.generatePDF = async (req, res) => {
         </div>
         <div class="section">
             <h2>Minuta:</h2>
-            <p>${reunion['minuta de reunion'][0].minuta}</p>
+            <p>${reunion['minutadereunion'][0].minuta}</p>
         </div>
         <div class="section">
             <h2>Acuerdos:</h2>

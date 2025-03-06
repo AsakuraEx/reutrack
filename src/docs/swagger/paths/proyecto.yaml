@@ -111,6 +111,3 @@ paths:
       responses:
         '204':
           description: Proyecto finalizado
-
-tags:
-  - Proyecto

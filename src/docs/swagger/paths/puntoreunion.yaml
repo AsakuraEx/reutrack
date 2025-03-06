@@ -58,6 +58,3 @@ paths:
       responses:
         '204':
           description: Punto de reunión eliminado
-
-tags:
-  - Punto de Reunión
