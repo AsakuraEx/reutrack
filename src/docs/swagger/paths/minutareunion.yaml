@@ -2,6 +2,9 @@ openapi: 3.0.0
 info:
   title: Minuta de Reunión API
   version: 1.0.0
+tags:
+  - Minuta de Reunión
+
 paths:
   /minutareunion/{id_reunion}:
     get:
@@ -26,6 +29,8 @@ paths:
   /minutareunion/create:
     post:
       summary: Create a new minute for a meeting
+      tags:
+        - Minuta de Reunión
       requestBody:
         required: true
         content:
@@ -43,6 +48,8 @@ paths:
   /minutareunion/update/{id_reunion}:
     patch:
       summary: Update an existing minute for a specific meeting
+      tags:
+        - Minuta de Reunión
       parameters:
         - name: id_reunion
           in: path
@@ -67,6 +74,8 @@ paths:
   /minutareunion/delete:
     delete:
       summary: Delete an existing minute
+      tags:
+        - Minuta de Reunión
       responses:
         '204':
           description: Minute deleted

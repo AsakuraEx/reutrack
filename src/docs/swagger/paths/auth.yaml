@@ -2,10 +2,15 @@ openapi: 3.0.0
 info:
   title: Auth API
   version: 1.0.0
+tags:
+  - Auth
+
 paths:
   /auth/login:
     post:
       summary: User login
+      tags:
+        - Auth
       requestBody:
         required: true
         content:
@@ -31,6 +36,8 @@ paths:
   /auth/verify-2fa:
     post:
       summary: Verify 2FA code
+      tags:
+        - Auth
       requestBody:
         required: true
         content:
@@ -53,6 +60,8 @@ paths:
   /auth/logout:
     post:
       summary: User logout
+      tags:
+        - Auth
       responses:
         '204':
           description: Successful logout

@@ -2,6 +2,9 @@ openapi: 3.0.0
 info:
   title: Encargado API
   version: 1.0.0
+tags:
+  - Encargado
+
 paths:
   /encargado/{id_reunion}:
     get:
@@ -26,6 +29,8 @@ paths:
   /encargado/create:  
     post:
       summary: Create a new Encargado
+      tags:
+        - Encargado
       requestBody:
         required: true
         content:
@@ -43,6 +48,8 @@ paths:
   /encargado/delete/{id}:
     delete:
       summary: Delete an existing Encargado
+      tags:
+        - Encargado
       parameters:
         - name: id
           in: path

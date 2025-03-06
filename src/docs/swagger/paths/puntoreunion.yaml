@@ -2,6 +2,9 @@ openapi: 3.0.0
 info:
   title: API de Punto de Reunión
   version: 1.0.0
+tags:
+  - Punto de Reunión
+
 paths:
   /puntoreunion/{id_reunion}:
     get:
@@ -24,6 +27,8 @@ paths:
                   $ref: '../schemas/puntoreunion.json'
     post:
       summary: Crear un nuevo punto de reunión
+      tags:
+        - Punto de Reunión
       requestBody:
         required: true
         content:
@@ -41,6 +46,8 @@ paths:
   /puntoreunion/delete/{id}:
     delete:
       summary: Eliminar un punto de reunión existente
+      tags:
+        - Punto de Reunión
       parameters:
         - name: id
           in: path
@@ -51,5 +58,6 @@ paths:
       responses:
         '204':
           description: Punto de reunión eliminado
+
 tags:
   - Punto de Reunión

@@ -2,10 +2,15 @@ openapi: 3.0.0
 info:
   title: Estados API
   version: 1.0.0
+tags:
+  - Estados
+
 paths:
   /estados:
     get:
       summary: Muestra todos los estados
+      tags:
+        - Estados
       responses:
         '200':
           description: Lista de estados
@@ -19,6 +24,8 @@ paths:
   /estados/geOne/{id}:
     get:
       summary: Muestra estado por id
+      tags:
+        - Estados
       responses:
         '200':
           description: Estado recibido
@@ -32,6 +39,8 @@ paths:
   /estados/create:
     post:
       summary: Create a new Estado
+      tags:
+        - Estados
       requestBody:
         required: true
         content:
@@ -45,5 +54,3 @@ paths:
             application/json:
               schema:
                 $ref: '../schemas/estado.json'
-
-  

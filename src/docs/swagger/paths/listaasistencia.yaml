@@ -2,6 +2,9 @@ openapi: 3.0.0
 info:
   title: Lista de Asistencia API
   version: 1.0.0
+tags:
+  - Lista de Asistencia
+
 paths:
   /listaasistencia/{id}:
     get:
@@ -24,6 +27,8 @@ paths:
                   $ref: '../schemas/listaasistencia.json'
     post:
       summary: Create a new attendance list
+      tags:
+        - Lista de Asistencia
       requestBody:
         required: true
         content:
@@ -41,6 +46,8 @@ paths:
   /listaasistencia/delete/{id}:
     delete:
       summary: Delete an existing attendance list
+      tags:
+        - Lista de Asistencia
       parameters:
         - name: id
           in: path

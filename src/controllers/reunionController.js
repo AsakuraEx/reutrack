@@ -57,45 +57,65 @@ exports.ultima = async (req,res) => {
 
 //Obtiene el detalle de la reunion
 exports.detalle = async (req, res) => {
+    const id  = req.params.id;
+
+
     try {
-        const { codigo } = req.params;
+        
+        const whereClause = {}
+        whereClause.id = id;
+        let include = [
+            {
+                model: db.version,
+                as: 'version',
+                attributes: ['nombre'],
+                include: [
+                    {
+                        model: db.proyecto,
+                        as: 'proyecto',
+                        attributes: ['nombre']
+                    }
+                ]
+            },
+            {
+                model: db.listaasistencia,
+                as: 'asistencia reunion',
+                attributes: ['participante', 'institucion', 'doc_identidad', 'cargo', 'telefono', 'correo'],
+            },
+            {
+                model: db.encargado,
+                as: 'encargado de reunion',
+                attributes: ['id'],
+                include: [
+                    {
+                        model: db.users,
+                        as: 'usuario',
+                        attributes: ['nombre']
+                    }
+                ],
+            },
+            {
+                model: db.puntoreunion,
+                as: 'puntos de reunion',
+                attributes: ['nombre'],
+            },
+            {
+                model: db.minutareunion,
+                as: 'minutadereunion',
+                attributes: ['minuta', 'updatedAt'],
+            },
+            {
+                model: db.acuerdocompromiso,
+                as: 'acuerdos de reunion',
+                attributes: ['nombre'],
+            },
+            
+        ]
+        
         const reunion = await db.reunion.findOne({
-            where: { codigo: codigo },
-            include: [
-                {
-                    model: db.listaasistencia,
-                    as: 'asistencia reunion',
-                    attributes: ['participante', 'institucion', 'doc_identidad', 'cargo', 'telefono', 'correo'],
-                },
-                {
-                    model: db.encargado,
-                    as: 'encargado de reunion',
-                    attributes: ['id'],
-                    include: [
-                        {
-                            model: db.users,
-                            as: 'usuario',
-                            attributes: ['nombre']
-                        }
-                    ],
-                    raw: true
-                },
-                {
-                    model: db.puntoreunion,
-                    as: 'puntos de reunion',
-                    attributes: ['nombre'],
-                },
-                {
-                    model: db.minutareunion,
-                    as: 'minuta de reunion',
-                    attributes: ['minuta'],
-                },
-                {
-                    model: db.acuerdocompromiso,
-                    as: 'acuerdos de reunion',
-                    attributes: ['nombre'],
-                }
-            ],
+            attributes: {exclude: ['id_usuario','id_version','id_estado','expiracion', 'codigo']},
+            include,
+            where: whereClause
         });
         if (!reunion) {
             return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Reunión no encontrada' });

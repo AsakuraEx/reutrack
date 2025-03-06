@@ -2,10 +2,15 @@ openapi: 3.0.0
 info:
   title: API de Proyecto
   version: 1.0.0
+tags:
+  - Proyecto
+
 paths:
   /proyecto:
     get:
       summary: Recuperar todos los proyectos
+      tags:
+        - Proyecto
       responses:
         '200':
           description: Una lista de proyectos
@@ -17,6 +22,8 @@ paths:
                   $ref: '../schemas/proyecto.json'
     post:
       summary: Crear un nuevo proyecto
+      tags:
+        - Proyecto
       requestBody:
         required: true
         content:
@@ -48,56 +55,62 @@ paths:
             application/json:
               schema:
                 $ref: '../schemas/proyecto.json'
-  /update/:id:
-  patch:
-    summary: Actualizar un proyecto existente por ID
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID del proyecto a actualizar
-        schema:
-          type: integer
-    requestBody:
-      required: true
-      content:
-        application/json:
+    patch:
+      summary: Actualizar un proyecto existente por ID
+      tags:
+        - Proyecto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del proyecto a actualizar
           schema:
-            $ref: '../schemas/proyecto.json'
-    responses:
-      '200':
-        description: Proyecto actualizado
+            type: integer
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
               $ref: '../schemas/proyecto.json'
-  
-  /cancelar/:id:
-  patch:
-    summary: Cancelar un proyecto por ID
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID del proyecto a cancelar
-        schema:
-          type: integer
-    responses:
-      '204':
-        description: Proyecto cancelado
-  
-  /finalizar/:id:
-  patch:
-    summary: Finalizar un proyecto por ID
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: ID del proyecto a finalizar
-        schema:
-          type: integer
-    responses:
-      '204':
-        description: Proyecto finalizado
+      responses:
+        '200':
+          description: Proyecto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '../schemas/proyecto.json'
+
+  /proyecto/cancelar/{id}:
+    patch:
+      summary: Cancelar un proyecto por ID
+      tags:
+        - Proyecto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del proyecto a cancelar
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Proyecto cancelado
+
+  /proyecto/finalizar/{id}:
+    patch:
+      summary: Finalizar un proyecto por ID
+      tags:
+        - Proyecto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del proyecto a finalizar
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Proyecto finalizado
+
 tags:
-- Proyecto
+  - Proyecto

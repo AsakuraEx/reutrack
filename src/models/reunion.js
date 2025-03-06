@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
       })
       reunion.hasMany(models.minutareunion,{
         foreignKey: 'id_reunion',
-        as: 'minuta de reunion'
+        as: 'minutadereunion'
       })
       reunion.hasMany(models.acuerdocompromiso,{
         foreignKey: 'id_reunion',

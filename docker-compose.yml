@@ -1,12 +1,20 @@
-version: '3.5'
+version: '3.7'
 
 services:
-  backend-reutrack:
-    image: nginx
-    ports:
-      - "3101:80"
-    container_name: backend-reutrack
-    volumes:
-      - ./:/usr/share/nginx/html/
+  reutrack:
     build: .
+    env_file:
+      - .env
+    ports:
+      - "3100:3100"
     restart: always
+    networks:
+      reutrack_network:
+        ipv4_address: 10.168.241.175
+
+networks:
+  reutrack_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "10.168.241.0/24"
