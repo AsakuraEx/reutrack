@@ -19,7 +19,7 @@
         <div class="flex flex-col gap-2 w-full lg:w-fit">
             <RouterLink 
                 :to="{name:'detalle', params:{id: props.id}}" 
-                class="border rounded bg-transparent hover:bg-sky-400 hover:border-sky-400 inline-flex gap-2  px-3 py-1 transition-colors duration-300 text-center"
+                class="border rounded bg-transparent hover:bg-sky-400 hover:border-sky-400 inline-flex justify-center gap-2  px-3 py-1 transition-colors duration-300 text-center"
                 v-if="estado.nombre=== 'Finalizado'"
             >
                 <svg-icon type="mdi" :path="path2"></svg-icon>

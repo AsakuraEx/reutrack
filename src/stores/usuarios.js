@@ -6,11 +6,11 @@ import { jwtDecode } from "jwt-decode";
 
 export const useUsuarioStore = defineStore('usuarios', ()=>{
     
-    const User = ref({})
+    const User = ref({})    //Objeto de usuario
 
     const router = useRouter()
     const limiteInactividad = 120 * 60 * 1000; // 15 minutos
-    let inactividad = null;
+    let inactividad = null;     //Define la inactividad
 
     const errorInactividad = ref('')
     const message = ref({
@@ -18,6 +18,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         mensaje: '' 
     })
 
+    //Valida que la contraseña anterior sea correcta, se utiliza en el cambio de contraseña
     async function validarContraseñaAnterior(id, oldpassword){
         
         let usuario;
@@ -39,6 +40,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }        
     }
 
+    //Muestra el listado de usuarios
     async function mostrarUsuarios(estado,limit, page){
         try{
             const response = await apiServiceUsuarios.getUsuarios(estado,limit, page);
@@ -51,6 +53,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
+    //Cambia el estado, se envia el estado actual y se actualiza con el estado contrario
     async function cambiarEstado(id, estado){
         try{
             const {status} = await apiServiceUsuarios.cambiarEstado(id, estado);
@@ -63,6 +66,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
+    //Solicita mostrar todos los usuarios activos, se utiliza en el paso encargados de la reunión
     async function mostrarEncargados(){
         try{
             const {status, data} = await apiServiceUsuarios.getUsuarios(4,null,1);
@@ -76,6 +80,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         
     }
 
+    //Metodo para iniciar sesión
     async function iniciarSesion(email, password){
         try{
             const response = await apiServiceUsuarios.iniciarSesion(email, password)
@@ -89,20 +94,24 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
+    //Verificación de 2FA
     async function verify2FA(email, code){
         try{
             const {status, data} = await apiServiceUsuarios.verify2FA(email, code)
             if(status === 200){
 
+                //Se decodifica el token y se almacena en una variable
                 const decoded = jwtDecode(data.token)
                 
+                //Se accede al estado y se evalua si esta deshabilitado
                 if(decoded.id_estado === 5){
                     const errores = "El usuario al que intenta acceder está deshabilitado."
         
                     return errores
                 }
     
-                sessionStorage.setItem('token', data.token)
+                //Guarda el token en session storage
+                localStorage.setItem('token', data.token)
 
                 return data;
             }
@@ -112,6 +121,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
+    //Metodo de creacion de usuarios
     async function crearUsuario(data){
         try{
             const {status} = await apiServiceUsuarios.crearUsuario(data)
@@ -131,6 +141,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
+    //Actualiza las contraseñas en la pantalla de cambio de contraseña
     async function actualizarContraseña(id, oldpassword, password, sesion){
         try{
             const {status, data} = await apiServiceUsuarios.actualizarContraseña(id, oldpassword, password, sesion)
@@ -151,6 +162,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
+    //Obtiene un usuario especifico mediante el id
     async function obtenerUsuario(id){
         try{
             const {status, data} = await apiServiceUsuarios.getUsuario(id);
@@ -164,6 +176,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }     
     }
 
+    //Actualiza el usuario mediante el id y la data es el objeto que contiene los cambios del reigstro
     async function actualizarUsuario(id, data){
         try{
             const {status} = await apiServiceUsuarios.actualizarUsuario(id, data)
@@ -183,6 +196,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     } 
 
+    //Cierra sesión a demanda
     async function cerrarSesion(id){
         try{
 
@@ -193,7 +207,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
             }
 
             errorInactividad.value = ''
-            sessionStorage.clear()
+            localStorage.clear()
             router.push({name:'login'})
 
         }catch(e){
@@ -201,6 +215,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         }
     }
 
+    //Cierra sesión por inactividad
     async function cerrarSesionInactividad(id){
         try{
 
@@ -210,7 +225,8 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
                 router.push({name: 'login'})
             }
 
-            sessionStorage.clear()
+            localStorage.clear()
+            //Muestra el mensaje de cierre de sesión por inactividad
             errorInactividad.value = 'Se ha cerrado su sesión por inactividad'
             router.push({name:'login'})
             
@@ -220,6 +236,7 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
 
     }
 
+    //Función que se encarga de limpiar la inactividad y volverla a ejecutar
     const reiniciarTiempo = (id) => {
         clearTimeout(inactividad)
         inactividad = setTimeout(()=>{
@@ -228,11 +245,13 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
 
     }
 
+    //Función que evalua si se presionan teclas o se mueve el mouse dentro de la app, de esta manera se intuye que el usuario esta activo
     const detectarActividad = () => {
         document.addEventListener('mousemove', reiniciarTiempo)
         document.addEventListener('keydown', reiniciarTiempo)
     }
 
+    //Se elimina toda la detección de actividad
     const cancelarDeteccionActividad = () => {
         clearTimeout(inactividad);
         document.removeEventListener('mousemove', reiniciarTiempo);

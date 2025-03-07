@@ -18,7 +18,7 @@
     const path2 = mdiPlus
     const route = useRoute()
     const store = useProyectoStore();
-    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const decoded = jwtDecode(localStorage.getItem('token'))
     const usuarioRol = decoded.id_rol
 
     const { id } = route.params;
@@ -115,7 +115,7 @@
                 class="border px-3 py-1 bg-purple-400 border-purple-400 hover:bg-purple-300 font-bold rounded flex gap-2"
             >
                 <svg-icon type="mdi" :path="path2"></svg-icon>
-                Nueva Version
+                Nueva versión
             </RouterLink>
         </div>
 
@@ -149,7 +149,7 @@
                             <p>
                                 {{ item.usuario.nombre }}
                             </p>
-                            <p>
+                            <p class="text-gray-500 italic text-sm">
                                 {{ transformarFecha(item.createdAt) }}
                             </p>
                         </td>

@@ -2,7 +2,6 @@
     import Header from '@/components/Header.vue'
     import Footer from '@/components/Footer.vue'
     import Stepper from '@/components/Stepper.vue'
-    import Textfield from '@/components/Textfield.vue';
     import BtnSubmit from '@/components/BtnSubmit.vue';
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline } from '@mdi/js';
@@ -10,7 +9,8 @@
     import { computed, onMounted, ref, watch, reactive } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { Field, ErrorMessage, Form } from 'vee-validate';
-import AlertaError from '@/components/AlertaError.vue';
+    import AlertaError from '@/components/AlertaError.vue';
+    import { jwtDecode } from 'jwt-decode';
 
     //Variables del sistema
     const path = mdiTrashCanOutline;
@@ -19,8 +19,10 @@ import AlertaError from '@/components/AlertaError.vue';
     const idReunion = id;
     const store = useReunionStore()
     const router = useRouter()
-    const usuarioRol = sessionStorage.getItem('rol')
+    const usuarioRol = localStorage.getItem('rol')
     const reunion = ref({})
+    const listaEncargados = ref([])
+    const decoded = jwtDecode(localStorage.getItem('token'))
 
     //Variable que representa el formulario
     const formData = ref({
@@ -45,16 +47,23 @@ import AlertaError from '@/components/AlertaError.vue';
 
     //Pull de funciones que se cargan al montar el componente
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
         participantes.value = await store.obtenerParticipantes(idReunion)
         reunion.value = await store.obtenerReunion(idReunion)
+
+        listaEncargados.value = await store.obtenerEncargados(id) //Se obtiene información para la tabla
+
+        if(reunion.value.id_estado != 1){
+            router.push({name:'historial'})
+        }
+        if(!(!!listaEncargados.value.find(encargado => encargado.id_usuario === decoded.id)) && decoded.id_rol !== 1){
+            router.push({name:'historial'})
+        }
+
     })
 
     // Variables con diferentes funcionalidades del sistema
     const agregarParticipante = async (values, { resetForm }) => {
-        
+        //Valida que existe participante con ese documento
         if(participantes.value.find(participante => participante.doc_identidad === formData.value.doc_identidad)){
             error.value = 'El participante ya fue agregado segun documento de identidad...'
             setTimeout(()=>{
@@ -63,6 +72,7 @@ import AlertaError from '@/components/AlertaError.vue';
             return
         }
 
+        //Valida que existe participante con ese telefono
         if(participantes.value.find(participante => participante.telefono === formData.value.telefono)){
             error.value = 'El participante ya fue agregado segun número de teléfono...'
             setTimeout(()=>{
@@ -71,6 +81,7 @@ import AlertaError from '@/components/AlertaError.vue';
             return
         }
         
+        //Valida que existe participante con ese correo
         if(participantes.value.find(participante => participante.correo === formData.value.correo)){
             error.value = 'El participante ya fue agregado segun correo electrónico...'
             setTimeout(()=>{
@@ -79,6 +90,7 @@ import AlertaError from '@/components/AlertaError.vue';
             return
         }
 
+        //Realiza el guardado del participante
         try{
             await store.agregarParticipante(formData.value)
             participantes.value = await store.obtenerParticipantes(idReunion)
@@ -102,6 +114,7 @@ import AlertaError from '@/components/AlertaError.vue';
 
     }
 
+    //Elimina al participante de la lista de asistencia
     const eliminarAsistencia = async (id) => {
         await store.eliminarAsistencia(id)
         participantes.value = await store.obtenerParticipantes(idReunion)
@@ -112,6 +125,7 @@ import AlertaError from '@/components/AlertaError.vue';
         return participantes.value.length > 0;
     })
 
+    //Muestra el modal segun el registro seleccionado
     const modalMostrado = (id, participante) => {
         Object.assign(modal, {
             id: id,
@@ -119,6 +133,7 @@ import AlertaError from '@/components/AlertaError.vue';
         })
     }
 
+    //Esta verificando si existen cambios en el campo telefono y doc_identidad para agregar el caracter
     watch(formData, ()=>{
         if (formData.value.doc_identidad.length === 8 && !formData.value.doc_identidad.includes('-')) {
             formData.value.doc_identidad += '-';
@@ -146,6 +161,8 @@ import AlertaError from '@/components/AlertaError.vue';
         <h1 class="text-xl font-extrabold text-center pt-12 uppercase px-4">Lista de Asistencia</h1>
         <div class="flex justify-between py-12">
             <p class="text-purple-500 text-center text-xl">Código: <b>{{ reunion.codigo }}</b></p>
+            
+            <!-- campo que verifica si es extranjero -->
             <div class="form-control">
                 <label class="label cursor-pointer">
                   <span class="label-text text-white px-4">Extranjero</span>
@@ -161,6 +178,7 @@ import AlertaError from '@/components/AlertaError.vue';
                 :class="extranjero ? 'lg:grid-cols-2':'lg:grid-cols-3'"
             >
 
+                <!-- Campo -->
                 <div class="flex flex-col gap-4 items-center px-4">
                     <label for="participante" class="text-xl px-4 md:text-left text-center">
                         Nombre de participante *:
@@ -177,6 +195,7 @@ import AlertaError from '@/components/AlertaError.vue';
                     <ErrorMessage name="participante" class="text-red-500 text-sm" />
                 </div>
     
+                <!-- Campo -->
                 <div class="flex flex-col gap-4 items-center px-4">
                     <label for="institucion" class="text-xl px-4 md:text-left text-center">
                         Institución o Dependencia *:
@@ -193,6 +212,7 @@ import AlertaError from '@/components/AlertaError.vue';
                     <ErrorMessage name="institucion" class="text-red-500 text-sm" />
                 </div>
     
+                <!-- Campo -->
                 <div class="flex flex-col gap-4 items-center px-4">
                     <label for="cargo" class="text-xl px-4 md:text-left text-center">
                         Cargo *:
@@ -209,6 +229,7 @@ import AlertaError from '@/components/AlertaError.vue';
                     <ErrorMessage name="cargo" class="text-red-500 text-sm" />
                 </div>
     
+                <!-- Campo -->
                 <div class="flex flex-col gap-4 items-center px-4" v-if="!extranjero">
                     <label for="doc_identidad" class="text-xl px-4 md:text-left text-center">
                         DUI *:
@@ -218,14 +239,15 @@ import AlertaError from '@/components/AlertaError.vue';
                         name="doc_identidad"
                         placeholder="00000000-0"
                         maxLength="10"
+                        rules="required|dui"
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.doc_identidad ? 'ring ring-red-500': ''"
                         v-model="formData.doc_identidad"
-                        rules="required|dui"
                     />
                     <ErrorMessage name="doc_identidad" class="text-red-500 text-sm" />
                 </div>
                 
+                <!-- Campo -->
                 <div class="flex flex-col gap-4 items-center px-4" v-if="!extranjero">
                     <label for="telefono" class="text-xl px-4 md:text-left text-center">
                         Teléfono *:
@@ -243,6 +265,7 @@ import AlertaError from '@/components/AlertaError.vue';
                     <ErrorMessage name="telefono" class="text-red-500 text-sm" />
                 </div>
                     
+                <!-- Campo -->
                 <div class="flex flex-col gap-4 items-center px-4">
                     <label for="correo" class="text-xl px-4 md:text-left text-center">
                         Correo Electrónico *:
@@ -286,7 +309,7 @@ import AlertaError from '@/components/AlertaError.vue';
                 </thead>
                 <tbody>
                     <tr class="border-b" v-if="!existenParticipantes">
-                        <td colspan="7" class="py-2 text-center text-gray-300">No existen participantes registrados en esta reunion...</td>
+                        <td colspan="7" class="py-2 text-center text-gray-300">No existen participantes registrados en esta reunión...</td>
                     </tr>
                     <tr class="border-b" v-for="x in participantes">
                         <td class="py-2">{{ x.participante }}</td>

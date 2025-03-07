@@ -6,10 +6,11 @@
     import SvgIcon from '@jamescoyle/vue-icon';
     import TipTap from '@/components/TipTap.vue';
     import { mdiTrashCanOutline } from '@mdi/js';
-    import { onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+    import { onBeforeUnmount, onMounted, reactive, ref, computed} from 'vue';
     import { useRoute, useRouter } from 'vue-router';
     import { useReunionStore } from '@/stores/reuniones';
     import { Form, Field, ErrorMessage } from 'vee-validate';
+    import { jwtDecode } from 'jwt-decode';
 
     const path = mdiTrashCanOutline;        //Parte del icono
     const route = useRoute()        //Se utiliza para obtener informacion de la URL
@@ -19,8 +20,10 @@
     const puntos = ref([])          //Se almacenan todos los puntos
     const acuerdos = ref([])        //Se almacenan todos los acuerdos guardados
     const router = useRouter()      //Se utiliza para redireccionar a otra vista
-    const usuarioRol = sessionStorage.getItem('rol')
+    const usuarioRol = localStorage.getItem('rol')
     const reunion = ref({})
+    const listaEncargados = ref([])
+    const decoded = jwtDecode(localStorage.getItem('token'))
     let backup;
     const error = ref('')
     const hora = ref('')
@@ -44,10 +47,6 @@
     })
 
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
-
         //Limpia el objeto
         Object.assign(minuta, {
             minuta: '',
@@ -57,6 +56,14 @@
         //Obteniendo minuta
         const minutaActual = await store.obtenerMinuta(idReunion)
         reunion.value = await store.obtenerReunion(idReunion)
+
+        listaEncargados.value = await store.obtenerEncargados(id) //Se obtiene información para la tabla
+        if(reunion.value.id_estado != 1){
+            router.push({name:'historial'})
+        }
+        if(!(!!listaEncargados.value.find(encargado => encargado.id_usuario === decoded.id)) && decoded.id_rol !== 1){
+            router.push({name:'historial'})
+        }
         
         minuta.minuta = minutaActual.minuta
         minuta.id_reunion = minutaActual.id_reunion
@@ -76,7 +83,7 @@
         }
 
 
-        //Cada 20 segundos genera una copia de la minuta en el SessionStorage
+        //Cada 20 segundos genera una copia de la minuta en el localStorage
         backup = setInterval(()=>{
             //Ejecuta el metodo para realizar patch al registro de la minuta
             actualizarMinuta()
@@ -159,8 +166,11 @@
         router.push({name: 'historial'})
     }
 
-
-
+    const contarLetras = computed(() => {
+        let texto = minuta.minuta.toString().replace(/(<([^>]+)>)/ig, '')
+        console.log(texto)
+        return texto.length
+    })
 
 </script>
 
@@ -175,7 +185,7 @@
         
         <Stepper :step="4"/>
 
-        <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Descripción de la reunión</h1> 
+        <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Minuta de reunión</h1> 
         <p class="text-purple-500 text-center text-xl">Código: <b>{{ reunion.codigo }}</b></p>
 
         <div class="px-4 space-y-8">
@@ -220,11 +230,18 @@
 
             <div class="space-y-4">
                 <h2 class="text-xl font-bold">Descripción de la reunión *</h2>
-                <TipTap 
-                    v-model="minuta.minuta" 
-                />
+                <div>
+                    <TipTap 
+                        v-model="minuta.minuta" 
+                    />
+                    <div class="flex flex-col gap-1 lg:flex-row justify-center lg:justify-between">
+                        <span class="text-gray-300 font-light italic">
+                            Nota: Para guardar la minuta, debe escribir al menos 20 caracteres
+                        </span>
+                        <span class="text-gray-300 text-sm">{{ hora }}</span>
+                    </div>
+                </div>
                 <p class="text-red-500 text-sm" v-if="error">{{ error }}</p>
-                <p class="text-gray-300 text-sm">{{ hora }}</p>
             </div>
 
             <div class="space-y-4">
@@ -273,7 +290,7 @@
             </RouterLink>
 
             <button 
-                v-if="minuta.minuta.length >= 40"
+                v-if="contarLetras >= 20"
                 type="button"
                 @click="finalizarReunion()"
                 class="bg-purple-500 hover:bg-purple-400 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center animate-pulse hover:animate-none"

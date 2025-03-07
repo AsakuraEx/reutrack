@@ -9,7 +9,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 const store = useUsuarioStore()
 const error = ref('');
-const decoded = jwtDecode(sessionStorage.getItem('token'))
+const decoded = jwtDecode(localStorage.getItem('token'))
 const router = useRouter();
 const route = useRoute();
 

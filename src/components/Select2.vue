@@ -28,7 +28,7 @@ const props = defineProps({
         required: true
     },
     campo: {
-        type: Number,
+        type: null,
         required: true,
     },
     requerido: Boolean

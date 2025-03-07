@@ -14,7 +14,7 @@ import { jwtDecode } from 'jwt-decode';
 const store = useUsuarioStore()
 
 // Variables de librerias externas
-const decoded = jwtDecode(sessionStorage.getItem('token')) //Decodifica el token existente en sessionStorage
+const decoded = jwtDecode(localStorage.getItem('token')) //Decodifica el token existente en localStorage
 
 // hook life que carga las funciones al momento que se monta el header
 onMounted(async ()=>{

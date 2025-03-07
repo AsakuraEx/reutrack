@@ -8,23 +8,17 @@
     import { useProyectoStore } from '@/stores/proyectos';
     import Paginacion from '@/components/Paginacion.vue';
     import { jwtDecode } from 'jwt-decode';
-
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiGit, mdiPlus } from '@mdi/js';
 
+    //definición de variables
     const path2 = mdiPlus
     const path = mdiGit
-    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const decoded = jwtDecode(localStorage.getItem('token'))
     const usuarioRol = decoded.id_rol
-    //definición de variables
     const arrayProyectos = ref([]);
     const paginacion = ref({})
     const store = useProyectoStore();
-    const estados = {
-        Iniciado: 'bg-yellow-200 text-yellow-800',
-        Finalizado: 'bg-blue-200 text-blue-800',
-        Cancelado: 'bg-red-200 text-red-800'
-    }
     
     onMounted(async ()=>{
         const response = await store.mostrarProyectos(null, 10, 1);
@@ -32,7 +26,7 @@
         paginacion.value = response
     })
 
-    const control = ref(1)
+    const control = ref(1) //Control de paginacion
 
 
     const siguiente = async () => {
@@ -60,7 +54,23 @@
         }
     }
 
+    //Función que ayuda a transformar cualquier fecha a formato dd-mm-yyyy hh:mm tt
+    const transformarFecha = (fecha) => {
+    
+    const nuevaFecha = new Date(fecha)
 
+    const fechaFormateada = nuevaFecha.toLocaleString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',   // Hora en formato de dos dígitos
+        minute: '2-digit', // Minutos en formato de dos dígitos
+        second: '2-digit', // Segundos en formato de dos dígitos
+        hour12: true
+    });
+
+        return fechaFormateada
+    }
 
 </script>
 
@@ -77,7 +87,7 @@
                 class="border px-3 py-1 bg-purple-400 border-purple-400 hover:bg-purple-300 font-bold rounded flex gap-2"
             >
                 <svg-icon type="mdi" :path="path2"></svg-icon>
-                Nuevo Proyecto
+                Nuevo proyecto
             </RouterLink>
         </div>
 
@@ -86,12 +96,21 @@
                 <thead class="uppercase text-xl font-bold border-b-2 w-full">
                     <tr>
                         <td class="px-3">Proyecto</td>
+                        <td class="px-3">Creado por</td>
                         <td class="px-3">Acción</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr class="border-b" v-if="arrayProyectos" v-for="item in arrayProyectos">
-                        <td class="py-2 px-3 w-4/5">{{ item.nombre }}</td>
+                        <td class="py-2 px-3 w-3/5">{{ item.nombre }}</td>
+                        <td class="py-2 px-3 w-1/5">
+                            <p>
+                                {{ item.usuario.nombre }}
+                            </p>
+                            <p class="text-gray-500 italic text-sm">
+                                {{ transformarFecha(item.createdAt) }}
+                            </p>
+                        </td>
                         <td class="py-2">
                             <RouterLink
                                 :to="{name: 'versiones', params:{id: item.id}}"

@@ -1,20 +1,24 @@
 <script setup>
 
+    //Componentes definidos
     import Footer from '@/components/Footer.vue';
     import Header from '@/components/Header.vue';
     import CardHistorial from '@/components/CardHistorial.vue';
     import ModalCancelarReu from '@/components/ModalCancelarReu.vue';
     import Select2 from '@/components/Select2.vue';
-    import { onMounted, reactive, ref } from 'vue';
-    import { useReunionStore } from '@/stores/reuniones';
-    import { useProyectoStore } from '@/stores/proyectos';
     import Paginacion from '@/components/Paginacion.vue';
-    import { jwtDecode } from 'jwt-decode';
+
+    //Imports para la funcionalidad
+    import { onMounted, reactive, ref } from 'vue';
+    import { useReunionStore } from '@/stores/reuniones';       //Store de pinia
+    import { useProyectoStore } from '@/stores/proyectos';      //Store de pinia
+    import { jwtDecode } from 'jwt-decode';                     //Libreria que decodifica tokens
 
     const store = useReunionStore()
+    const storePro = useProyectoStore()
+
     const reuniones = ref([])
     const modal = ref({})
-    const storePro = useProyectoStore()
     const proyectos = ref([])
 
     let usuarioRol
@@ -28,7 +32,7 @@
 
     onMounted(async ()=>{
 
-        const decoded = jwtDecode(sessionStorage.getItem('token'))
+        const decoded = jwtDecode(localStorage.getItem('token'))
         usuarioRol = decoded.id_rol
         usuarioId = decoded.id
 
@@ -46,9 +50,10 @@
 
     })
 
-    const control = ref(1)
-    const paginacion = ref({})
+    const control = ref(1)      //Variable de control que define la página en la que se encuentra
+    const paginacion = ref({})      //Almacena la respuesta de paginación
 
+    //Metodo para busqueda siguiente, indicando si existen filtros, debe paginar con filtros
     const siguiente = async () => {
         
         
@@ -71,6 +76,7 @@
         }
     }
 
+    //Metodo para busqueda anterior, indicando si existen filtros, debe paginar con filtros
     const anterior = async () => {
         
         if(control.value === 1){
@@ -92,6 +98,7 @@
         }
     }
 
+    //Cancela la reunión
     const cancelarReunion = async (id) => {
         await store.cancelarReunion(id)
         if(usuarioRol != 1){
@@ -105,10 +112,12 @@
         }
     }
 
+    //Define el modal que mostrará de la tabla de registros
     const modalMostrado = (reunion) => {
         modal.value = reunion
     }
 
+    //Metodo del botón para filtrar
     const filtrarReuniones = async () => {
 
         if(usuarioRol != 1){
@@ -123,6 +132,7 @@
 
     }
 
+    //Reinicia todos los filtros de forma nativa
     const reiniciarFiltros = async () => {
         Object.assign(filtros, {
             id_proyecto: null,
@@ -152,6 +162,7 @@
             Historial de Reuniones
         </h1>
     
+        <!-- sección de filtros -->
         <div class="flex flex-col lg:flex-row gap-2 bg-purple-300 border-2 border-purple-500 text-purple-800 p-4 rounded">
 
             <Select2 
@@ -206,6 +217,7 @@
     
         </div>
 
+        <!-- Paginación -->
         <Paginacion 
             :paginacion="paginacion"
             @anterior="anterior"
@@ -213,6 +225,7 @@
             :control="control"
         />
 
+        <!-- Modal a mostrar -->
         <ModalCancelarReu 
             :reunion="modal"
             @cancelar-reunion="cancelarReunion(modal.id)"

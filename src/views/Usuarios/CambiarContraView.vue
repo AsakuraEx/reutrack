@@ -138,7 +138,7 @@ const passwordVisible2 = ref(false)
 const passwordVisible3 = ref(false)
 const spinnerActivo = ref(false)
 
-const decoded = jwtDecode(sessionStorage.getItem('token'))
+const decoded = jwtDecode(localStorage.getItem('token'))
 
 const router = useRouter()
 const store = useUsuarioStore()

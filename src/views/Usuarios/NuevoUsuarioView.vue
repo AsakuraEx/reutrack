@@ -9,7 +9,7 @@ import { useRouter } from 'vue-router';
 
 const store = useUsuarioStore()
 const error = ref('');
-const decoded = jwtDecode(sessionStorage.getItem('token'))
+const decoded = jwtDecode(localStorage.getItem('token'))
 const router = useRouter();
 const usuarioNuevo = reactive({
     nombre: '',
@@ -18,7 +18,7 @@ const usuarioNuevo = reactive({
 })
 
 onMounted(()=>{
-    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const decoded = jwtDecode(localStorage.getItem('token'))
     if(decoded.id_rol != 1){
         router.push({name: 'home'})
     }

@@ -1,16 +1,20 @@
-import { ref } from "vue";
-import apiServiceReunion from "@/services/apiServiceReunion";
-import { defineStore } from "pinia";
+import { ref } from "vue";  
+import apiServiceReunion from "@/services/apiServiceReunion";   //Conexión al servicio API de reunion
+import { defineStore } from "pinia";                //Define la creación de un store de pinia
 
 export const useReunionStore = defineStore('reuniones', () => {
     
+    //Variable de mensaje para enviar información inicialmente de exito
+    //No es utilizable
     const message = ref({
         tipo: '',
         mensaje: '' 
     })
 
+    //Mediante el código de reunión se busca una reunión especifica
     async function obtenerReunionActual(codigo){
         try{
+            //Extrae el status y la data y la retorna
             const {status, data} = await apiServiceReunion.ObtenerReunionActual(codigo)
             if(status === 200){
                 return data;
@@ -20,6 +24,7 @@ export const useReunionStore = defineStore('reuniones', () => {
         }    
     }
 
+    //Función que extraer la última reunión generada
     async function obtenerUltimaReunion(){
         try{
             const response = await apiServiceReunion.consultarUltimaReunion()
@@ -32,6 +37,7 @@ export const useReunionStore = defineStore('reuniones', () => {
     }
 
     //FUNCION QUE OBTIENE TODAS LAS REUNIONES
+    //Se puede buscar por estado, definir limite, agregar codigo, obtener por proyecto, definir la pagina y el rango de fechas
     async function obtenerReuniones(estado, limite, codigo, proyecto, usuario, page, desde, hasta){
         try{
             const {status, data} = await apiServiceReunion.consultarReuniones(estado, limite, codigo, proyecto, usuario, page, desde, hasta)
@@ -65,6 +71,7 @@ export const useReunionStore = defineStore('reuniones', () => {
 
     }
 
+    //Llamada de API para marcar la reunión cancelada, solamente se debe pasar el ID
     async function cancelarReunion(id){
         try{
             await apiServiceReunion.cancelarReunion(id);
@@ -74,6 +81,7 @@ export const useReunionStore = defineStore('reuniones', () => {
 
     }
 
+    //Obtiene una reunión especifica por ID, similar a obtenerReuniónActual
     async function obtenerReunion(id){
         try{
             const {status, data} = await apiServiceReunion.consultarReunion(id)
@@ -104,10 +112,11 @@ export const useReunionStore = defineStore('reuniones', () => {
             const {status} = await apiServiceReunion.agregarEncargado(data);
 
             if(status === 201){
+                //Genera un mensaje de exito, esto actualmente no se utiliza
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡La reunión se inicio exitosamente!'
 
-
+                //Limpia el mensaje enviado a los 3 seg
                 setTimeout(()=>{
                     message.value.tipo = "",
                     message.value.mensaje = ""
@@ -300,6 +309,18 @@ export const useReunionStore = defineStore('reuniones', () => {
         await apiServiceReunion.finalizarReunion(idReunion)
     }
 
+    async function obtenerDetalleReunion(idReunion){
+        try{
+            const {status, data} = await apiServiceReunion.obtenerDetalle(idReunion);
+
+            if(status === 200){
+                return data;
+            }
+        }catch(e){
+            console.error(e)
+        }
+    }
+
     return {
         obtenerReuniones,
         obtenerReunion,
@@ -322,7 +343,8 @@ export const useReunionStore = defineStore('reuniones', () => {
         FinalizarReunion,
         obtenerUltimaReunion,
         obtenerReunionActual,
-        actualizarMinuta
+        actualizarMinuta,
+        obtenerDetalleReunion
     }
 }
 )

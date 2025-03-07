@@ -50,6 +50,7 @@
     // Variables con diferentes funcionalidades del sistema
     const agregarParticipante = async (values, { resetForm }) => {
         
+        //Valida que ya exista con este número de documento
         if(participantes.value.find(participante => participante.doc_identidad === formData.value.doc_identidad) && !extranjero){
             error.value = 'El participante ya fue agregado segun documento de identidad...'
             setTimeout(()=>{
@@ -58,6 +59,7 @@
             return
         }
 
+        //Valida que ya exista con este número de telefono
         if(participantes.value.find(participante => participante.telefono === formData.value.telefono) && !extranjero){
             error.value = 'El participante ya fue agregado segun número de teléfono...'
             setTimeout(()=>{
@@ -65,7 +67,8 @@
             }, 3000)
             return
         }
-        
+
+        //Valida que ya exista con el correo electronico
         if(participantes.value.find(participante => participante.correo === formData.value.correo)){
             error.value = 'El participante ya fue agregado segun correo electrónico...'
             setTimeout(()=>{
@@ -74,6 +77,7 @@
             return
         }
 
+        //Intenta agregar al participante y limpia el formulario
         try{
             await store.agregarParticipante(formData.value)
             participantes.value = await store.obtenerParticipantes(idReunion)
@@ -90,7 +94,7 @@
                 id_reunion: idReunion,
                 
             })
-
+            //Si todo esta bien, redirecciona a un mensaje de agradecimiento
             router.push({name: 'agradecimiento'})
         }catch(e){
             console.error('Error al agregar participante: ', error.message)
@@ -157,7 +161,7 @@
                         class="p-2 text-center rounded border bg-transparent w-full focus:outline-purple-400"
                         :class="errors.institucion ? 'ring ring-red-500': ''"
                         v-model="formData.institucion"
-                        rules="required"
+                        rules="required|alfanumeric"
                     />
                     <ErrorMessage name="institucion" class="text-red-500 text-sm" />
                 </div>
@@ -173,7 +177,7 @@
                         :class="errors.cargo ? 'ring ring-red-500': ''"
                         v-model="formData.cargo"
                         maxLength="50"
-                        rules="required"
+                        rules="required|alfanumeric"
                     />
                     <ErrorMessage name="cargo" class="text-red-500 text-sm" />
                 </div>

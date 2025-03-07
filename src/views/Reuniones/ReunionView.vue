@@ -21,12 +21,12 @@
     const reunion = ref({})
     const arrayVersiones = ref([]);
     const arrayProyectos = ref([])
-    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const decoded = jwtDecode(localStorage.getItem('token'))
     const formData = reactive({
         id_proyecto: null,
         id_version: null,
-        nombre: '',
-        lugar: '',
+        nombre: null,
+        lugar: null,
         id_usuario: decoded.id,
         codigo: '',
         expiracion: '',
@@ -84,7 +84,7 @@
 
     const formularioVacio = computed(()=>{
         //Regresa true si existe al menos un atributo vacio del objeto
-        return Object.values(formData).includes('')
+        return Object.values(formData).some(value => value === null || value === '');
     })
 
     const consultarVersiones = async (proyecto) => {
@@ -163,7 +163,7 @@
                 <Field
                     type="text" 
                     name="nombre"
-                    class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
+                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
                     v-model="formData.nombre"
                     :class="errors.nombre ? 'ring ring-red-500': ''"
                     maxLength="100"
@@ -180,7 +180,7 @@
                 <Field
                     type="text" 
                     name="lugar"
-                    class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
+                    class="p-2 rounded border bg-transparent w-full focus:outline-purple-400"
                     :class="errors.lugar ? 'ring ring-red-500': ''"
                     v-model="formData.lugar"
                     maxLength="32"

@@ -1,9 +1,8 @@
 import axios from "axios";    //Importa la libreria axios para realizar peticiones
+import { useRouter } from "vue-router";
 
-const jsonServerURL = import.meta.env.VITE_JSONSERVER_URL;    //url utilizada en el metodo axios create, apunta a json-server, se configura en env
 const baseURL = import.meta.env.VITE_BASE_URL;    //url utilizada en el metodo axios create, apunta al backend, se configura en env
-const localURL = import.meta.env.VITE_LOCAL_URL;  //url utilizada en el metodo axios create, apunta al backend local, se configura en env
-
+const router = useRouter()
 
 // Creando la variable a exportar
 const api = axios.create({
@@ -14,7 +13,7 @@ const api = axios.create({
 // Agregar el token dinámicamente antes de cada solicitud
 api.interceptors.request.use(
     (config) => {
-      const token = sessionStorage.getItem("token");
+      const token = localStorage.getItem("token");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -31,8 +30,9 @@ api.interceptors.response.use(
 (error) => {
     if (error.response && error.response.status === 401) {
     // Redirigir al login si el token es inválido o ha expirado
-    console.error("Token inválido o expirado. Redirigiendo al login...");
-    sessionStorage.clear()
+    console.error("Token inválido o expirado");
+    localStorage.clear()
+    router.push({name: 'NoAutenticado'})
     }
     return Promise.reject(error);
 }

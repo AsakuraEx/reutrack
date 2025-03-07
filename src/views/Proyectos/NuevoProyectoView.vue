@@ -1,6 +1,6 @@
 <script setup>
 
-    import { onMounted, reactive } from 'vue';
+    import { reactive } from 'vue';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
     import { useProyectoStore } from '@/stores/proyectos';
@@ -12,19 +12,15 @@
     
     const store = useProyectoStore()
     const router = useRouter()
-    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const decoded = jwtDecode(localStorage.getItem('token'))
 
+    //Formulario
     const nuevoProyecto = reactive({
         nombre: "",
         id_usuario: decoded.id
     })
 
-    onMounted(()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
-    })
-
+    //Guarda el proyecto
     const guardarProyecto = async (proyecto) => {
         try {
             await store.crearProyecto(proyecto)

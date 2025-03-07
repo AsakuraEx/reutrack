@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import authGuard from '@/guards/authGuard'
+import authGuard from '@/guards/authGuard'      //Guard definido para validación de rutas
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -8,7 +8,7 @@ const router = createRouter({
     {
       path: '/:catchAll(.*)',
       name: 'notFound',
-      component: ()=>import('../views/PageNotFound.vue')
+      component: ()=>import('../views/PageNotFound.vue'),
     },
     {
       path: '/',
@@ -121,7 +121,8 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../views/LoginView.vue')
+      component: () => import('../views/LoginView.vue'),
+      beforeEnter: authGuard
     },
     {
       path: '/invitado/:id',

@@ -52,7 +52,7 @@
             >
                 4
             </div>
-            <p class="mt-2">Descripción de la reunión</p>
+            <p class="mt-2">Minuta de reunión</p>
         </div>
     </div>
 </template>

@@ -3,26 +3,28 @@
     import { onMounted,ref, computed, reactive } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { useUsuarioStore } from '@/stores/usuarios';
-    import { useRoute } from 'vue-router';
+    import { useRoute, useRouter } from 'vue-router';
+
     import Header from '@/components/Header.vue'
     import Footer from '@/components/Footer.vue'
     import Stepper from '@/components/Stepper.vue'
-    import Select from '@/components/Select.vue';
+    import Select2 from '@/components/Select2.vue';
 
     //imports para iconos
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline } from '@mdi/js';
     import BtnSubmit from '@/components/BtnSubmit.vue';
-import { jwtDecode } from 'jwt-decode';
+    import { jwtDecode } from 'jwt-decode';
 
     const path = mdiTrashCanOutline;
 
     //store donde se almacena la logica de la vista
-    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const decoded = jwtDecode(localStorage.getItem('token'))
     const error = ref('')
     const store = useUsuarioStore();
     const storeReu = useReunionStore();
     const route = useRoute();
+    const router = useRouter()
     const usuarioRol = decoded.id_rol
 
     //variables o statements de la vista
@@ -32,7 +34,7 @@ import { jwtDecode } from 'jwt-decode';
     const {id} = route.params;     //Se obtiene el id de la reunion actual
     const idReunion = id;
     const formData = reactive({
-        id_usuario: 0,
+        id_usuario: null,
         id_reunion: id
 
     })
@@ -44,13 +46,17 @@ import { jwtDecode } from 'jwt-decode';
     })
 
     onMounted(async ()=>{
-        if(sessionStorage.getItem('token') == null){
-            router.push({name: 'login'})
-        }
-
         arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
         listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
         reunion.value = await storeReu.obtenerReunion(idReunion)
+
+
+        if(reunion.value.id_estado != 1){
+            router.push({name:'historial'})
+        }
+        if(!(!!listaEncargados.value.find(encargado => encargado.id_usuario === decoded.id)) && decoded.id_rol !== 1){
+            router.push({name:'historial'})
+        }
     })
 
     const agregarEncargado = async () => {
@@ -66,7 +72,7 @@ import { jwtDecode } from 'jwt-decode';
             listaEncargados.value = await storeReu.obtenerEncargados(id) 
     
             Object.assign(formData, {
-                id_usuario: 0,
+                id_usuario: null,
                 id_reunion: id
             })
         }
@@ -117,7 +123,8 @@ import { jwtDecode } from 'jwt-decode';
             <div>
         
                 <form class="flex flex-col md:flex-row gap-4" @submit.prevent="agregarEncargado()">
-                    <Select 
+
+                    <Select2 
                         :opciones="arrayEncargados" 
                         :requerido="true"
                         v-model:campo="formData.id_usuario"
@@ -147,6 +154,7 @@ import { jwtDecode } from 'jwt-decode';
                             <td class="py-2">
                                 <button 
                                     v-if="encargado.id_usuario!==reunion.id_usuario"
+                                    v-show="encargado.id_usuario!==decoded.id"
                                     class="bg-red-500 hover:bg-red-400 p-1 rounded"
                                     @click="eliminarEncargado(encargado.id)"
                                 >

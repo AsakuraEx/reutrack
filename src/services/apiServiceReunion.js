@@ -150,4 +150,9 @@ export default {
     consultarMinuta(reunion){
         return api.get(`/minutareunion/${reunion}`)
     },
+
+    // Consulta el detalle de toda la reunión
+    obtenerDetalle(idReunion){
+        return api.get(`reuniones/detalle/${idReunion}`)
+    }
 }

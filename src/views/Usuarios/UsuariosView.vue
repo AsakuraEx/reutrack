@@ -15,7 +15,7 @@ const paginacion = ref({})
 
 onMounted(async ()=>{
 
-    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const decoded = jwtDecode(localStorage.getItem('token'))
     usuarioActivo.value = decoded.id
     const rol = decoded.id_rol
     if(rol != 1){

@@ -186,7 +186,7 @@
 
         try {
             if(!login.correo){
-                error.value = 'No ha ingresado un correo electronico'
+                error.value = 'No ha ingresado un correo electrónico'
                 setTimeout(()=>{
                     error.value = ""
                 },3000)
@@ -256,7 +256,7 @@
 
             if(token){
 
-                sessionStorage.setItem('token', token)
+                localStorage.setItem('token', token)
                 if(dfa.password.length <= 4){
                     router.push({name:'contraseña'})
                 }else{
@@ -300,7 +300,7 @@
             return
         }
 
-        const fechaActual = new Date().toLocaleString()
+        const fechaActual = new Date()
         if(fechaActual > reu.value.expiracion){
             error.value = "El código de la reunión ha caducado."
             setTimeout(()=>{

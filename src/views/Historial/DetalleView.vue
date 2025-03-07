@@ -1,14 +1,12 @@
 <script setup>
 
-    import { useRoute, useRouter } from 'vue-router';
+    import { useRoute } from 'vue-router';
+    import { jwtDecode } from 'jwt-decode';
     import { onMounted, ref } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
+    import axios from 'axios';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
-    import axios from 'axios';
-
-    //LIBRERIA PARA PDF
-
 
     //LIBRERIA DE ICONOS
     import SvgIcon from '@jamescoyle/vue-icon';
@@ -16,34 +14,38 @@
     const path1 = mdiFilePdfBox;
 
 
-    const reunion = ref({})
-    const asistencia = ref([])
-    const puntos = ref([])
-    const acuerdos = ref([])
-    const encargados = ref([])
+    const reunionCompleta = ref({})
     const minuta = ref({})
-    const usuarioRol = sessionStorage.getItem('rol')
     const pdf = ref('')
+    const decoded = jwtDecode(localStorage.getItem('token'))
+    const usuarioRol = decoded.id_rol
 
     const store = useReunionStore()
     const route = useRoute()
-    const router = useRouter()
 
+    let version
+    let proyecto
+
+    //Contiene la URL del backend
     const baseURL = import.meta.env.VITE_BASE_URL
 
+    //Identifica el id de la reunión, se obtiene desde la url
     const { id } = route.params
 
     onMounted(async ()=>{
-        reunion.value = await store.obtenerReunion(id)
-        encargados.value = await store.obtenerEncargados(id)
-        puntos.value = await store.obtenerPuntos(id)
-        acuerdos.value = await store.obtenerAcuerdos(id)
-        asistencia.value = await store.obtenerParticipantes(id)
+
+        //Se hacen multiples llamadas para recuperar la información de la reunión consultada
+        reunionCompleta.value = await store.obtenerDetalleReunion(id)
         minuta.value = await store.obtenerMinuta(id)
+        version = reunionCompleta.value.version.nombre
+        proyecto = reunionCompleta.value.version.proyecto.nombre
+
+        //Se asigna un valor de URL al pdf
         pdf.value = baseURL + `/reuniones/pdf/${id}`
     })
 
 
+    //Función que transforma la fecha nativa de javascript a un formato especifico
     const transformarFecha = (fecha) => {
         
         const nuevaFecha = new Date(fecha)
@@ -61,17 +63,42 @@
         return fechaFormateada
     }
 
+
+    //redirecciona para descargar el pdf
     const generarPDF = async () => {
-        window.location.replace(pdf.value)
+        //window.location.replace(pdf.value)
+        try {
+            const response = await axios.get(baseURL + `/reuniones/pdf/${id}`, {
+                responseType: 'blob', // Permite manejar archivos binarios
+            });
+
+            // Crear una URL para el blob
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+
+            // Crear un enlace para descargar
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${reunionCompleta.value.nombre}.pdf`); // Nombre del archivo
+            document.body.appendChild(link);
+            link.click();
+
+            // Limpiar recursos
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error al descargar el PDF', error);
+        }
     }
 </script>
 
 <template>
 
+
     <Header :rol="usuarioRol"/>
 
     <div class="container mx-auto text-right">
         
+        <!-- botón para generar el pdf -->
         <button 
             class="bg-transparent hover:border-blue-500 hover:bg-blue-500 focus:scale-95 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
             @click="generarPDF()"
@@ -81,19 +108,25 @@
         </button>
 
     </div>
+
+    <!-- Minuta de reunión -->
     <div class="container mx-auto px-4 mt-16" id="pdf">
 
         <h1 class="text-2xl font-bold uppercase text-center">Dirección de tecnologías de Información y Comunicación</h1>
         <h2 class="text-xl font-light text-slate-400 text-center">Minuta de Reunión</h2>
 
+        <p class="text-3xl text-center font-bold mt-8">
+            {{ proyecto }} - {{ version }}
+        </p>
+
         <div class="mt-8">
             <p class="text-2xl text-center font-bold">
-                {{ reunion.nombre }}
+                {{ reunionCompleta.nombre }}
             </p>
             <p class="text-xl font-light text-center">
-                Lugar: <b>{{ reunion.lugar }}</b>
+                Lugar: <b>{{ reunionCompleta.lugar }}</b>
             </p>
-            <p class="text-xl font-light text-center mb-4">Fecha hora inicio de reunión: <b>{{ transformarFecha(reunion.createdAt) }}</b></p>
+            <p class="text-xl font-light text-center mb-4">Fecha hora inicio de reunión: <b>{{ transformarFecha(reunionCompleta.createdAt) }}</b></p>
 
             <hr>
 
@@ -106,7 +139,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-b" v-for="e in encargados">
+                        <tr class="border-b" v-for="e in reunionCompleta['encargado de reunion']">
                             <td class="py-2">{{ e.usuario.nombre }}</td>
                         </tr>
                     </tbody>
@@ -118,7 +151,7 @@
             <div class="py-4 space-y-4">
 
                 <ul class="list-disc">
-                    <li  v-for="p in puntos">{{ p.nombre }}</li>
+                    <li  v-for="p in reunionCompleta['puntos de reunion']">{{ p.nombre }}</li>
                 </ul>
 
             </div>
@@ -135,7 +168,7 @@
             <div class="py-4 space-y-4">
 
                 <ul class="list-disc">
-                    <li v-for="a in acuerdos">{{ a.nombre }}</li>
+                    <li v-for="a in reunionCompleta['acuerdos de reunion']">{{ a.nombre }}</li>
                 </ul>
 
             </div>
@@ -155,7 +188,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="border-b" v-for="x in asistencia">
+                        <tr class="border-b" v-for="x in reunionCompleta['asistencia reunion']">
                             <td class="py-2">{{ x.participante }}</td>
                             <td class="py-2">{{ x.doc_identidad }}</td>
                             <td class="py-2">{{ x.cargo }}</td>

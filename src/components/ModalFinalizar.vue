@@ -20,6 +20,7 @@
                             type="text" 
                             name="campo"
                             class="p-2 rounded text-center border bg-transparent w-full focus:outline-purple-400"
+                            placeholder="Ingresa la url del sitio donde se aloja el acta de aceptación"
                             v-model="campo"
                             :class="errors.campo ? 'ring ring-red-500': ''"
                             maxLength="100"

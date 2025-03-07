@@ -11,7 +11,7 @@
     const store = useProyectoStore()
     const router = useRouter()
     const route = useRoute()
-    const decoded = jwtDecode(sessionStorage.getItem('token'))
+    const decoded = jwtDecode(localStorage.getItem('token'))
     const {id} = route.params
 
     const nuevaVersion = reactive({
