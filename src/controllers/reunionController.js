@@ -466,7 +466,18 @@ exports.generatePDF = async (req, res) => {
                     <th>Teléfono</th>
                     <th>Correo</th>
                 </tr>
+                ${reunion['encargado de reunion'] && reunion['encargado de reunion'].length > 0 ? reunion['encargado de reunion'].map(encargado => `
+                <tr>
+                    <td>${encargado.usuario.nombre}</td>
+                    <td>${encargado.usuario.institucion || 'DTIC / MINSAL'}</td>
+                    <td>-</td>
+                    <td>Técnico Informático</td>
+                    <td>-</td>
+                    <td>${encargado.usuario.email}</td>
+                </tr>
+                `).join('') : ''}
                 ${reunion['asistencia reunion'].map(asistente => `
+
                 <tr>
                     <td>${asistente.participante}</td>
                     <td>${asistente.institucion}</td>
