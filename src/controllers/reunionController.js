@@ -34,7 +34,15 @@ exports.actual = async (req,res) => {
         const reunion = await db.reunion.findOne({
             where: {codigo: codigo }
         });
-        res.status(HttpCode.HTTP_OK).json(reunion);        
+        if(!reunion){
+            res.status(HttpCode.HTTP_OK).json({error: 'La reunión no existe'});
+        }
+        else if(reunion.id_estado == 3){
+            res.status(HttpCode.HTTP_OK).json({error: 'La reunión ha finalizado'});
+        }
+        else if(reunion.id_estado != 3){
+            res.status(HttpCode.HTTP_OK).json(reunion);
+        }
     } catch (err) {
         console.error('Error: ', err.message || err);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });    

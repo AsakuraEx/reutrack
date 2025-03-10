@@ -5,8 +5,8 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('ctl_rol', 
       [
-      {nombre: 'admin', Descripcion: 'El mero mero macizo admin loco', createdAt: new Date(), updatedAt: new Date()},
-      {nombre: 'estandar', Descripcion: 'Para uno humilde de req ni modo', createdAt: new Date(), updatedAt: new Date()}
+      {nombre: 'admin', Descripcion: 'Administrador del sistema', createdAt: new Date(), updatedAt: new Date()},
+      {nombre: 'estandar', Descripcion: 'Usuario estandar del sistema sin privilegios de administrador', createdAt: new Date(), updatedAt: new Date()}
     ], {});
   },
 
