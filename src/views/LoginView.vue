@@ -290,26 +290,38 @@
         }
 
     const registrarAsistencia = async () => {
-        reu.value = await storeReu.obtenerReunionActual(codigo.value)
+        
+        try{
 
-        if(!reu.value){
-            error.value = "No existe la reunión, validar el código"
-            setTimeout(()=>{
-                error.value = ""
-            },3000)
-            return
+            const response = await storeReu.obtenerReunionActual(codigo.value)
+
+            if(response.data.error){
+                error.value = response.data.error
+                setTimeout(()=>{
+                    error.value = ""
+                },3000)
+                return
+            }
+
+            reu.value = response.data
+        
+            const fechaActual = new Date().getTime() / 1000             //Fecha convertida a segundos
+            const expiracion =  new Date(reu.value.expiracion).getTime() / 1000         //Fecha convertida a segundos
+
+            if(fechaActual > expiracion){
+                error.value = "El código de la reunión ha caducado."
+                setTimeout(()=>{
+                    error.value = ""
+                },3000)
+                return
+            }
+    
+           router.push({name:'invitado',params:{id: reu.value.id} })
+
+        } catch(e){
+            console.log(e)
         }
 
-        const fechaActual = new Date()
-        if(fechaActual > reu.value.expiracion){
-            error.value = "El código de la reunión ha caducado."
-            setTimeout(()=>{
-                error.value = ""
-            },3000)
-            return
-        }
-
-       router.push({name:'invitado',params:{id: reu.value.id} })
     }
 
 </script>

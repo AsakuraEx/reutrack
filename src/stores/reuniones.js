@@ -15,9 +15,9 @@ export const useReunionStore = defineStore('reuniones', () => {
     async function obtenerReunionActual(codigo){
         try{
             //Extrae el status y la data y la retorna
-            const {status, data} = await apiServiceReunion.ObtenerReunionActual(codigo)
-            if(status === 200){
-                return data;
+            const response = await apiServiceReunion.ObtenerReunionActual(codigo)
+            if(response.status === 200){
+                return response;
             }
         }catch(e){
             console.error(e)
