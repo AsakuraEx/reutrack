@@ -1,6 +1,9 @@
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
+const port = process.env.PORT || 3100;
+const host = process.env.HOST || '0.0.0.0';
+
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
@@ -11,7 +14,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: 'http://localhost:3000', // Adjust the URL as necessary
+        url: `http://${host}:${port}`, // Adjust the URL as necessary
       },
     ],
   },

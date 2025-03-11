@@ -77,6 +77,7 @@ exports.update = async (req, res) => {
                 nombre,
                 email,
                 password: bcrypt.hashSync(password, 12),
+                first_session: 1
             }, {where: {id: id}});
         }
         await db.users.update({ 
