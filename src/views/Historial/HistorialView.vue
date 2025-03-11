@@ -207,6 +207,7 @@
         <div class="flex flex-col gap-3">
             <CardHistorial 
                 v-for="reunion in reuniones"
+                :usuario="reunion.user"
                 :titulo="reunion.nombre"
                 :lugar="reunion.lugar"
                 :fecha="reunion.createdAt"

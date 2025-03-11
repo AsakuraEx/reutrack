@@ -6,6 +6,7 @@
             <!-- SE MUESTRA LA INFORMACIÓN DE LA REUNIÓN MEDIANTE PROPS -->
             <p class="text-xl font-bold">{{ titulo }}</p>
             <p class="font-light text-slate-300">Lugar de Reunion: <b>{{ lugar }}</b></p>
+            <p class="font-light italic" v-if="rol === 1">{{ usuario.nombre }}</p>
             <span class="font-light italic">{{ transformarFecha(fecha) }}</span>
             <div 
                 class="w-fit px-3 py-1 rounded font-bold"
@@ -55,6 +56,8 @@
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiTrashCanOutline, mdiCircleEditOutline, mdiEyeOutline } from '@mdi/js';
 
+    import { jwtDecode } from 'jwt-decode';
+
     // Variables de iconos
     const path = mdiTrashCanOutline;
     const path1 = mdiCircleEditOutline;
@@ -64,6 +67,10 @@
     const props = defineProps({
         titulo: {
             type: String,
+            required: true
+        },
+        usuario: {
+            type: Object,
             required: true
         },
         lugar: {
@@ -117,5 +124,7 @@
 
         return fechaFormateada
     }
+
+    const rol = jwtDecode(localStorage.getItem('token')).id_rol
 
 </script>
