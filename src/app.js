@@ -12,13 +12,26 @@ var app = express();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-
-
+const origen = `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`
 
 app.use(cors({
-  origin: '*',
+  origin: origen,
   methods: ['GET','POST','PUT','PATCH','DELETE'],
-}))
+  credentials: true
+}));
+
+//Encabezados y Proteccion
+app.use((req, res, next) => {
+  res.removeHeader('X-Powered-By');
+  res.removeHeader('Access-Control-Allow-Origin');
+  res.header('X-Frame-Options', 'SAMEORIGIN');
+  res.header('Content-Security-Policy', "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; frame-src 'none';");
+  res.header('X-Content-Type-Options', 'nosniff');
+  res.header('X-XSS-Protection', '1; mode=block');
+  res.header('Referrer-Policy', 'same-origin');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, Accept-Encoding');
+  next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -49,8 +62,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-const port = process.env.PORT;
-const host = process.env.HOST
+const port = process.env.BACKEND_PORT;
+const host = process.env.BACKEND_HOST
 
 app.listen(port, host, () => {
   console.log(`Servidor escuchando en http://${host}:${port}`);
