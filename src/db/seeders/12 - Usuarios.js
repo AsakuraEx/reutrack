@@ -8,17 +8,6 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     const users = [
       {
-        nombre: 'Francisco Josue Escobar Quintanilla',
-        email: 'francisco.escobar@salud.gob.sv',
-        password: bcrypt.hashSync('123', 16),
-        remember_token: '',
-        first_session: 1,
-        id_estado: 4,
-        id_rol: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      },
-      {
         nombre: 'Jeannete Margarita Peraza Martinez',
         email: 'jeannete.peraza@salud.gob.sv',
         password: bcrypt.hashSync('123', 16),
@@ -30,13 +19,13 @@ module.exports = {
         updatedAt: new Date()
       },
       {
-        nombre: 'Walter Alcides Romero Portillo',
-        email: 'walter.romero@salud.gob.sv',
+        nombre: 'Administrador REQ',
+        email: 'requerimientos@salud.gob.sv',
         password: bcrypt.hashSync('123', 16),
         remember_token: '',
         first_session: 1,
         id_estado: 4,
-        id_rol: 2,
+        id_rol: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
