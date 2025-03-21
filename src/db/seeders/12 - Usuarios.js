@@ -19,8 +19,8 @@ module.exports = {
         updatedAt: new Date()
       },
       {
-        nombre: 'Salvador Eduardo Flamenco Pineda',
-        email: 'salvador.flamenco@salud.gob.sv',
+        nombre: 'Jeannete Margarita Peraza Martinez',
+        email: 'jeannete.peraza@salud.gob.sv',
         password: bcrypt.hashSync('123', 16),
         remember_token: '',
         first_session: 1,
