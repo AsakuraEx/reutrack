@@ -25,7 +25,7 @@ module.exports = {
         remember_token: '',
         first_session: 1,
         id_estado: 4,
-        id_rol: 2,
+        id_rol: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
