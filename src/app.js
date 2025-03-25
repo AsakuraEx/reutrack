@@ -23,7 +23,7 @@ app.use(cors({
 //Encabezados y Proteccion
 app.use((req, res, next) => {
   res.removeHeader('X-Powered-By');
-  res.removeHeader('Access-Control-Allow-Origin');
+  //res.removeHeader('Access-Control-Allow-Origin');
   res.header('X-Frame-Options', 'SAMEORIGIN');
   res.header('Content-Security-Policy', "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; frame-src 'none';");
   res.header('X-Content-Type-Options', 'nosniff');
