@@ -12,7 +12,7 @@ var app = express();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-const origen = `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`
+const origen = `https://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`
 
 app.use(cors({
   origin: origen,
