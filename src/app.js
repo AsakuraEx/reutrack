@@ -12,7 +12,7 @@ var app = express();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-const origen = `https://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`
+const origen = `https://reutrack.salud.gob.sv`
 
 app.use(cors({
   origin: origen,
