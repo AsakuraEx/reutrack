@@ -12,5 +12,6 @@ module.exports = {
     dialect: 'mariadb',
     connectTimeout: 1000,
     
+    
   },
 };
