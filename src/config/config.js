@@ -1,3 +1,5 @@
+const { MariaDbDialect } = require ('@sequelize/mariadb');
+
 require('dotenv').config();
 
 module.exports = {
