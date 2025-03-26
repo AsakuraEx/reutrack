@@ -17,7 +17,7 @@ const sequelize = new Sequelize(
         define: {
             timestamps: true, //Times and dates for createdAt and updatedAt 
         },
-        logging: true,
+        logging: false,
 
         
     }
