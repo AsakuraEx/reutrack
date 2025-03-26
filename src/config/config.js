@@ -11,6 +11,6 @@ module.exports = {
     port: process.env.DB_PORT,
     dialect: 'mariadb',
     connectTimeout: 1000,
-    logging: true
+    
   },
 };

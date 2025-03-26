@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
     {
         host:process.env.DB_HOST,
         port:process.env.DB_PORT,
-        dialect:'mysql',
+        dialect:'mariadb',
         dialectOptions: {
             dateStrings: true, //Force date types (TIMESTAMP, DATETIME, DATE) to be returned as strings
             typeCast: true, //Determines if column values should be converted to native JavaScript types.
@@ -17,14 +17,14 @@ const sequelize = new Sequelize(
         define: {
             timestamps: true, //Times and dates for createdAt and updatedAt 
         },
-        logging: false,
+        logging: true,
 
         
     }
 );
 sequelize.authenticate()
     .then(() => {
-        console.log(`DB RRRRRRRRUNIIIIIIIIIIIIIING`);
+        console.log(`DB CONNECTED`);
     })
     .catch(err => {
         console.error('Unable to connect to the database:', err.message || err);
