@@ -23,7 +23,6 @@ app.use(cors({
 //Encabezados y Proteccion
 app.use((req, res, next) => {
   res.removeHeader('X-Powered-By');
-  //res.removeHeader('Access-Control-Allow-Origin');
   res.header('X-Frame-Options', 'SAMEORIGIN');
   res.header('Content-Security-Policy', "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; frame-src 'none';");
   res.header('X-Content-Type-Options', 'nosniff');
@@ -47,15 +46,15 @@ app.use('/api', apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  next(createError(200));
 });
 
-// error handler
+
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-  res.locals.title = 'Error'; // Added title for the error page
+  
+  res.locals.message = 'Server'
+  res.locals.error = 'Server'
+  res.locals.title = 'Server'; 
   
   // render the error page
   res.status(err.status || 500);

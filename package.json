@@ -7,6 +7,7 @@
     "server": "nodemon ./src/bin/www"
   },
   "dependencies": {
+    "@sequelize/mariadb": "^7.0.0-alpha.46",
     "ajv": "^8.17.1",
     "ajv-errors": "^3.0.0",
     "bcrypt": "^5.1.1",
