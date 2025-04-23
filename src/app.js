@@ -18,6 +18,13 @@ app.use(cors({
   origin: origen,
   methods: ['GET','POST','PUT','PATCH','DELETE'],
   credentials: true,
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'Accept',
+    'Accept-Language',
+    'Accept-Encoding'
+  ],
   exposedHeaders: ['Content-Disposition']
 }));
 
@@ -29,7 +36,6 @@ app.use((req, res, next) => {
   res.header('X-Content-Type-Options', 'nosniff');
   res.header('X-XSS-Protection', '1; mode=block');
   res.header('Referrer-Policy', 'same-origin');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, Accept-Encoding');
   next();
 });
 
