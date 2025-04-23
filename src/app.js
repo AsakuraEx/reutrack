@@ -24,7 +24,9 @@ app.use(cors({
     'Accept',
     'Accept-Language',
     'Accept-Encoding',
-    'Access-Control-Allow-Methods'
+    'Access-Control-Allow-Methods',
+    'Control-Allow-Origin',
+    'Access-Control-Allow-Headers'
   ],
   exposedHeaders: ['Content-Disposition']
 }));
