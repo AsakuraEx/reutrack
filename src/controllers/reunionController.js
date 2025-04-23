@@ -4,13 +4,14 @@ const moment = require('moment');
 const { Op } = require('sequelize');
 
 const puppeteer = require('puppeteer');
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 
 
 
-function imageToBase64(imagePath) {
-    return fs.readFileSync(imagePath, { encoding: 'base64' });
+async function imageToBase64(imagePath) {
+    const image = await fs.readFile(filePath);
+    return image.toString('base64');
 }
 
 //Obtiene un registro mediante el id recibido en el parametro de la ruta
@@ -307,9 +308,10 @@ exports.generatePDF = async (req, res) => {
     const logoPath = path.join(__dirname, '../public/images/logo-minsal.png');
     const logoPath2 = path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png');
     const logoPath3 = path.join(__dirname, '../public/images/logo-dtic.png');
-    const base64Logo = imageToBase64(logoPath);
-    const base64Logo2 = imageToBase64(logoPath2);
-    const base64Logo3 = imageToBase64(logoPath3);
+    const base64Logo = await imageToBase64(logoPath);
+    const base64Logo2 = await imageToBase64(logoPath2);
+    const base64Logo3 = await imageToBase64(logoPath3);
+
 
     try {
         const id = req.params.id;
@@ -507,9 +509,10 @@ exports.generatePDF = async (req, res) => {
 </body>
     </html>
         `
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({ headless: true }); 
         const page = await browser.newPage();
-        await page.setContent(html);
+        await page.setContent(html, { waitUntil: 'networkidle0' });
+        await page.waitForTimeout(1000);
         const pdf = await page.pdf({
             format: 'letter',
             margin: {
