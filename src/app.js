@@ -16,17 +16,19 @@ const origen = `https://reutrack.salud.gob.sv`
 
 app.use(cors({
   origin: origen,
-  methods: ['GET','POST','PUT','PATCH','DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
   allowedHeaders: [
     'Content-Type',
     'Authorization',
     'Accept',
     'Accept-Language',
-    'Accept-Encoding'
+    'Accept-Encoding',
+    'Access-Control-Allow-Methods'
   ],
   exposedHeaders: ['Content-Disposition']
 }));
+
 
 //Encabezados y Proteccion
 app.use((req, res, next) => {
