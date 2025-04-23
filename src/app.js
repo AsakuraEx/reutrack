@@ -12,7 +12,7 @@ var app = express();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-const origen = `https://reutrack.salud.gob.sv`
+const origen = "https://reutrack.salud.gob.sv"
 
 app.use(cors({
   origin: origen,
@@ -23,10 +23,7 @@ app.use(cors({
     'Authorization',
     'Accept',
     'Accept-Language',
-    'Accept-Encoding',
-    'Access-Control-Allow-Methods',
-    'Control-Allow-Origin',
-    'Access-Control-Allow-Headers'
+    'Accept-Encoding'
   ],
   exposedHeaders: ['Content-Disposition']
 }));
