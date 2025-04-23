@@ -9,10 +9,19 @@ const path = require('path');
 
 
 
-async function imageToBase64(imagePath) {
-    const image = await fs.readFile(imagePath);
-    return image.toString('base64');
-}
+const imageToBase64 = async (filePath) => {
+    return new Promise((resolve, reject) => {
+      fs.readFile(filePath, (err, data) => {
+        if (err) {
+          console.error(`Error leyendo imagen: ${filePath}`, err);
+          return reject(new Error(`No se pudo leer la imagen en: ${filePath}`));
+        }
+        const ext = path.extname(filePath).toLowerCase().replace('.', '');
+        const base64Image = `data:image/${ext};base64,${data.toString('base64')}`;
+        resolve(base64Image);
+      });
+    });
+  };
 
 //Obtiene un registro mediante el id recibido en el parametro de la ruta
 exports.getOne = async (req,res) => {
@@ -312,6 +321,9 @@ exports.generatePDF = async (req, res) => {
     const base64Logo2 = await imageToBase64(logoPath2);
     const base64Logo3 = await imageToBase64(logoPath3);
 
+    if (!base64Logo || !base64Logo2 || !base64Logo3) {
+        throw new Error('No se pudo convertir uno o más logos a base64');
+      }      
 
     try {
         const id = req.params.id;
@@ -517,8 +529,12 @@ exports.generatePDF = async (req, res) => {
             ]
         });
         const page = await browser.newPage();
+        
+        console.log('Setting content...');
         await page.setContent(html, { waitUntil: 'networkidle0' });
         await page.waitForTimeout(1000);
+        
+        console.log('Generating PDF...');
         const pdf = await page.pdf({
             format: 'letter',
             margin: {
@@ -528,7 +544,6 @@ exports.generatePDF = async (req, res) => {
                 left: '96px',
             },
             printBackground: true,
-            encoding: 'utf8',
             displayHeaderFooter:true,
             headerTemplate: `
             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 96px;">
@@ -551,7 +566,10 @@ exports.generatePDF = async (req, res) => {
         res.setHeader('Content-Disposition', `attachment; filename=reunion_${reunion.nombre}.pdf`);
         res.end(pdf);
     } catch (error) {
-    console.error('Error generando PDF:', error);
-    res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Error generando PDF' });
+        console.error('Error generando PDF:', {
+            message: error.message,
+            stack: error.stack,
+          });          
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Error generando PDF' });
 }
 }
