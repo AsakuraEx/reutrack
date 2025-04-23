@@ -561,6 +561,10 @@ exports.generatePDF = async (req, res) => {
         
         await browser.close();
 
+        res.setHeader('Access-Control-Allow-Origin', 'https://reutrack.salud.gob.sv');
+        res.setHeader('Access-Control-Allow-Methods', 'GET');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=reunion_${reunion.nombre}.pdf`);
         res.end(pdf);
