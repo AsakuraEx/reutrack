@@ -10,7 +10,7 @@ const path = require('path');
 
 
 async function imageToBase64(imagePath) {
-    const image = await fs.readFile(filePath);
+    const image = await fs.readFile(imagePath);
     return image.toString('base64');
 }
 
