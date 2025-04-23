@@ -522,7 +522,6 @@ exports.generatePDF = async (req, res) => {
     </html>
         `
         const browser = await puppeteer.launch({
-            headless: 'new', // or true, depending on version
             args: [
                 '--no-sandbox',
                 '--disable-setuid-sandbox'
