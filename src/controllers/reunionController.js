@@ -509,7 +509,13 @@ exports.generatePDF = async (req, res) => {
 </body>
     </html>
         `
-        const browser = await puppeteer.launch({ headless: true }); 
+        const browser = await puppeteer.launch({
+            headless: 'new', // or true, depending on version
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox'
+            ]
+        });
         const page = await browser.newPage();
         await page.setContent(html, { waitUntil: 'networkidle0' });
         await page.waitForTimeout(1000);
@@ -545,7 +551,7 @@ exports.generatePDF = async (req, res) => {
         res.setHeader('Content-Disposition', `attachment; filename=reunion_${reunion.nombre}.pdf`);
         res.end(pdf);
     } catch (error) {
-        console.error('Error generando PDF:', error.message || error);
-        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Error generando PDF' });
-    }
+    console.error('Error generando PDF:', error);
+    res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Error generando PDF' });
+}
 }
