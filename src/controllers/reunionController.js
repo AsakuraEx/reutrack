@@ -507,7 +507,13 @@ exports.generatePDF = async (req, res) => {
 </body>
     </html>
         `
-        const browser = await puppeteer.launch();
+        const puppeteer = require('puppeteer');
+        const browser = await puppeteer.launch({
+        executablePath: '/usr/bin/chromium', // o /usr/bin/google-chrome según el caso
+        headless: 'new'
+        });
+
+          
         const page = await browser.newPage();
         await page.setContent(html);
         const pdf = await page.pdf({
