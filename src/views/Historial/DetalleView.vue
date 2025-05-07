@@ -69,6 +69,9 @@
         //window.location.replace(pdf.value)
         try {
             const response = await axios.get(baseURL + `/reuniones/pdf/${id}`, {
+                'Access-Control-Allow-Origin': 'https://api-reutrack.salud.gob.sv/api/',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
                 responseType: 'blob', // Permite manejar archivos binarios
             });
 
