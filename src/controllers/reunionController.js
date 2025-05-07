@@ -526,7 +526,8 @@ exports.generatePDF = async (req, res) => {
         executablePath: '/usr/bin/chromium', // o /usr/bin/google-chrome según el caso
         headless: 'new'
         });
-          
+        
+        const page = await browser.newPage(); // Create a new page instance
         await page.setContent(html);
         const pdf = await page.pdf({
             format: 'letter',
