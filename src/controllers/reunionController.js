@@ -526,15 +526,8 @@ exports.generatePDF = async (req, res) => {
         executablePath: '/usr/bin/chromium', // o /usr/bin/google-chrome según el caso
         headless: 'new'
         });
-
           
-        const page = await browser.newPage();
-        
-        console.log('Setting content...');
-        await page.setContent(html, { waitUntil: 'networkidle0' });
-        await page.waitForTimeout(1000);
-        
-        console.log('Generating PDF...');
+        await page.setContent(html);
         const pdf = await page.pdf({
             format: 'letter',
             margin: {
@@ -544,6 +537,7 @@ exports.generatePDF = async (req, res) => {
                 left: '96px',
             },
             printBackground: true,
+            encoding: 'utf8',
             displayHeaderFooter:true,
             headerTemplate: `
             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 96px;">
