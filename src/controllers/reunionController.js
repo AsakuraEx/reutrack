@@ -562,18 +562,21 @@ exports.generatePDF = async (req, res) => {
         
         await browser.close();
 
-        res.setHeader('Access-Control-Allow-Origin', 'https://reutrack.salud.gob.sv');
-        res.setHeader('Access-Control-Allow-Methods', 'GET');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=reunion_${reunion.nombre}.pdf`);
-        res.end(pdf);
+        res.set({
+            'Access-Control-Allow-Origin': 'https://reutrack.salud.gob.sv/',
+            'Access-Control-Allow-Methods': 'GET',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Expose-Headers': 'Content-Disposition',
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=reunion_${reunion.nombre}.pdf`
+        });
+
+        res.send(pdf);
     } catch (error) {
         console.error('Error generando PDF:', {
             message: error.message,
             stack: error.stack,
-          });          
+        });
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Error generando PDF' });
-}
+    }
 }
