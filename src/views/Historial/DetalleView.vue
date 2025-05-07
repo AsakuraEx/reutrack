@@ -41,7 +41,7 @@
         proyecto = reunionCompleta.value.version.proyecto.nombre
 
         //Se asigna un valor de URL al pdf
-        pdf.value = baseURL + `/reuniones/pdf/${id}`
+        pdf.value = baseURL + `reuniones/pdf/${id}`
     })
 
 
