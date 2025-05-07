@@ -8,7 +8,7 @@ const router = useRouter()
 const api = axios.create({
   baseURL: baseURL,
   headers: {
-    'Access-Control-Allow-Origin': 'https://api-reutrack.salud.gob.sv/api/',
+    'Access-Control-Allow-Origin': baseURL,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Content-Type': 'application/json',
