@@ -12,7 +12,13 @@ var app = express();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-const origen = "https://reutrack.salud.gob.sv"
+let origen = ""
+if(process.env.FRONTEND_PORT == 5173){
+  origen = `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`
+}else{
+  origen = `https://reutrack.salud.gob.sv`
+}
+
 
 app.use(cors({
   origin: origen,
@@ -73,7 +79,9 @@ const port = process.env.BACKEND_PORT;
 const host = process.env.BACKEND_HOST
 
 app.listen(port, host, () => {
-  console.log(`Servidor escuchando en http://${host}:${port}`);
-});
+  if(process.env.BACKEND_PORT = 3100){
+    console.log(`Servidor escuchando en http://${host}:${port}`);
+  }
+  });
 
 module.exports = app;

@@ -521,12 +521,13 @@ exports.generatePDF = async (req, res) => {
 </body>
     </html>
         `
+        const puppeteer = require('puppeteer');
         const browser = await puppeteer.launch({
-            args: [
-                '--no-sandbox',
-                '--disable-setuid-sandbox'
-            ]
+        executablePath: '/usr/bin/chromium', // o /usr/bin/google-chrome según el caso
+        headless: 'new'
         });
+
+          
         const page = await browser.newPage();
         
         console.log('Setting content...');
