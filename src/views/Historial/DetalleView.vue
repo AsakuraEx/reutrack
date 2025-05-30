@@ -66,32 +66,19 @@
 
     //redirecciona para descargar el pdf
     const generarPDF = async () => {
-        //window.location.replace(pdf.value)
         try {
-            const response = await axios.get(baseURL + `/reuniones/pdf/${id}`, {
-                'Access-Control-Allow-Origin': 'https://api-reutrack.salud.gob.sv/api/',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-                'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                responseType: 'blob', // Permite manejar archivos binarios
+            const response = await axios.get(`${baseURL}/reuniones/pdf/${id}`, {
+            responseType: 'blob'
             });
 
-            // Crear una URL para el blob
             const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
 
-            // Crear un enlace para descargar
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `${reunionCompleta.value.nombre}.pdf`); // Nombre del archivo
-            document.body.appendChild(link);
-            link.click();
-
-            // Limpiar recursos
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(link);
+            // Abre en una nueva pestaña
+            window.open(url, '_blank');
         } catch (error) {
-            console.error('Error al descargar el PDF', error);
+            console.error('Error al abrir el PDF', error);
         }
-    }
+    };
 </script>
 
 <template>

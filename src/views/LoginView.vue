@@ -304,11 +304,13 @@
             }
 
             reu.value = response.data
+
+            console.log(reu.value)
         
             const fechaActual = new Date().getTime() / 1000             //Fecha convertida a segundos
             const expiracion =  new Date(reu.value.expiracion).getTime() / 1000         //Fecha convertida a segundos
 
-            if(fechaActual > expiracion){
+            if(Math.round(fechaActual) > Math.round(expiracion)){
                 error.value = "El código de la reunión ha caducado."
                 setTimeout(()=>{
                     error.value = ""

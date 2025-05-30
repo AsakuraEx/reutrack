@@ -51,12 +51,13 @@
     })
 
     const expiracionCodigo = () => {
-        const fechaActual = new Date()
-        formData.fecha = fechaActual.toLocaleString();
-
+        const fechaActual = new Date();
         const expiracion = new Date(fechaActual);
-        expiracion.setMinutes(fechaActual.getMinutes() + 30)
-        formData.expiracion = expiracion.toLocaleString()
+        expiracion.setMinutes(fechaActual.getMinutes() + 30);
+
+        // Guarda en formato ISO (UTC) o timestamp para evitar problemas de zona horaria
+        formData.fecha = fechaActual.toISOString(); // Ej: "2025-05-31T20:13:00.000Z"
+        formData.expiracion = expiracion.toISOString(); 
     }
 
     const crearReunion = async () => {

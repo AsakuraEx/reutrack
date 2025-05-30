@@ -7,9 +7,6 @@ const router = useRouter()
 // Creando la variable a exportar
 const api = axios.create({
   baseURL: baseURL,
-  headers: {
-    'Content-Type': 'application/json',
-  }
 });
 
 
