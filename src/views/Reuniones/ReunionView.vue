@@ -61,26 +61,30 @@
     }
 
     const crearReunion = async () => {
-        //Creo la reunion y valido
-        await storeReu.iniciarReunion(formData)
-
-        //Consulto la reunión creada        
-
-        reunion.value = await storeReu.obtenerUltimaReunion()
-
-        minuta.id_reunion = reunion.value.id
-        //Genero la minuta de reunión
-        await storeReu.GuardarMinuta(minuta)
-
-        //Genera el encargado inicial (quien crea la reunion)
-        const encargadoInicial = {
-            id_reunion: reunion.value.id, 
-            id_usuario: formData.id_usuario
+        try{
+            //Creo la reunion y valido
+            await storeReu.iniciarReunion(formData)
+    
+            //Consulto la reunión creada        
+    
+            reunion.value = await storeReu.obtenerUltimaReunion()
+    
+            minuta.id_reunion = reunion.value.id
+            //Genero la minuta de reunión
+            await storeReu.GuardarMinuta(minuta)
+    
+            //Genera el encargado inicial (quien crea la reunion)
+            const encargadoInicial = {
+                id_reunion: reunion.value.id, 
+                id_usuario: formData.id_usuario
+            }
+            await storeReu.agregarEncargado(encargadoInicial) 
+    
+            // Una vez consultada la reunión, redirijo a esa reunión recien creada
+            await router.push({name: 'encargados', params: {id: reunion.value.id }})
+        }catch(e){
+            console.error(e)
         }
-        await storeReu.agregarEncargado(encargadoInicial) 
-
-        // Una vez consultada la reunión, redirijo a esa reunión recien creada
-        await router.push({name: 'encargados', params: {id: reunion.value.id }})
     }
 
     const formularioVacio = computed(()=>{
