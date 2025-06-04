@@ -266,15 +266,13 @@ exports.create = async (req, res) => {
     } = req.body;
 
     const idUsuarioInt = parseInt(id_usuario, 10);
-    const expiracionDate = moment(expiracion, 'D/M/YYYY, h:mm:ss a').toDate();
-   
 
     try {
         const reunion = {
             nombre,
             lugar,
             codigo,
-            expiracion: expiracionDate,
+            expiracion,
             id_usuario: idUsuarioInt,
             id_estado,
             id_version,
@@ -283,7 +281,7 @@ exports.create = async (req, res) => {
         await db.reunion.create(reunion);
         res.status(HttpCode.HTTP_CREATED).json(reunion);
     } catch (error) {
-        console.error('Error', error.message || error);
+        console.error('Error', error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     } 
 }
