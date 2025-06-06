@@ -521,7 +521,7 @@ exports.generatePDF = async (req, res) => {
         `
         const puppeteer = require('puppeteer');
         const browser = await puppeteer.launch({
-        executablePath: '/usr/bin/chromium', // o /usr/bin/google-chrome según el caso
+        //executablePath: '/usr/bin/chromium', // o /usr/bin/google-chrome según el caso
         headless: 'new'
         });
         
@@ -555,16 +555,9 @@ exports.generatePDF = async (req, res) => {
         
         await browser.close();
 
-        res.set({
-            'Access-Control-Allow-Origin': 'https://reutrack.salud.gob.sv/',
-            'Access-Control-Allow-Methods': 'GET',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Expose-Headers': 'Content-Disposition',
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=reunion_${reunion.nombre}.pdf`
-        });
-
-        res.send(pdf);
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename=reunion_${reunion.nombre}.pdf`);
+        res.end(pdf);
     } catch (error) {
         console.error('Error generando PDF:', {
             message: error.message,
