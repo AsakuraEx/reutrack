@@ -4,7 +4,7 @@ const moment = require('moment');
 const { Op } = require('sequelize');
 
 const puppeteer = require('puppeteer');
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 
 
@@ -311,21 +311,49 @@ exports.finalizar = async (req, res) => {
 }
 
 exports.generatePDF = async (req, res) => {
-    
-    const logoPath = path.join(__dirname, '../public/images/logo-minsal.png');
-    const logoPath2 = path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png');
-    const logoPath3 = path.join(__dirname, '../public/images/logo-dtic.png');
-    const base64Logo = await imageToBase64(logoPath);
-    const base64Logo2 = await imageToBase64(logoPath2);
-    const base64Logo3 = await imageToBase64(logoPath3);
+  console.log('generatePDF: función invocada');
+  const logoPath = path.join(__dirname, '../public/images/logo-minsal.png');
+  const logoPath2 = path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png');
+  const logoPath3 = path.join(__dirname, '../public/images/logo-dtic.png');
 
-    if (!base64Logo || !base64Logo2 || !base64Logo3) {
-        throw new Error('No se pudo convertir uno o más logos a base64');
-      }      
+  console.log("¿Existe logo 1?", fs.existsSync(logoPath));
+  console.log("¿Existe logo 2?", fs.existsSync(logoPath2));
+  console.log("¿Existe logo 3?", fs.existsSync(logoPath3));
+
+let base64Logo, base64Logo2, base64Logo3;
+
+try {
+  console.log('Convirtiendo logo 1');
+  base64Logo = await imageToBase64(logoPath);
+  console.log('Logo 1 convertido');
+
+  console.log('Convirtiendo logo 2');
+  base64Logo2 = await imageToBase64(logoPath2);
+  console.log('Logo 2 convertido');
+
+  console.log('Convirtiendo logo 3');
+  base64Logo3 = await imageToBase64(logoPath3);
+  console.log('Logo 3 convertido');
+
+  if (!base64Logo || !base64Logo2 || !base64Logo3) {
+    throw new Error('No se pudo convertir uno o más logos a base64');
+  }
+} catch (e) {
+  console.error('Error convirtiendo imagen a base64:', e.message);
+  return res.status(500).json({ error: 'Error al convertir imagen a base64' });
+}
+
+console.log('base64Logo:', base64Logo?.slice(0, 30));
+console.log('base64Logo2:', base64Logo2?.slice(0, 30));
+console.log('base64Logo3:', base64Logo3?.slice(0, 30));
+
+
 
     try {
         const id = req.params.id;
-        const reunion = await db.reunion.findOne({
+console.log('generatePDF: id recibido:', id);
+        
+const reunion = await db.reunion.findOne({
             where: { id: id },
             include: [
                 {
@@ -512,7 +540,7 @@ exports.generatePDF = async (req, res) => {
         </div>
         <div class="section">
             <h2>
-            <b>Generado por Reutrack el: </b>${moment().format('DD/MM/YYYY HH:mm')}
+            <b>Generado por Reutrack el: </b>${moment().utcOffset(-6).format('DD/MM/YYYY HH:mm')}
             </h2>
         </div>
     </main>
@@ -520,13 +548,19 @@ exports.generatePDF = async (req, res) => {
     </html>
         `
         const puppeteer = require('puppeteer');
-        const browser = await puppeteer.launch({
-        //executablePath: '/usr/bin/chromium', // o /usr/bin/google-chrome según el caso
-        headless: 'new'
-        });
-        
+console.log('Lanzando navegador...');
+       const browser = await puppeteer.launch({
+  headless: 'new',
+  args: [
+    '--no-sandbox', '--disable-setuid-sandbox'
+  ],
+});
+
+ 
+console.log('Navegador lanzado');
         const page = await browser.newPage(); // Create a new page instance
-        await page.setContent(html);
+console.log('Nueva página creada');
+        await page.setContent(html, { waitUntil: 'networkidle0' })
         const pdf = await page.pdf({
             format: 'letter',
             margin: {
@@ -536,28 +570,42 @@ exports.generatePDF = async (req, res) => {
                 left: '96px',
             },
             printBackground: true,
-            encoding: 'utf8',
             displayHeaderFooter:true,
-            headerTemplate: `
-            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 96px;">
-                <img src="data:image/png;base64,${base64Logo}" style="width: 120px; height: 40px;">
-                <img src="data:image/png;base64,${base64Logo3}" style="width: 120px; height: 40px;">
-            </div>
-            `,
-            footerTemplate: `
-            <div style="width: 100%; text-align: center; margin-top: 20px; opacity: 0.5;">
-                <img src="data:image/png;base64,${base64Logo2}" style="width: 40%; margin: 0 auto;">
-                <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
-            </div>
-            `,
-            pageRanges: '1-999'
+            pageRanges: '1-999',
+headerTemplate: `
+  <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 96px;">
+    <img src="${base64Logo}" style="width: 120px; height: 40px;" />
+    <img src="${base64Logo3}" style="width: 120px; height: 40px;" />
+  </div>
+`,
+footerTemplate: `
+  <div style="width: 100%; text-align: center; margin-top: 20px; opacity: 0.5;">
+    <img src="${base64Logo2}" style="width: 40%; margin: 0 auto;" />
+    <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
+  </div>
+`,
+
+
         });
         
         await browser.close();
 
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `inline; filename=reunion_${reunion.nombre}.pdf`);
-        res.end(pdf);
+const safeName = reunion.nombre.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+const pdfBuffer = Buffer.from(pdf);
+
+console.log('pdf es buffer:', Buffer.isBuffer(pdfBuffer));
+console.log('pdf tamaño:', pdfBuffer.length);
+console.log('primeros bytes pdf:', pdfBuffer.slice(0, 4));
+
+res.set({
+  'Content-Type': 'application/pdf',
+  'Content-Disposition': `inline; filename=reunion_${safeName}.pdf`,
+  'Content-Length': pdfBuffer.length
+});
+res.end(pdfBuffer);
+
+
+
     } catch (error) {
         console.error('Error generando PDF:', {
             message: error.message,
