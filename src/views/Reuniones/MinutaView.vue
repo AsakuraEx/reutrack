@@ -118,26 +118,38 @@
     }
 
     const agregarPunto = async (values, {resetForm}) => {
-        await store.agregarPuntos(punto)
-        puntos.value = await store.obtenerPuntos(idReunion)
-        resetForm()
-        Object.assign(punto, {
-            nombre: '',
-            id_reunion: idReunion
-        })
+
+        try{
+
+            await store.agregarPuntos(punto)
+            puntos.value = await store.obtenerPuntos(idReunion)
+            resetForm()
+            Object.assign(punto, {
+                nombre: '',
+                id_reunion: idReunion
+            })
+        }catch(e){
+            console.error(e)
+        }
     }
 
     const agregarAcuerdo = async (values, {resetForm}) => {
-        //realiza el guardado del acuerdo
-        await store.agregarAcuerdos(acuerdo)
-        //Actualiza el array de acuerdos
-        acuerdos.value = await store.obtenerAcuerdos(idReunion)
-        resetForm()
-        //Limpia el objeto de acuerdos
-        Object.assign(acuerdo, {
-            nombre: '',
-            id_reunion: idReunion
-        })
+
+        try{
+            //realiza el guardado del acuerdo
+            await store.agregarAcuerdos(acuerdo)
+            //Actualiza el array de acuerdos
+            acuerdos.value = await store.obtenerAcuerdos(idReunion)
+            resetForm()
+            //Limpia el objeto de acuerdos
+            Object.assign(acuerdo, {
+                nombre: '',
+                id_reunion: idReunion
+            })
+        }catch(e){
+            console.error(e)
+        }
+
     }
 
     const eliminarPunto = async (id) => {
@@ -152,6 +164,7 @@
     }
 
     const finalizarReunion = async () => {
+
         if(minuta.minuta === '<p></p>'){
             error.value = 'La descripción de la reunión esta vacia'
             return
@@ -199,7 +212,7 @@
                     <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarPunto" v-slot="{isSubmitting, resetForm}"> 
                         <div class="flex flex-col gap-2">
                             <label>Punto Tratado:</label>
-                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="100" v-model="punto.nombre" rules="required"/>
+                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="256" v-model="punto.nombre" rules="required|alfanumeric"/>
                         </div>
                         <ErrorMessage name="nombre" class="text-red-500 text-sm" />
                         <button 
@@ -253,7 +266,7 @@
                     <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarAcuerdo" v-slot="{ resetForm }">
                         <div class="flex flex-col gap-2">
                             <label>Acuerdo o Compromiso:</label>
-                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="100" v-model="acuerdo.nombre" rules="required" />
+                            <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="256" v-model="acuerdo.nombre" rules="required|alfanumeric" />
                             <ErrorMessage name="nombre" class="text-red-500 text-sm" />
                         </div>
                         <button class="bg-purple-400 hover:bg-purple-500 transition-colors duration-300 py-2 rounded w-full lg:w-52" type="submit">

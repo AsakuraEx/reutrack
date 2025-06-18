@@ -94,7 +94,7 @@ defineRule('website', value => {
 
 //Validación de aceptar únicamente campos alfanumericos
 defineRule('alfanumeric', value => {
-    const alfanumeric = /^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/
+    const alfanumeric = /^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ,.";: ]+$/
 
     if(!alfanumeric.test(value)){
         return 'El valor que ha ingresado no es válido, el campo solo acepta letras y espacios.'
