@@ -75,13 +75,11 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-//const port = process.env.BACKEND_PORT;
-//const host = process.env.BACKEND_HOST
+const port = process.env.PORT;
+const host = process.env.HOST
 
-//app.listen(port, host, () => {
-//  if(process.env.BACKEND_PORT = 3100){
-//    console.log(`Servidor escuchando en http://${host}:${port}`);
- // }
-//  });
+app.listen(port, host, () => {
+  console.log(`RUNNING SERVER`);
+});
 
 module.exports = app;
