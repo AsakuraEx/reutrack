@@ -173,8 +173,8 @@
         //Elimina el intervalo
         clearInterval(backup)
         //Marca la reunion como finalizada
-        await store.FinalizarReunion(idReunion)
         await store.actualizarMinuta(idReunion, minuta)
+        await store.FinalizarReunion(idReunion)
 
         //Finalmente envia al historial de reuniones
         router.push({name: 'historial'})
