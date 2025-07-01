@@ -1,6 +1,6 @@
 <script setup>
     //imports generales del proyecto
-    import { onMounted,ref, computed, reactive } from 'vue';
+    import { onMounted,ref, computed, reactive, watch } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { useUsuarioStore } from '@/stores/usuarios';
     import { useRoute, useRouter } from 'vue-router';
@@ -39,7 +39,6 @@
 
     })
 
-
     //Funcion que monitorea cuando un array 
     const existenEncargados = computed(()=>{
         return listaEncargados.value.length > 0
@@ -49,8 +48,7 @@
         arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
         listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
         reunion.value = await storeReu.obtenerReunion(idReunion)
-
-
+        store.MostrarMensaje('info', 'Los datos de la reunión se cargaron correctamente', 5000)
         if(reunion.value.id_estado != 1){
             router.push({name:'historial'})
         }
@@ -63,13 +61,12 @@
 
         if (listaEncargados.value.some(encargado => encargado.id_usuario === Number(formData.id_usuario))) {
             error.value = 'El encargado ya fue agregado en la tabla'
-            setTimeout(()=>{
-                error.value = ''
-            }, 3000)
+            store.MostrarMensaje('error', error.value, 3000)
             return;
         }else{
             await storeReu.agregarEncargado(formData)   
             listaEncargados.value = await storeReu.obtenerEncargados(id) 
+            store.MostrarMensaje('success', 'Encargado agregado correctamente', 3000)
     
             Object.assign(formData, {
                 id_usuario: null,
@@ -80,8 +77,13 @@
     }
 
     const eliminarEncargado = async (encargado) => {
-        await storeReu.eliminarEncargado(encargado)
-        listaEncargados.value = await storeReu.obtenerEncargados(id) 
+        try{
+            await storeReu.eliminarEncargado(encargado)
+            listaEncargados.value = await storeReu.obtenerEncargados(id) 
+            store.MostrarMensaje('success', 'Encargado eliminado correctamente', 3000)
+        }catch(e){
+            store.MostrarMensaje('error', 'Error al eliminar el encargado: ' + e.message, 3000)
+        }
 
     }
     

@@ -9,8 +9,10 @@
 
     // Vee-Validate
     import { Form, ErrorMessage, Field } from 'vee-validate';
+    import { useUsuarioStore } from '@/stores/usuarios';
     
     const store = useProyectoStore()
+    const storeUs = useUsuarioStore()
     const router = useRouter()
     const decoded = jwtDecode(localStorage.getItem('token'))
 
@@ -21,12 +23,28 @@
     })
 
     //Guarda el proyecto
-    const guardarProyecto = async (proyecto) => {
+    const guardarProyecto = (proyecto) => {
+        
+        if(!proyecto) {
+            storeUs.MostrarMensaje({
+                tipo: 'error',
+                mensaje: 'Error al crear el proyecto'
+            })
+            return
+        }
+
         try {
-            await store.crearProyecto(proyecto)
+            store.crearProyecto(proyecto)
+            store.enviarMensaje({
+                tipo: 'success',
+                mensaje: 'Proyecto creado correctamente'
+            })
             router.push({name:'proyectos'})
         }catch(e){
-            console.error(e)
+            storeUs.MostrarMensaje({
+                tipo: 'error',
+                mensaje: 'Error al crear el proyecto'
+            })
         }
     }
 

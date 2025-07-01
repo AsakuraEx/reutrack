@@ -37,12 +37,14 @@
 
     // Import de stores de pinia
     import { useProyectoStore } from '@/stores/proyectos';
+    import { useUsuarioStore } from '@/stores/usuarios';
     
     // Variables de librerias externas
     const path = mdiAlert;
     
     // Variables de store de pinia
     const store = useProyectoStore()
+    const storeUs = useUsuarioStore()
 
     // Props o variables recibidos 
     defineProps({
@@ -57,8 +59,12 @@
 
     // Metodo para ejecutar la cancelación de versión
     const cancelarVersion = async (id, proyecto) => {
-        await store.cancelarVersion(id)     //Ejecuta metodo asincrono donde se proporciona el id de la versión
-        const data = await store.mostrarVersiones(proyecto, null, 10, 1)    //Una vez cancela la versión, obtiene el nuevo listado
-        await emit('update:datos', data.data)   //Actualiza con el listado nuevo, el array del componente padre
+        try {
+            await store.cancelarVersion(id)     //Ejecuta metodo asincrono donde se proporciona el id de la versión
+            const data = await store.mostrarVersiones(proyecto, null, 10, 1)    //Una vez cancela la versión, obtiene el nuevo listado
+            await emit('update:datos', data.data)   //Actualiza con el listado nuevo, el array del componente padre
+        }catch (error) {
+            storeUs.MostrarMensaje('error', 'Error al cancelar la versión', 3000) // Muestra un mensaje de error
+        }
     }
 </script>

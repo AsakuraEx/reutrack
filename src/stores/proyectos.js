@@ -11,6 +11,22 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
         mensaje: '' 
     })
 
+    function enviarMensaje(tipo, mensaje){        //Función para enviar mensajes de exito o error
+        
+        if(message.value){
+            limpiarMensaje()
+        }
+
+        message.value = { tipo, mensaje }
+
+        console.log(message.value);          //Muestra el mensaje en consola
+    }
+
+    function limpiarMensaje(){          //Función para limpiar el mensaje
+        message.value.tipo = '';                 //Asigna un tipo vacio
+        message.value.mensaje = '';              //Asigna un mensaje vacio
+    }
+
     //Función del store asincrona para mostrar proyectos
     async function mostrarProyectos(estado, limit, page){
         try{
@@ -35,7 +51,7 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
             //Si el status es 200, guarda un mensaje de exito
             if(status === 200){
                 message.value.tipo = 'Exito';
-                message.value.mensaje = '¡El proyecto se canceló exitosamente!'
+                message.value.mensaje = '¡La versión se canceló exitosamente!'
 
                 //Posterior a 3 segundos, se elimina de la variable la información
                 //Se utiliza para generar alertas reactivas
@@ -92,11 +108,6 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡El proyecto se creó exitosamente!'
 
-                setTimeout(()=>{
-                    message.value.tipo = "",
-                    message.value.mensaje = ""
-                },3000)
-
 
             }
         }catch(e){
@@ -111,12 +122,6 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
             if(status === 201){
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡La versión se creó exitosamente!'
-
-                setTimeout(()=>{
-                    message.value.tipo = "",
-                    message.value.mensaje = ""
-                },3000)
-
 
             }
         }catch(e){
@@ -159,7 +164,8 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
         crearVersion,
         mostrarVersiones,
         cancelarVersion,
-        consultarVersion
-
+        consultarVersion,
+        enviarMensaje,
+        limpiarMensaje
     }
 })

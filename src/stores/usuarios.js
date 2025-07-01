@@ -3,6 +3,8 @@ import apiServiceUsuarios from "@/services/apiServiceUsuarios";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { jwtDecode } from "jwt-decode";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 export const useUsuarioStore = defineStore('usuarios', ()=>{
     
@@ -17,6 +19,23 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         tipo: '',
         mensaje: '' 
     })
+
+    const LoginExitoso = ref(true)
+
+    function setLoginExitoso(value){
+        LoginExitoso.value = !LoginExitoso.value;
+    }
+
+    function MostrarMensaje(tipo, mensaje, tiempo){
+        
+        toast(mensaje || 'No hay un mensaje ingresado', {
+            theme: 'colored',
+            autoClose: tiempo || 1000,
+            type: tipo || 'info',
+            position: "top-right",
+        });
+
+    }
 
     //Valida que la contraseña anterior sea correcta, se utiliza en el cambio de contraseña
     async function validarContraseñaAnterior(id, oldpassword){
@@ -272,8 +291,11 @@ export const useUsuarioStore = defineStore('usuarios', ()=>{
         detectarActividad,
         cancelarDeteccionActividad,
         reiniciarTiempo,
+        verify2FA,
+        MostrarMensaje,
+        setLoginExitoso,
         errorInactividad,
-        User,
-        verify2FA
+        LoginExitoso,
+        User
     }
 })

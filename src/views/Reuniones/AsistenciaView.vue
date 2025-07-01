@@ -9,8 +9,8 @@
     import { computed, onMounted, ref, watch, reactive } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { Field, ErrorMessage, Form } from 'vee-validate';
-    import AlertaError from '@/components/AlertaError.vue';
     import { jwtDecode } from 'jwt-decode';
+    import { useUsuarioStore } from '@/stores/usuarios';
 
     //Variables del sistema
     const path = mdiTrashCanOutline;
@@ -18,6 +18,7 @@
     const {id} = route.params;     //Se obtiene el id de la reunion actual
     const idReunion = id;
     const store = useReunionStore()
+    const storeUs = useUsuarioStore();
     const router = useRouter()
     const usuarioRol = localStorage.getItem('rol')
     const reunion = ref({})
@@ -47,10 +48,14 @@
 
     //Pull de funciones que se cargan al montar el componente
     onMounted(async ()=>{
-        participantes.value = await store.obtenerParticipantes(idReunion)
-        reunion.value = await store.obtenerReunion(idReunion)
-
-        listaEncargados.value = await store.obtenerEncargados(id) //Se obtiene información para la tabla
+        try {
+            participantes.value = await store.obtenerParticipantes(idReunion)
+            reunion.value = await store.obtenerReunion(idReunion)
+    
+            listaEncargados.value = await store.obtenerEncargados(id) //Se obtiene información para la tabla
+        }catch(e){
+            storeUs.MostrarMensaje('error', 'Error al cargar los datos de la reunión: ' + e.message, 3000)
+        }
 
         if(reunion.value.id_estado != 1){
             router.push({name:'historial'})
@@ -66,27 +71,21 @@
         //Valida que existe participante con ese documento
         if(participantes.value.find(participante => participante.doc_identidad === formData.value.doc_identidad)){
             error.value = 'El participante ya fue agregado segun documento de identidad...'
-            setTimeout(()=>{
-                error.value = ''
-            }, 3000)
+            storeUs.MostrarMensaje('error', error.value, 3000)
             return
         }
 
         //Valida que existe participante con ese telefono
         if(participantes.value.find(participante => participante.telefono === formData.value.telefono)){
             error.value = 'El participante ya fue agregado segun número de teléfono...'
-            setTimeout(()=>{
-                error.value = ''
-            }, 3000)
+            storeUs.MostrarMensaje('error', error.value, 3000)
             return
         }
         
         //Valida que existe participante con ese correo
         if(participantes.value.find(participante => participante.correo === formData.value.correo)){
             error.value = 'El participante ya fue agregado segun correo electrónico...'
-            setTimeout(()=>{
-                error.value = ''
-            }, 3000)
+            storeUs.MostrarMensaje('error', error.value, 3000)
             return
         }
 
@@ -95,7 +94,7 @@
             await store.agregarParticipante(formData.value)
             participantes.value = await store.obtenerParticipantes(idReunion)
             
-            
+            storeUs.MostrarMensaje('success', 'Participante agregado correctamente', 3000)
             resetForm();
             Object.assign(formData.value, {
                 participante: '',
@@ -109,6 +108,7 @@
             })
         }catch(e){
             console.error('Error al agregar participante: ', error.message)
+            storeUs.MostrarMensaje('error', 'Error al agregar participante: ' + e.message, 3000)
         }
         
 
@@ -116,8 +116,13 @@
 
     //Elimina al participante de la lista de asistencia
     const eliminarAsistencia = async (id) => {
-        await store.eliminarAsistencia(id)
-        participantes.value = await store.obtenerParticipantes(idReunion)
+        try{
+            await store.eliminarAsistencia(id)
+            participantes.value = await store.obtenerParticipantes(idReunion)
+            storeUs.MostrarMensaje('success', 'Participante eliminado correctamente', 3000)
+        }catch(e){
+            storeUs.MostrarMensaje('error', 'Error al eliminar el participante: ' + e.message, 3000)
+        }   
     }
 
     //Comprueba si existen participantes en el array, retorna un booleano
@@ -290,8 +295,6 @@
             </div>
             
         </Form>
-        
-        <AlertaError :error="error" v-if="error"/>
 
         <!-- TABLA DE DATOS DE ASISTENCIA -->
         <div class="overflow-x-auto px-4">

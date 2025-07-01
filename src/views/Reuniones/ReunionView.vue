@@ -4,6 +4,7 @@
     import { computed, onMounted, reactive, ref } from 'vue';
     import { useProyectoStore } from '@/stores/proyectos';
     import { useReunionStore } from '@/stores/reuniones';
+    import { useUsuarioStore } from '@/stores/usuarios';
     import { useRouter } from 'vue-router';
     import { uid } from 'uid';
     import Header from '@/components/Header.vue';
@@ -17,6 +18,7 @@
     //definición de variables
     const store = useProyectoStore()
     const storeReu = useReunionStore()
+    const storeUs = useUsuarioStore()
     const router = useRouter()
     const reunion = ref({})
     const arrayVersiones = ref([]);
@@ -44,8 +46,12 @@
         //Se genera el codigo aleatorio con la libreria uid
         formData.codigo = uid(6);
         //Se solicita la lista de proyectos "Pendiente" (no cancelados ni finalizados)
-        const response = await store.mostrarProyectos(1, null, 1);
-        arrayProyectos.value = response.data
+        try{
+            const response = await store.mostrarProyectos(1, null, 1);
+            arrayProyectos.value = response.data
+        }catch(e){
+            storeUs.MostrarMensaje('error', 'Error al cargar los proyectos', 3000)
+        }
         //Se asigna la hora de expiracion del codigo
         expiracionCodigo()
     })
@@ -53,7 +59,7 @@
     const expiracionCodigo = () => {
         const fechaActual = new Date();
         const expiracion = new Date(fechaActual);
-        expiracion.setMinutes(fechaActual.getMinutes() + 30);
+        expiracion.setMinutes(fechaActual.getMinutes() + 60);
 
         // Guarda en formato ISO (UTC) o timestamp para evitar problemas de zona horaria
         formData.fecha = fechaActual.toISOString(); // Ej: "2025-05-31T20:13:00.000Z"
@@ -61,12 +67,12 @@
     }
 
     const crearReunion = async () => {
+
         try{
             //Creo la reunion y valido
             await storeReu.iniciarReunion(formData)
     
             //Consulto la reunión creada        
-    
             reunion.value = await storeReu.obtenerUltimaReunion()
     
             minuta.id_reunion = reunion.value.id
@@ -79,11 +85,12 @@
                 id_usuario: formData.id_usuario
             }
             await storeReu.agregarEncargado(encargadoInicial) 
-    
+
             // Una vez consultada la reunión, redirijo a esa reunión recien creada
             await router.push({name: 'encargados', params: {id: reunion.value.id }})
         }catch(e){
             console.error(e)
+            storeUs.MostrarMensaje('error', 'Error al crear la reunión: ' + e.message, 3000)
         }
     }
 

@@ -11,6 +11,7 @@
     import { useReunionStore } from '@/stores/reuniones';
     import { Form, Field, ErrorMessage } from 'vee-validate';
     import { jwtDecode } from 'jwt-decode';
+    import { useUsuarioStore } from '@/stores/usuarios';
 
     const path = mdiTrashCanOutline;        //Parte del icono
     const route = useRoute()        //Se utiliza para obtener informacion de la URL
@@ -27,6 +28,7 @@
     let backup;
     const error = ref('')
     const hora = ref('')
+    const storeUs = useUsuarioStore();
 
     //Formulario de minuta
     const minuta = reactive({
@@ -71,11 +73,15 @@
         //Se agrega el metodo para evitar que se cierre la ventana
         window.addEventListener('beforeunload', handleBeforeUnload)
 
-        //Obtiene puntos
-        puntos.value = await store.obtenerPuntos(idReunion)
-        
-        //Obtiene acuerdos
-        acuerdos.value = await store.obtenerAcuerdos(idReunion)
+        try{
+            //Obtiene puntos
+            puntos.value = await store.obtenerPuntos(idReunion)
+            
+            //Obtiene acuerdos
+            acuerdos.value = await store.obtenerAcuerdos(idReunion)
+        }catch(e){
+            storeUs.MostrarMensaje('error', 'Error al cargar los puntos o acuerdos de la reunión: ' + e.message, 3000)
+        }
 
         //Si no existe algo guarda vacio
         if(!minuta.minuta){
@@ -88,7 +94,7 @@
             //Ejecuta el metodo para realizar patch al registro de la minuta
             actualizarMinuta()
 
-        }, 60000)
+        }, 10000)
 
 
     })
@@ -114,6 +120,7 @@
         await store.actualizarMinuta(idReunion, minuta)
         localStorage.setItem('minuta', minuta.minuta)
         hora.value = "Último autoguardado: " + new Date().toLocaleString()
+        storeUs.MostrarMensaje('info', 'Se ha guardado el progreso de la minuta hasta este punto.', 3000)
 
     }
 
@@ -123,13 +130,14 @@
 
             await store.agregarPuntos(punto)
             puntos.value = await store.obtenerPuntos(idReunion)
+            storeUs.MostrarMensaje('success', 'Punto agregado correctamente', 3000)
             resetForm()
             Object.assign(punto, {
                 nombre: '',
                 id_reunion: idReunion
             })
         }catch(e){
-            console.error(e)
+            storeUs.MostrarMensaje('error', 'Error al agregar el punto: ' + e.message, 3000)
         }
     }
 
@@ -140,6 +148,7 @@
             await store.agregarAcuerdos(acuerdo)
             //Actualiza el array de acuerdos
             acuerdos.value = await store.obtenerAcuerdos(idReunion)
+            storeUs.MostrarMensaje('success', 'Acuerdo agregado correctamente', 3000)
             resetForm()
             //Limpia el objeto de acuerdos
             Object.assign(acuerdo, {
@@ -147,7 +156,7 @@
                 id_reunion: idReunion
             })
         }catch(e){
-            console.error(e)
+            storeUs.MostrarMensaje('error', 'Error al agregar el acuerdo: ' + e.message, 3000)
         }
 
     }
@@ -155,26 +164,34 @@
     const eliminarPunto = async (id) => {
         await store.eliminarPuntos(id)
         puntos.value = await store.obtenerPuntos(idReunion)
+        storeUs.MostrarMensaje('success', 'Punto eliminado correctamente', 3000)
         
     }
 
     const eliminarAcuerdo = async (id) => {
         await store.eliminarAcuerdos(id)
         acuerdos.value = await store.obtenerAcuerdos(idReunion)
+        storeUs.MostrarMensaje('success', 'Acuerdo eliminado correctamente', 3000)
     }
 
     const finalizarReunion = async () => {
 
         if(minuta.minuta === '<p></p>'){
             error.value = 'La descripción de la reunión esta vacia'
+            storeUs.MostrarMensaje('error', error.value, 3000)
             return
         }
 
         //Elimina el intervalo
         clearInterval(backup)
         //Marca la reunion como finalizada
-        await store.actualizarMinuta(idReunion, minuta)
-        await store.FinalizarReunion(idReunion)
+        try{
+            await store.actualizarMinuta(idReunion, minuta)
+            await store.FinalizarReunion(idReunion)
+        }catch(e){
+            storeUs.MostrarMensaje('error', 'Error al finalizar la reunión: ' + e.message, 3000)
+            return
+        }
 
         //Finalmente envia al historial de reuniones
         router.push({name: 'historial'})

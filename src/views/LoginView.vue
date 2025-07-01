@@ -9,15 +9,12 @@
             </div>
 
             <div class="w-full">
-                <AlertaError 
-                    :error="error"
-                    v-if="error"
-                />
 
                 <AlertWarning
                     :error="store.errorInactividad"
                     v-if="store.errorInactividad"
                 />
+
             </div>
 
             <div class="space-y-4" v-if="!exitoLogin">
@@ -138,12 +135,10 @@
     
     import { reactive, ref } from 'vue';
     import { useUsuarioStore } from '@/stores/usuarios';
-    import AlertaError from '@/components/AlertaError.vue';
     import AlertWarning from '@/components/AlertWarning.vue';
     import { useRouter } from 'vue-router';
     import { useReunionStore } from '@/stores/reuniones';
     import Spinner from '@/components/Spinner.vue';
-
 
     //VEE VALIDATE
     import { Form, Field } from 'vee-validate';
@@ -152,7 +147,6 @@
     import svgIcon from '@jamescoyle/vue-icon';
     import { mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js';
 
-    
     const path= mdiEyeOutline
     const path2 = mdiEyeOffOutline
     const passwordVisible = ref(false)
@@ -162,8 +156,6 @@
     const store = useUsuarioStore()
     const storeReu = useReunionStore()
     const router = useRouter()
-    
-    const error = ref("")
     const exitoLogin = ref("")
     const codigo = ref("")
     const reu = ref([])
@@ -186,20 +178,14 @@
 
         try {
             if(!login.correo){
-                error.value = 'No ha ingresado un correo electrónico'
-                setTimeout(()=>{
-                    error.value = ""
-                },3000)
-
+                 
+                store.MostrarMensaje('error', 'No ha ingresado un correo electrónico', 3000)
                 return
             }
 
             if(!login.contraseña){
-                error.value = 'No ha ingresado una contraseña'
-                setTimeout(()=>{
-                    error.value = ""
-                },3000)
-
+                 
+                store.MostrarMensaje('error', 'No ha ingresado una contraseña', 3000)
                 return
             }
 
@@ -209,19 +195,20 @@
 
                 if(data.exito){
                     exitoLogin.value = data.exito
+                    store.MostrarMensaje('success', data.exito, 3000)
                     dfa.password = login.contraseña
                     dfa.correo = login.correo
     
                 }
     
                 if(data.error){
-                    error.value = data.error
+                    store.MostrarMensaje('error', data.error, 3000)
                 }
 
             }
 
         }catch(e){
-            error.value = "Error de red"
+            store.MostrarMensaje('error', 'No se pudo realizar la acción debido a problemas de comunicación con el servidor.', 3000)
 
         } finally {
             spinnerActivo.value = false
@@ -232,9 +219,7 @@
                 contraseña: ''
             })
 
-            setTimeout(()=>{
-                error.value = ""
-            },3000)
+             
         }
     }
 
@@ -244,11 +229,7 @@
 
         try {
             if(!dfa.codigo){
-                error.value = 'No ha ingresado el código de autorización'
-                setTimeout(()=>{
-                    error.value = ""
-                },3000)
-
+                store.MostrarMensaje('error', 'Debe ingresar el código de verificación', 3000)
                 return
             }
 
@@ -256,29 +237,20 @@
 
             if(token){
 
-                localStorage.setItem('token', token)
-                if(dfa.password.length <= 4){
-                    router.push({name:'contraseña'})
-                }else{
-                    router.push({name:'home'})
-                }
+                almacenarToken(token)
+                exitoLogin.value = "Inicio de sesión exitoso"
+                setTimeout(()=>{
+                    exitoLogin.value = ""
+                }, 3000)
 
 
             } else {
-                error.value = "El código 2FA ya fue utilizado o ha expirado"
-                setTimeout(()=>{
-                    error.value = ""
-                }, 3000)
-
+                store.MostrarMensaje('error', 'El código ingresado es incorrecto o ha expirado', 3000)
             }
 
         }catch(e){
             
-            error.value = 'El código ingresado ya fue utilizado o no es válido.'
-            setTimeout(()=>{
-                error.value = ""
-            }, 2000)
-            
+            store.MostrarMensaje('error', 'El código ingresado no es válido.', 3000)
 
         } finally {
             spinnerActivo.value = false
@@ -289,6 +261,19 @@
         }
         }
 
+    //Almacena el token en el localStorage y redirige al usuario a la página correspondiente
+    //dependiendo de si tiene o no contraseña configurada
+    const almacenarToken = (token) => {
+
+        localStorage.setItem('token', token)
+        if(dfa.password.length <= 4){
+            router.push({name:'contraseña'})
+        }else{
+            router.push({name:'home'})
+        }
+
+    }
+
     const registrarAsistencia = async () => {
         
         try{
@@ -296,32 +281,30 @@
             const response = await storeReu.obtenerReunionActual(codigo.value)
 
             if(response.data.error){
-                error.value = response.data.error
-                setTimeout(()=>{
-                    error.value = ""
-                },3000)
+                store.MostrarMensaje('error', response.data.error, 3000)
                 return
             }
 
             reu.value = response.data
-
-            console.log(reu.value)
-        
-            const fechaActual = new Date().getTime() / 1000             //Fecha convertida a segundos
-            const expiracion =  new Date(reu.value.expiracion).getTime() / 1000         //Fecha convertida a segundos
-
-            if(Math.round(fechaActual) > Math.round(expiracion)){
-                error.value = "El código de la reunión ha caducado."
-                setTimeout(()=>{
-                    error.value = ""
-                },3000)
-                return
-            }
+            calcularExpiracion(reu.value.expiracion)
     
            router.push({name:'invitado',params:{id: reu.value.id} })
 
         } catch(e){
             console.log(e)
+        }
+
+    }
+
+    //Calcula la expiración del código de la reunión
+    const calcularExpiracion = (tiempoExpiracion) => {
+        
+        const fechaActual = new Date().getTime() / 1000             //Fecha convertida a segundos
+        const expiracion =  new Date(tiempoExpiracion).getTime() / 1000         //Fecha convertida a segundos
+
+        if(Math.round(fechaActual) > Math.round(expiracion)){
+            store.MostrarMensaje('error', 'El código de la reunión ha expirado', 3000)
+            return
         }
 
     }

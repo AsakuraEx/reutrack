@@ -23,9 +23,13 @@
         acta_aceptacion: null
     })
 
-    const guardarVersion= async (version) => {
+    const guardarVersion= (version) => {
         try{
-            await store.crearVersion(version)
+            store.crearVersion(version)
+            store.enviarMensaje({
+                tipo: 'success',
+                mensaje: 'Versión creada correctamente'
+            })
             router.push({name:'versiones'})
         }catch(e){
             console.error(e)

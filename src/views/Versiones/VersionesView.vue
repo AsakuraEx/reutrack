@@ -1,7 +1,7 @@
 <script setup>
 
     //imports necesarios del sistema
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, watch } from 'vue';
     import { RouterLink, useRoute } from 'vue-router';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
@@ -12,12 +12,14 @@
     import { mdiPlus } from '@mdi/js';
     import Paginacion from '@/components/Paginacion.vue';
     import { jwtDecode } from 'jwt-decode';
+    import { useUsuarioStore } from '@/stores/usuarios';
 
     
     //definición de variables
     const path2 = mdiPlus
     const route = useRoute()
     const store = useProyectoStore();
+    const storeUs = useUsuarioStore();
     const decoded = jwtDecode(localStorage.getItem('token'))
     const usuarioRol = decoded.id_rol
 
@@ -37,14 +39,11 @@
         Cancelado: 'bg-red-200 text-red-800'
     }
 
-    const claseEstado = (estado) => {
-        return `${estados[estado]}`
-    }
-
-    const mostrarModal = async (id) => {
-        modalActual.value = await store.consultarVersion(id);
-    }
-
+    watch(() => store.message, (newValue) => {
+        if(newValue.tipo !== ''){
+            storeUs.MostrarMensaje('success', newValue.mensaje, 3000);
+        }
+    }, {deep: true})
 
     onMounted(async ()=>{
         proyecto.value = await store.consultarProyecto(id)
@@ -54,17 +53,27 @@
         paginacion.value = response
     })
 
+
+
+    const claseEstado = (estado) => {
+        return `${estados[estado]}`
+    }
+
+    const mostrarModal = async (id) => {
+        modalActual.value = await store.consultarVersion(id);
+    }
+
     const control = ref(1)
     const paginacion = ref({})
 
-    const siguiente = async () => {
+    const siguiente = () => {
         
         
         if(control.value === paginacion.value.totalPages){
             return
         }else{
             control.value++;
-            const response = await store.mostrarVersiones(id, null, 10, control.value);
+            const response = store.mostrarVersiones(id, null, 10, control.value);
             arrayVersiones.value = response.data
             paginacion.value = response
         }
@@ -76,15 +85,15 @@
             return
         }else{
             control.value--;
-            const response = await store.mostrarVersiones(id, null, 10, control.value);
+            const response = store.mostrarVersiones(id, null, 10, control.value);
             arrayVersiones.value = response.data
             paginacion.value = response
         }
     }
 
-        //Función que ayuda a transformar cualquier fecha a formato dd-mm-yyyy hh:mm tt
-        const transformarFecha = (fecha) => {
-        
+    //Función que ayuda a transformar cualquier fecha a formato dd-mm-yyyy hh:mm tt
+    const transformarFecha = (fecha) => {
+    
         const nuevaFecha = new Date(fecha)
 
         const fechaFormateada = nuevaFecha.toLocaleString('es-ES', {
@@ -173,7 +182,7 @@
                                 class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300"
                                 @click="mostrarModal(item.id)"
                             >
-                                Borrar
+                                Cancelar
                             </button>
 
                         </td>

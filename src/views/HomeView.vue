@@ -22,8 +22,20 @@
         
         const decoded = jwtDecode(localStorage.getItem('token'))
         usuario.value = await storeUs.obtenerUsuario(decoded.id)
-        MostrarFrase()
 
+        setTimeout(()=>{
+            if(storeUs.LoginExitoso){
+                storeUs.MostrarMensaje('success', 'Bienvenido/a de nuevo ' + usuario.value.nombre, 5000)
+                storeUs.setLoginExitoso(false)
+            }
+        }, 300)
+
+        MostrarFrase()
+        ObtenerUltimasReuniones()
+
+    })
+
+    const ObtenerUltimasReuniones = async () => {
         if(usuario.value.id_rol != 1){
             const response = await store.obtenerReuniones(3,3,null, null, decoded.id, 1)
             reuniones.value = response.data
@@ -32,9 +44,7 @@
             const response = await store.obtenerReuniones(3,3,null, null, null, 1)
             reuniones.value = response.data
         }
-        
-
-    })
+    }
 
     function MostrarFrase() {
         const fechaActual = new Date()

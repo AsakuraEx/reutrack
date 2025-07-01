@@ -62,6 +62,7 @@
     
     // Imports de stores de pinia
     import { useProyectoStore } from '@/stores/proyectos';
+    import { useUsuarioStore } from '@/stores/usuarios';
     
     // Variables obtenidas por el componente padre
     const props = defineProps({
@@ -76,17 +77,22 @@
 
     // Variables utilizando stores
     const store = useProyectoStore()
+    const storeUs = useUsuarioStore()
 
     //Eventos obtenidos por el componente padre
     const emit = defineEmits(['update:datos'])
 
     //Metodo que actualiza la versión a finalizada
     async function FinalizarVersion () {
-        await store.finalizarVersion(props.version.id, campo.value) // Se necesita el id de la versión y el valor del campo
-        const data = await store.mostrarVersiones(props.version.id_proyecto, null, 10, 1)   // Una vez actualizada la versión,  obtiene el nuevo listado
-        await emit('update:datos', data.data)   // Mediante un evento, actualiza la variable del componente padre con el listado obtenido
-        modalFinalizar.close()  //Ejecuta el evento de la libreria que se utilizó para generar el modal
-        campo.value = ""    //Elimina el valor del campo en caso que se vuelva a iniciar
+        try {
+            store.finalizarVersion(props.version.id, campo.value) // Se necesita el id de la versión y el valor del campo
+            const data = await store.mostrarVersiones(props.version.id_proyecto, null, 10, 1)   // Una vez actualizada la versión,  obtiene el nuevo listado
+            await emit('update:datos', data.data)   // Mediante un evento, actualiza la variable del componente padre con el listado obtenido
+            modalFinalizar.close()  //Ejecuta el evento de la libreria que se utilizó para generar el modal
+            campo.value = ""    //Elimina el valor del campo en caso que se vuelva a iniciar
+        }catch(e) {
+            storeUs.MostrarMensaje('error', 'Ocurrió un error al finalizar la versión', 3000) // En caso de error, muestra el mensaje de error
+        }
     }
 
 </script>

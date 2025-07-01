@@ -58,12 +58,6 @@ export const useReunionStore = defineStore('reuniones', () => {
             if(status === 201){
                 message.value.tipo = 'Exito';
                 message.value.mensaje = '¡La reunión se inicio exitosamente!'
-
-
-                setTimeout(()=>{
-                    message.value.tipo = "",
-                    message.value.mensaje = ""
-                },3000)
             }
         }catch(e){
             console.log(e)
@@ -344,7 +338,8 @@ export const useReunionStore = defineStore('reuniones', () => {
         obtenerUltimaReunion,
         obtenerReunionActual,
         actualizarMinuta,
-        obtenerDetalleReunion
+        obtenerDetalleReunion,
+        message
     }
 }
 )

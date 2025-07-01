@@ -1,7 +1,7 @@
 <script setup>
 
     //imports necesarios del sistema
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, watch } from 'vue';
     import { RouterLink } from 'vue-router';
     import Header from '@/components/Header.vue';
     import Footer from '@/components/Footer.vue';
@@ -10,6 +10,7 @@
     import { jwtDecode } from 'jwt-decode';
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiGit, mdiPlus } from '@mdi/js';
+    import { useUsuarioStore } from '@/stores/usuarios';
 
     //definición de variables
     const path2 = mdiPlus
@@ -19,6 +20,7 @@
     const arrayProyectos = ref([]);
     const paginacion = ref({})
     const store = useProyectoStore();
+    const storeUs = useUsuarioStore();
     
     onMounted(async ()=>{
         const response = await store.mostrarProyectos(null, 10, 1);
@@ -26,29 +28,35 @@
         paginacion.value = response
     })
 
+    watch(() => store.message, (newValue) => {
+        if(newValue.tipo !== ''){
+            storeUs.MostrarMensaje('success', newValue.mensaje, 3000);
+        }
+    }, {deep: true})
+
     const control = ref(1) //Control de paginacion
 
 
-    const siguiente = async () => {
+    const siguiente = () => {
         
         
         if(control.value === paginacion.value.totalPages){
             return
         }else{
             control.value++;
-            const response = await store.mostrarProyectos(null, 10, control.value);
+            const response = store.mostrarProyectos(null, 10, control.value);
             arrayProyectos.value = response.data
             paginacion.value = response
         }
     }
 
-    const anterior = async () => {
+    const anterior = () => {
         
         if(control.value === 1){
             return
         }else{
             control.value--;
-            const response = await store.mostrarProyectos(null, 10, control.value);
+            const response = store.mostrarProyectos(null, 10, control.value);
             arrayProyectos.value = response.data
             paginacion.value = response
         }
@@ -57,17 +65,17 @@
     //Función que ayuda a transformar cualquier fecha a formato dd-mm-yyyy hh:mm tt
     const transformarFecha = (fecha) => {
     
-    const nuevaFecha = new Date(fecha)
+        const nuevaFecha = new Date(fecha)
 
-    const fechaFormateada = nuevaFecha.toLocaleString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',   // Hora en formato de dos dígitos
-        minute: '2-digit', // Minutos en formato de dos dígitos
-        second: '2-digit', // Segundos en formato de dos dígitos
-        hour12: true
-    });
+        const fechaFormateada = nuevaFecha.toLocaleString('es-ES', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',   // Hora en formato de dos dígitos
+            minute: '2-digit', // Minutos en formato de dos dígitos
+            second: '2-digit', // Segundos en formato de dos dígitos
+            hour12: true
+        });
 
         return fechaFormateada
     }

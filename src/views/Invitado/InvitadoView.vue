@@ -5,6 +5,7 @@
     import { useReunionStore } from '@/stores/reuniones';
     import { Field, ErrorMessage, Form } from 'vee-validate';
     import AlertaError from '@/components/AlertaError.vue';
+import { useUsuarioStore } from '@/stores/usuarios';
 
     //Variables del sistema
     const route = useRoute()
@@ -13,6 +14,8 @@
     const store = useReunionStore()
     const router = useRouter()
     const reunion = ref({})
+    const storeUs = useUsuarioStore();
+    const enviado = ref(false);
 
     //Variable que representa el formulario
     const formData = ref({
@@ -50,39 +53,20 @@
     // Variables con diferentes funcionalidades del sistema
     const agregarParticipante = async (values, { resetForm }) => {
         
-        //Valida que ya exista con este número de documento
-        if(participantes.value.find(participante => participante.doc_identidad === formData.value.doc_identidad) && !extranjero){
-            error.value = 'El participante ya fue agregado segun documento de identidad...'
-            setTimeout(()=>{
-                error.value = ''
-            }, 3000)
-            return
-        }
-
-        //Valida que ya exista con este número de telefono
-        if(participantes.value.find(participante => participante.telefono === formData.value.telefono) && !extranjero){
-            error.value = 'El participante ya fue agregado segun número de teléfono...'
-            setTimeout(()=>{
-                error.value = ''
-            }, 3000)
-            return
-        }
-
-        //Valida que ya exista con el correo electronico
+        //Valida que existe participante con ese correo
         if(participantes.value.find(participante => participante.correo === formData.value.correo)){
             error.value = 'El participante ya fue agregado segun correo electrónico...'
-            setTimeout(()=>{
-                error.value = ''
-            }, 3000)
+            storeUs.MostrarMensaje('error', error.value, 3000)
             return
         }
 
-        //Intenta agregar al participante y limpia el formulario
+        //Realiza el guardado del participante
         try{
             await store.agregarParticipante(formData.value)
             participantes.value = await store.obtenerParticipantes(idReunion)
             
-            
+            storeUs.MostrarMensaje('success', 'Se registro su asistencia correctamente', 5000)
+            enviado.value = true;
             resetForm();
             Object.assign(formData.value, {
                 participante: '',
@@ -94,10 +78,13 @@
                 id_reunion: idReunion,
                 
             })
-            //Si todo esta bien, redirecciona a un mensaje de agradecimiento
-            router.push({name: 'agradecimiento'})
+
+            setTimeout(() => {
+                router.push({name: 'agradecimiento'})
+            }, 3000)
         }catch(e){
             console.error('Error al agregar participante: ', error.message)
+            storeUs.MostrarMensaje('error', 'Error al agregar participante: ' + e.message, 3000)
         }
         
 
@@ -115,8 +102,6 @@
 
         <h1 class="text-xl font-extrabold text-center pt-12 uppercase px-4">Lista de Asistencia</h1>
         
-        <AlertaError class="mt-8" :error="error" v-if="error"/>
-        
         <div class="flex justify-center lg:justify-between pt-4 pb-12">
             <div class="form-control">
                 <label class="label cursor-pointer">
@@ -127,7 +112,7 @@
         </div>
 
         
-        <Form class="flex flex-col gap-8 md:gap-0 pb-4" @submit="agregarParticipante" v-slot="{ resetForm, errors }">
+        <Form class="flex flex-col gap-8 md:gap-0 pb-4" @submit="agregarParticipante" v-slot="{ resetForm, errors }" v-if="!enviado">
 
             <div 
                 class="grid grid-cols-1 md:grid-cols-2 gap-4"
@@ -234,7 +219,7 @@
             </div>
 
             
-            <div class="mx-auto mt-6 w-full lg:w-32">
+            <div class="mx-auto mt-6 w-full lg:w-32" v-if="!enviado">
                 <BtnSubmit />
             </div>
             
