@@ -303,6 +303,14 @@ export const useReunionStore = defineStore('reuniones', () => {
         await apiServiceReunion.finalizarReunion(idReunion)
     }
 
+    //Función que reactiva una reunión, actualmente no se utiliza
+    async function ReactivarReunión(idReunion, justificación){
+        // Esta función requiere un ID de reunión para reactivarla
+        // Almacenará la justificación del usuario para reactivar la reunión
+        // Cambiará el estado de la reunión a 'Iniciado' y asignará un nuevo código al campo "Reactivación"
+        // Redirigirá al usuario a la vista de encargados
+    }
+
     async function obtenerDetalleReunion(idReunion){
         try{
             const {status, data} = await apiServiceReunion.obtenerDetalle(idReunion);

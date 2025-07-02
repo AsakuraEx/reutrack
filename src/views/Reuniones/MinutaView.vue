@@ -91,10 +91,16 @@
 
         //Cada 20 segundos genera una copia de la minuta en el localStorage
         backup = setInterval(()=>{
-            //Ejecuta el metodo para realizar patch al registro de la minuta
-            actualizarMinuta()
+            //Obtiene la minuta actual del localStorage
+            let minutaActual = localStorage.getItem('minuta')
 
-        }, 10000)
+            //Si la minuta actual es diferente a la minuta guardada en el localStorage, actualiza
+            //la minuta en el localStorage y en la base de datos
+            if(minutaActual !== minuta.minuta){
+                //Ejecuta el metodo para realizar patch al registro de la minuta
+                actualizarMinuta()
+            }
+        }, 30000)
 
 
     })
@@ -199,7 +205,6 @@
 
     const contarLetras = computed(() => {
         let texto = minuta.minuta.toString().replace(/(<([^>]+)>)/ig, '')
-        console.log(texto)
         return texto.length
     })
 
