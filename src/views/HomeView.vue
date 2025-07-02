@@ -17,10 +17,10 @@
     const arrayFrases = ref([]);
     const frase = ref({})
     const dia = ref(0)
+    const decoded = jwtDecode(localStorage.getItem('token'))
     
     onMounted(async ()=>{
         
-        const decoded = jwtDecode(localStorage.getItem('token'))
         usuario.value = await storeUs.obtenerUsuario(decoded.id)
 
         setTimeout(()=>{
