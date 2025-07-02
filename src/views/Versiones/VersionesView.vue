@@ -66,14 +66,14 @@
     const control = ref(1)
     const paginacion = ref({})
 
-    const siguiente = () => {
+    const siguiente = async () => {
         
         
         if(control.value === paginacion.value.totalPages){
             return
         }else{
             control.value++;
-            const response = store.mostrarVersiones(id, null, 10, control.value);
+            const response = await store.mostrarVersiones(id, null, 10, control.value);
             arrayVersiones.value = response.data
             paginacion.value = response
         }
@@ -85,7 +85,7 @@
             return
         }else{
             control.value--;
-            const response = store.mostrarVersiones(id, null, 10, control.value);
+            const response = await store.mostrarVersiones(id, null, 10, control.value);
             arrayVersiones.value = response.data
             paginacion.value = response
         }

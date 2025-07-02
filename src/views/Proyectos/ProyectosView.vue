@@ -37,26 +37,26 @@
     const control = ref(1) //Control de paginacion
 
 
-    const siguiente = () => {
+    const siguiente = async () => {
         
         
         if(control.value === paginacion.value.totalPages){
             return
         }else{
             control.value++;
-            const response = store.mostrarProyectos(null, 10, control.value);
+            const response = await store.mostrarProyectos(null, 10, control.value);
             arrayProyectos.value = response.data
             paginacion.value = response
         }
     }
 
-    const anterior = () => {
+    const anterior = async () => {
         
         if(control.value === 1){
             return
         }else{
             control.value--;
-            const response = store.mostrarProyectos(null, 10, control.value);
+            const response = await store.mostrarProyectos(null, 10, control.value);
             arrayProyectos.value = response.data
             paginacion.value = response
         }
