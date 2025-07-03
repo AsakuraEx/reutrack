@@ -61,6 +61,10 @@ export default {
         return api.post('/reuniones/create', data)
     },
 
+    reactivarReunion(data){
+        return api.patch(`/reuniones/reactivar`, data)
+    },
+
     //Marca la reunión como cancelada y no puede realizar ninguna otra acción
     cancelarReunion(id){
         return api.patch(`/reuniones/cancelar/${id}`, {estado: 2})
@@ -82,8 +86,12 @@ export default {
     },
 
     //Guarda encargados agregados mediante el formulario
-    agregarEncargado(data){
-        return api.post('/encargados/create', data)
+    agregarEncargado(data, visitante){
+        return api.post('/encargados/create', {
+            id_usuario: data.id_usuario,
+            id_reunion: data.id_reunion,
+            visitante: visitante
+        })
     },
 
     //Elimina permanentemente un encargado mientra la reunión esta activa

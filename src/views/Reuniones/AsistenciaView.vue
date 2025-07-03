@@ -158,13 +158,16 @@
     
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>
+    <div class="w-full flex justify-center mb-9" v-if="reunion.reactivado">
+        <h3 class="text-center font-semibold text-xl text-white bg-sky-500 rounded px-2 py-1 w-fit">Reunión reactivada</h3>
+    </div>
     
     <div class="container mx-auto min-h-[70vh]">
         
         <Stepper :step="3"/>
 
         <h1 class="text-xl font-extrabold text-center pt-12 uppercase px-4">Lista de Asistencia</h1>
-        <div class="flex justify-between py-12">
+        <div class="flex justify-between py-12" v-if="!reunion.reactivado">
             <p class="text-purple-500 text-center text-xl">Código: <b>{{ reunion.codigo }}</b></p>
             
             <!-- campo que verifica si es extranjero -->
@@ -176,7 +179,7 @@
               </div>
         </div>
         
-        <Form class="flex flex-col gap-8 md:gap-0 pb-4" @submit="agregarParticipante" v-slot="{ resetForm, errors }">
+        <Form class="flex flex-col gap-8 md:gap-0 pb-4" @submit="agregarParticipante" v-slot="{ resetForm, errors }" v-if="!reunion.reactivado">
 
             <div 
                 class="grid grid-cols-1 md:grid-cols-2 gap-4"
@@ -323,6 +326,7 @@
                         <td class="py-2">{{ x.correo }}</td>
                         <td class="py-2">
                             <button
+                                v-if="!reunion.reactivado"
                                 onclick="modalCancelar.showModal()" 
                                 @click="modalMostrado(x.id, x.participante)"
                                 class="bg-red-500 hover:bg-red-400 p-1 rounded">

@@ -8,11 +8,18 @@
             <p class="font-light text-slate-300">Lugar de Reunion: <b>{{ lugar }}</b></p>
             <p class="font-light italic" v-if="rol === 1">{{ usuario.nombre }}</p>
             <span class="font-light italic">{{ transformarFecha(fecha) }}</span>
-            <div 
-                class="w-fit px-3 py-1 rounded font-bold"
-                :class="claseEstado(estado.nombre)"
-            >
-                {{ estado.nombre }}
+            <div class="flex flex-wrap gap-2 mt-2">
+                <div 
+                    class="w-fit px-3 py-1 rounded font-bold"
+                    :class="claseEstado(estado.nombre)"
+                >
+                    {{ estado.nombre }}
+                </div>
+
+                <div class="w-fit px-3 py-1 rounded font-bold text-white bg-purple-500" v-if="reactivada">
+                    Reunión reactivada
+                </div>
+
             </div>
         </div>
 
@@ -21,7 +28,7 @@
             <RouterLink 
                 :to="{name:'detalle', params:{id: props.id}}" 
                 class="border rounded bg-transparent hover:bg-sky-400 hover:border-sky-400 inline-flex justify-center gap-2  px-3 py-1 transition-colors duration-300 text-center"
-                v-if="estado.nombre=== 'Finalizado'"
+                v-if="estado.nombre === 'Finalizado'"
             >
                 <svg-icon type="mdi" :path="path2"></svg-icon>
                 Detalle de Reunión
@@ -39,11 +46,21 @@
             <button
                 onclick="modal.showModal()"
                 class="bg-transparent hover:border-red-500 hover:bg-red-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
-                v-if="estado.nombre=== 'Iniciado' " 
+                v-if="estado.nombre === 'Iniciado' && reactivada === false" 
                 @click="$emit('modal-mostrado')"   
             >
                 <svg-icon type="mdi" :path="path"></svg-icon>
                 Cancelar Reunión
+            </button>
+
+            <button
+                onclick="modalReactivar.showModal()"
+                class="bg-transparent hover:border-green-500 hover:bg-green-500 p-1 rounded inline-flex gap-2 justify-center border text-white transition-colors duration-300"
+                v-if="estado.nombre === 'Finalizado' && reactivada === false" 
+                @click="$emit('modal-mostrado')"   
+            >
+                <svg-icon type="mdi" :path="path3"></svg-icon>
+                Reactivar Reunión
             </button>
         </div>
     </div>
@@ -54,7 +71,7 @@
 
     // Imports de librería de iconos
     import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiTrashCanOutline, mdiCircleEditOutline, mdiEyeOutline } from '@mdi/js';
+    import { mdiTrashCanOutline, mdiCircleEditOutline, mdiEyeOutline, mdiArrowULeftBottomBold } from '@mdi/js';
 
     import { jwtDecode } from 'jwt-decode';
 
@@ -62,6 +79,7 @@
     const path = mdiTrashCanOutline;
     const path1 = mdiCircleEditOutline;
     const path2 = mdiEyeOutline;
+    const path3 = mdiArrowULeftBottomBold
 
     // Props recibidos por el componente padre
     const props = defineProps({
@@ -87,6 +105,10 @@
         },
         id: {
             type: Number,
+            required: true
+        },
+        reactivada: {
+            type: Boolean,
             required: true
         }
     })

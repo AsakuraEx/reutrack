@@ -216,6 +216,9 @@
     
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>
+    <div class="w-full flex justify-center mb-9" v-if="reunion.reactivado">
+        <h3 class="text-center font-semibold text-xl text-white bg-sky-500 rounded px-2 py-1 w-fit">Reunión reactivada</h3>
+    </div>
     
     <div class="container mx-auto min-h-[70vh]">
         

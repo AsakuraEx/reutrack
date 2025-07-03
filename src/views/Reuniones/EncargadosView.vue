@@ -1,6 +1,6 @@
 <script setup>
     //imports generales del proyecto
-    import { onMounted,ref, computed, reactive, watch } from 'vue';
+    import { onMounted,ref, computed, reactive } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { useUsuarioStore } from '@/stores/usuarios';
     import { useRoute, useRouter } from 'vue-router';
@@ -45,34 +45,76 @@
     })
 
     onMounted(async ()=>{
-        arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
-        listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
-        reunion.value = await storeReu.obtenerReunion(idReunion)
-        store.MostrarMensaje('info', 'Los datos de la reunión se cargaron correctamente', 5000)
-        if(reunion.value.id_estado != 1){
-            router.push({name:'historial'})
-        }
-        if(!(!!listaEncargados.value.find(encargado => encargado.id_usuario === decoded.id)) && decoded.id_rol !== 1){
-            router.push({name:'historial'})
+        try {
+
+            arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
+            listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
+            reunion.value = await storeReu.obtenerReunion(idReunion)
+            store.MostrarMensaje('info', 'Los datos de la reunión se cargaron correctamente', 5000)
+
+        }catch(e){
+
+            store.MostrarMensaje('error', 'Error al cargar los datos de la reunión: ' + e.message, 3000)
+
+        } finally {
+
+            if(reunion.value.id_estado != 1){
+                router.push({name:'historial'})
+            }
+            if(!(!!listaEncargados.value.find(encargado => encargado.id_usuario === decoded.id)) && decoded.id_rol !== 1){
+                router.push({name:'historial'})
+            }
+
         }
     })
 
     const agregarEncargado = async () => {
 
-        if (listaEncargados.value.some(encargado => encargado.id_usuario === Number(formData.id_usuario))) {
-            error.value = 'El encargado ya fue agregado en la tabla'
-            store.MostrarMensaje('error', error.value, 3000)
-            return;
-        }else{
-            await storeReu.agregarEncargado(formData)   
-            listaEncargados.value = await storeReu.obtenerEncargados(id) 
-            store.MostrarMensaje('success', 'Encargado agregado correctamente', 3000)
+        if(reunion.value.reactivado){
+
+            if (listaEncargados.value.some(encargado => encargado.id_usuario === Number(formData.id_usuario))) {
+                error.value = 'El encargado ya fue agregado en la tabla o es un visitante'
+                store.MostrarMensaje('error', error.value, 3000)
+                return;
+            }
+
+            try {
+                
+                await storeReu.agregarEncargado(formData, true)
+                listaEncargados.value = await storeReu.obtenerEncargados(id) 
+                store.MostrarMensaje('info', 'La persona registrada, será un lector autorizado de la reunión', 3000)
+                Object.assign(formData, {
+                    id_usuario: null,
+                    id_reunion: id
+                })
+            
+            }catch(e) {
+                store.MostrarMensaje('error', 'Error al agregar al visitante: ' + e.message, 3000)
+                return
+            }
+            
+        } else {
+            if (listaEncargados.value.some(encargado => encargado.id_usuario === Number(formData.id_usuario))) {
+                error.value = 'El encargado ya fue agregado en la tabla'
+                store.MostrarMensaje('error', error.value, 3000)
+                return;
+            }
     
-            Object.assign(formData, {
-                id_usuario: null,
-                id_reunion: id
-            })
+            try {
+                await storeReu.agregarEncargado(formData, false)   
+                listaEncargados.value = await storeReu.obtenerEncargados(id) 
+                store.MostrarMensaje('success', 'Encargado agregado correctamente', 3000)
+        
+                Object.assign(formData, {
+                    id_usuario: null,
+                    id_reunion: id
+                })
+            } catch(e) {
+                error.value = 'Error al agregar el encargado: ' + e.message
+                store.MostrarMensaje('error', error.value, 3000)
+            }
         }
+
         
     }
 
@@ -97,6 +139,9 @@
     
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>
+    <div class="w-full flex justify-center mb-9" v-if="reunion.reactivado">
+        <h3 class="text-center font-semibold text-xl text-white bg-sky-500 rounded px-2 py-1 w-fit">Reunión reactivada</h3>
+    </div>
     
     <div class="container mx-auto min-h-[70vh]">
         
@@ -104,21 +149,6 @@
 
         <h1 class="text-xl font-extrabold text-center py-12 uppercase px-4">Encargados de la reunión</h1>     
         <p class="text-purple-500 text-center text-xl">Código: <b>{{ reunion.codigo }}</b></p>
-    
-        <div role="alert" class="alert alert-error" v-if="error">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span> {{ error }} </span>
-          </div>
 
         <div class="flex gap-4 flex-col pt-12">
 
@@ -152,10 +182,18 @@
                             <td class="py-2" colspan="2">No existen encargados para esta reunión...</td>
                         </tr>
                         <tr class="border-b" v-for="encargado in listaEncargados">
-                            <td class="py-2">{{ encargado.usuario.nombre }}</td>
+                            <td class="py-2 flex justify-between pr-16 gap-8 items-center">
+                                <p>
+                                    {{ encargado.usuario.nombre }}
+                                </p>
+                                <div v-if="encargado.visitante" class="font-semibold text-sm text-white bg-green-500 rounded px-2 py-1 w-fit">
+                                    <p>Lector</p>
+                                </div>
+
+                            </td>
                             <td class="py-2">
                                 <button 
-                                    v-if="encargado.id_usuario!==reunion.id_usuario"
+                                    v-if="(encargado.id_usuario!==reunion.id_usuario && reunion.reactivado === false) || (encargado.id_usuario!==reunion.id_usuario && encargado.visitante === true)"
                                     v-show="encargado.id_usuario!==decoded.id"
                                     class="bg-red-500 hover:bg-red-400 p-1 rounded"
                                     @click="eliminarEncargado(encargado.id)"

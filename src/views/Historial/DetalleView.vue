@@ -102,10 +102,10 @@
     <!-- Minuta de reunión -->
     <div class="container mx-auto px-4 mt-16" id="pdf">
 
-        <h1 class="text-2xl font-bold uppercase text-center">Dirección de tecnologías de Información y Comunicación</h1>
+        <h1 class="text-2xl font-bold uppercase text-center text-purple-400">Dirección de tecnologías de Información y Comunicación</h1>
         <h2 class="text-xl font-light text-slate-400 text-center">Minuta de Reunión</h2>
 
-        <p class="text-3xl text-center font-bold mt-8">
+        <p class="text-3xl text-center font-bold mt-8 text-purple-400">
             {{ proyecto }} - {{ version }}
         </p>
 
@@ -121,11 +121,11 @@
             <hr>
 
             <div class="space-y-4 mb-12">
-                <h3 class="text-2xl font-bold mt-4">Encargados de la reunión</h3>
+                <h3 class="text-2xl font-bold mt-4 text-purple-300">Encargados de la reunión</h3>
                 <table class="w-full text-center">
                     <thead>
                         <tr class="font-bold text-lg border-b-2">
-                            <td class="py-2">Encargado</td>
+                            <td class="py-2 text-purple-200">Encargado</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -136,7 +136,7 @@
                 </table>
             </div>
 
-            <h3 class="text-2xl font-bold mt-4">Puntos a tratar</h3>
+            <h3 class="text-2xl font-bold mt-4 text-purple-300">Puntos a tratar</h3>
 
             <div class="py-4 space-y-4">
 
@@ -146,14 +146,14 @@
 
             </div>
 
-            <h3 class="text-2xl font-bold">Desarrollo de la reunión</h3>
+            <h3 class="text-2xl font-bold text-purple-300">Desarrollo de la reunión</h3>
 
             <div class="overflow-x-auto">
                 <p class="py-4 text-justify" v-html="minuta.minuta">
                 </p>
             </div>
 
-            <h3 class="text-2xl font-bold">Acuerdos y compromisos</h3>
+            <h3 class="text-2xl font-bold text-purple-300">Acuerdos y compromisos</h3>
 
             <div class="py-4 space-y-4">
 
@@ -163,7 +163,7 @@
 
             </div>
 
-            <h3 class="text-2xl font-bold">Lista de Asistencia</h3>
+            <h3 class="text-2xl font-bold text-purple-300">Lista de Asistencia</h3>
 
             <div class="overflow-x-auto px-4 lg:px-0">
                 <table class="w-full mt-8">

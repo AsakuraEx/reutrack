@@ -101,9 +101,9 @@ export const useReunionStore = defineStore('reuniones', () => {
     }
 
     //GUARDA LOS ENCARGADOS EN LA REUNION CORRESPONDIENTE
-    async function agregarEncargado(data){
+    async function agregarEncargado(data, visitante){
         try{
-            const {status} = await apiServiceReunion.agregarEncargado(data);
+            const {status} = await apiServiceReunion.agregarEncargado(data, visitante);
 
             if(status === 201){
                 //Genera un mensaje de exito, esto actualmente no se utiliza
@@ -304,11 +304,42 @@ export const useReunionStore = defineStore('reuniones', () => {
     }
 
     //Función que reactiva una reunión, actualmente no se utiliza
-    async function ReactivarReunión(idReunion, justificación){
-        // Esta función requiere un ID de reunión para reactivarla
-        // Almacenará la justificación del usuario para reactivar la reunión
-        // Cambiará el estado de la reunión a 'Iniciado' y asignará un nuevo código al campo "Reactivación"
-        // Redirigirá al usuario a la vista de encargados
+    async function ReactivarReunion(id, justificacion, usuario){
+
+        if(!id || !justificacion){
+            message.value.tipo = 'Error';
+            message.value.mensaje = '¡Debe ingresar el ID de la reunión y una justificación para reactivarla!'
+            return;
+        }
+
+        if(justificacion.length < 20){
+            message.value.tipo = 'Error';
+            message.value.mensaje = '¡La justificación debe tener al menos 20 caracteres!'
+            return;
+        }
+
+        const data = {
+            id: id,
+            justificacion: justificacion,
+            id_usuario: usuario
+        }
+
+        console.log(data)
+
+        try {
+
+            const {status} = await apiServiceReunion.reactivarReunion(data);
+
+            if(status === 200){
+                message.value.tipo = 'Exito';
+                message.value.mensaje = '¡La reunión se reactivó exitosamente!'
+            }
+
+        } catch (e) {
+            message.value.tipo = 'Error';
+            message.value.mensaje = e.response.data.message || '¡Error al reactivar la reunión!'
+        }
+
     }
 
     async function obtenerDetalleReunion(idReunion){
@@ -347,6 +378,7 @@ export const useReunionStore = defineStore('reuniones', () => {
         obtenerReunionActual,
         actualizarMinuta,
         obtenerDetalleReunion,
+        ReactivarReunion,
         message
     }
 }

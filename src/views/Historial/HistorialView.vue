@@ -13,6 +13,7 @@
     import { useReunionStore } from '@/stores/reuniones';       //Store de pinia
     import { useProyectoStore } from '@/stores/proyectos';      //Store de pinia
     import { jwtDecode } from 'jwt-decode';                     //Libreria que decodifica tokens
+    import ModalReactivar from '@/components/ModalReactivar.vue';
 
     const store = useReunionStore()
     const storePro = useProyectoStore()
@@ -98,9 +99,7 @@
         }
     }
 
-    //Cancela la reunión
-    const cancelarReunion = async (id) => {
-        await store.cancelarReunion(id)
+    const refrescarListado = async () => {
         if(usuarioRol != 1){
             const response = await store.obtenerReuniones(null,10,null, null, usuarioId, control.value)
             reuniones.value = response.data
@@ -110,6 +109,12 @@
             reuniones.value = response.data
             paginacion.value = response
         }
+    }
+
+    //Cancela la reunión
+    const cancelarReunion = async (id) => {
+        await store.cancelarReunion(id)
+        await refrescarListado()
     }
 
     //Define el modal que mostrará de la tabla de registros
@@ -213,6 +218,7 @@
                 :fecha="reunion.createdAt"
                 :estado="reunion.estado"
                 :id="reunion.id"
+                :reactivada="reunion.reactivado"
                 @modal-mostrado="modalMostrado({id: reunion.id, nombre: reunion.nombre})"
             />
     
@@ -230,6 +236,11 @@
         <ModalCancelarReu 
             :reunion="modal"
             @cancelar-reunion="cancelarReunion(modal.id)"
+        />
+
+        <ModalReactivar 
+            :reunion="modal"
+            @refrescar-listado="refrescarListado"
         />
 
     </div>
