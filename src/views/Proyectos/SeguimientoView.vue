@@ -171,7 +171,7 @@
 
             <div class="flex justify-center items-center mt-8">
                 <div class="px-6 py-1 bg-purple-200 text-purple-700">
-                    Codigo de colores
+                    Estado de las reuniones
                 </div>
                 <div :class="claseEstado('Iniciado')" class="px-3 py-1">
                     Iniciado
