@@ -28,8 +28,9 @@
     const usuarioRol = decoded.id_rol
 
     //variables o statements de la vista
+    const usuarioEnReunion = ref({})
     const arrayEncargados = ref([]);
-    const listaEncargados = ref([]);   
+    const listaEncargados = ref([]);  
     const reunion = ref({}); 
     const {id} = route.params;     //Se obtiene el id de la reunion actual
     const idReunion = id;
@@ -45,15 +46,17 @@
     })
 
     onMounted(async ()=>{
+        usuarioEnReunion.value = await storeReu.ObtenerUsuarioEnReunion(decoded.id, id) // Valida que usuario accedió a la reunión
         try {
-
             arrayEncargados.value = await store.mostrarEncargados() //Se obtiene informacion para el select
             listaEncargados.value = await storeReu.obtenerEncargados(id) //Se obtiene información para la tabla
             reunion.value = await storeReu.obtenerReunion(idReunion)
+
+            if(usuarioEnReunion.value.visitan)
             store.MostrarMensaje('info', 'Los datos de la reunión se cargaron correctamente', 5000)
 
         }catch(e){
-
+            console.log(e)
             store.MostrarMensaje('error', 'Error al cargar los datos de la reunión: ' + e.message, 3000)
 
         } finally {
@@ -138,7 +141,8 @@
     <Header :rol="usuarioRol"/>
     
 
-    <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>
+    <h1 class="text-3xl font-extrabold text-center py-5 text-purple-300">Registro de Reunión</h1>
+    <h1 class="text-3xl font-extrabold text-center pb-12 text-purple-300"> {{ reunion.nombre }} </h1>
     <div class="w-full flex justify-center mb-9" v-if="reunion.reactivado">
         <h3 class="text-center font-semibold text-xl text-white bg-sky-500 rounded px-2 py-1 w-fit">Reunión reactivada</h3>
     </div>
@@ -193,8 +197,9 @@
                             </td>
                             <td class="py-2">
                                 <button 
-                                    v-if="(encargado.id_usuario!==reunion.id_usuario && reunion.reactivado === false) || (encargado.id_usuario!==reunion.id_usuario && encargado.visitante === true)"
-                                    v-show="encargado.id_usuario!==decoded.id"
+                                    v-if="
+                                        ((encargado.id_usuario !== reunion.id_usuario) && (usuarioEnReunion.visitante===false) && decoded.id !== encargado.id_usuario) 
+                                        || (decoded.id_rol === 1 && decoded.id !== encargado.id_usuario && encargado.id_usuario !== reunion.id_usuario)"
                                     class="bg-red-500 hover:bg-red-400 p-1 rounded"
                                     @click="eliminarEncargado(encargado.id)"
                                 >

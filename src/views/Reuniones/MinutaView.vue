@@ -22,6 +22,7 @@
     const acuerdos = ref([])        //Se almacenan todos los acuerdos guardados
     const router = useRouter()      //Se utiliza para redireccionar a otra vista
     const usuarioRol = localStorage.getItem('rol')
+    const usuarioEnReunion = JSON.parse(localStorage.getItem('usuarioReunion'))
     const reunion = ref({})
     const listaEncargados = ref([])
     const decoded = jwtDecode(localStorage.getItem('token'))
@@ -122,11 +123,24 @@
     })
 
     const actualizarMinuta = async () => {
-        //Ejecuta el metodo para actualizar la minuta actual
-        await store.actualizarMinuta(idReunion, minuta)
-        localStorage.setItem('minuta', minuta.minuta)
-        hora.value = "Último autoguardado: " + new Date().toLocaleString()
-        storeUs.MostrarMensaje('info', 'Se ha guardado el progreso de la minuta hasta este punto.', 3000)
+
+        if(usuarioEnReunion.visitante === false || decoded.id_rol === 1 ){
+            try {
+                //Ejecuta el metodo para actualizar la minuta actual
+                await store.actualizarMinuta(idReunion, minuta)
+                localStorage.setItem('minuta', minuta.minuta)
+                hora.value = "Último autoguardado: " + new Date().toLocaleString()
+                storeUs.MostrarMensaje('info', 'Se ha guardado el progreso de la minuta hasta este punto.', 3000)
+            }catch(e) {
+                storeUs.MostrarMensaje('error', 'No pudo actualizarse el progreso de la minuta, guarde en un archivo de texto su información', 5000)
+            }
+        }else {
+            
+            storeUs.MostrarMensaje('info', 'Los usuarios lectores no tienen permiso para editar la reunión')
+            clearInterval(backup)
+
+        }
+
 
     }
 
@@ -215,7 +229,8 @@
     <Header :rol="usuarioRol"/>
     
 
-    <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>
+    <h1 class="text-3xl font-extrabold text-center py-5 text-purple-300">Registro de Reunión</h1>
+    <h1 class="text-3xl font-extrabold text-center pb-12 text-purple-300"> {{ reunion.nombre }} </h1>
     <div class="w-full flex justify-center mb-9" v-if="reunion.reactivado">
         <h3 class="text-center font-semibold text-xl text-white bg-sky-500 rounded px-2 py-1 w-fit">Reunión reactivada</h3>
     </div>
@@ -235,7 +250,7 @@
                 <div class="flex flex-col lg:flex-row gap-4">
 
                     <!-- CAMPO DE TEXTO Y BOTON-->
-                    <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarPunto" v-slot="{isSubmitting, resetForm}"> 
+                    <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarPunto" v-slot="{isSubmitting, resetForm}" v-if="usuarioEnReunion.visitante === false || decoded.id_rol === 1"> 
                         <div class="flex flex-col gap-2">
                             <label>Punto Tratado:</label>
                             <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="256" v-model="punto.nombre" rules="required|alfanumeric"/>
@@ -256,7 +271,7 @@
                             <p>
                                 {{ punto.nombre }}
                             </p>
-                            <button type="button" class="bg-red-500 hover:bg-red-400 p-1 rounded" @click="eliminarPunto(punto.id)">
+                            <button type="button" class="bg-red-500 hover:bg-red-400 p-1 rounded" @click="eliminarPunto(punto.id)" v-if="usuarioEnReunion.visitante === false || decoded.id_rol === 1">
                                 <svg-icon type="mdi" :path="path"></svg-icon>
                             </button>
                         </div>
@@ -271,7 +286,8 @@
                 <h2 class="text-xl font-bold">Descripción de la reunión *</h2>
                 <div>
                     <TipTap 
-                        v-model="minuta.minuta" 
+                        v-model="minuta.minuta"
+                        :visitante="usuarioEnReunion.visitante" 
                     />
                     <div class="flex flex-col gap-1 lg:flex-row justify-center lg:justify-between">
                         <span class="text-gray-300 font-light italic">
@@ -289,7 +305,7 @@
                 <div class="flex flex-col lg:flex-row gap-4">
 
                     <!-- CAMPO DE TEXTO Y BOTON-->
-                    <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarAcuerdo" v-slot="{ resetForm }">
+                    <Form class="flex flex-col gap-2 lg:w-1/2" @submit="agregarAcuerdo" v-slot="{ resetForm }" v-if="usuarioEnReunion.visitante === false || decoded.id_rol === 1">
                         <div class="flex flex-col gap-2">
                             <label>Acuerdo o Compromiso:</label>
                             <Field type="text" name="nombre" class="bg-transparent border rounded outline-purple-300 w-full p-2" maxLength="256" v-model="acuerdo.nombre" rules="required|alfanumeric" />
@@ -307,7 +323,7 @@
                             <p>
                                 {{ acuerdo.nombre }}
                             </p>
-                            <button class="bg-red-500 hover:bg-red-400 p-1 rounded" @click="eliminarAcuerdo(acuerdo.id)">
+                            <button class="bg-red-500 hover:bg-red-400 p-1 rounded" @click="eliminarAcuerdo(acuerdo.id)" v-if="usuarioEnReunion.visitante === false || decoded.id_rol === 1">
                                 <svg-icon type="mdi" :path="path"></svg-icon>
                             </button>
                         </div>
@@ -329,7 +345,7 @@
             </RouterLink>
 
             <button 
-                v-if="contarLetras >= 20"
+                v-if="contarLetras >= 20 && (usuarioEnReunion.visitante === false || decoded.id_rol === 1)"
                 type="button"
                 @click="finalizarReunion()"
                 class="bg-purple-500 hover:bg-purple-400 w-full md:w-36 py-2 transition-colors duration-150 font-bold rounded text-center animate-pulse hover:animate-none"

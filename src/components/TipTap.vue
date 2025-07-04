@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Barra de herramientas con botones -->
-    <div class="flex">
+    <div class="flex" v-if="!props.visitante">
       <button
         @click="editor?.chain().focus().toggleBold().run()"
         :class="{ 'bg-purple-500 text-white': isBoldActive }"
@@ -48,6 +48,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  visitante: {
+    type: Boolean,
+    required: true
+  }
 });
 const emit = defineEmits(['update:modelValue']);
 
@@ -71,12 +75,22 @@ watch(
 
 // Inicializar el editor
 onMounted(() => {
+
   editor.value = new Editor({
     extensions: [StarterKit],
     content: props.modelValue,
-    onUpdate: ({ editor }) => {
-      emit('update:modelValue', editor.getHTML());
+    editable: !props.visitante,
+    editorProps: {
+      attributes: {
+        class: props.visitante ? 'disabled-editor' : '',
+        'aria-disabled': props.visitante ? 'true' : 'false'
+      }
     },
+    onUpdate: ({ editor }) => {
+      if (!props.visitante) {
+        emit('update:modelValue', editor.getHTML());
+      }
+    }
   });
 
   // Detectar cambios en los estilos activos
@@ -87,6 +101,7 @@ onMounted(() => {
       isBulletListActive.value = editor.value.isActive('bulletList'); // Detectar lista desordenada
     }
   });
+  
 });
 
 // Destruir el editor al desmontar

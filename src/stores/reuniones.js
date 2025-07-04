@@ -11,6 +11,28 @@ export const useReunionStore = defineStore('reuniones', () => {
         mensaje: '' 
     })
 
+    async function ObtenerUsuarioEnReunion(id_usuario, id_reunion) {
+
+        let UsuariosDeReunion
+
+        try {
+            if(localStorage.getItem('usuarioReunion')) {
+                localStorage.removeItem('usuarioReunion')
+                UsuariosDeReunion = await obtenerEncargados(id_reunion)
+            }
+
+            UsuariosDeReunion = await obtenerEncargados(id_reunion)
+
+            const usuarioEnReunion = UsuariosDeReunion.find((usuario)=> usuario.id_usuario === id_usuario)
+            localStorage.setItem('usuarioReunion', JSON.stringify(usuarioEnReunion))
+            return JSON.parse(localStorage.getItem('usuarioReunion'))
+        }catch(e){
+            console.log('No se pudo realizar el proceso de obtención de usuario en reunión')
+        }
+
+    }
+
+
     //Mediante el código de reunión se busca una reunión especifica
     async function obtenerReunionActual(codigo){
         try{
@@ -300,7 +322,12 @@ export const useReunionStore = defineStore('reuniones', () => {
 
     //FINALIZA LA REUNION
     async function FinalizarReunion(idReunion){
-        await apiServiceReunion.finalizarReunion(idReunion)
+        try{
+            await apiServiceReunion.finalizarReunion(idReunion)
+            localStorage.removeItem('usuarioReunion')
+        }catch(e){
+            console.log('La reunion no pudo finalizar: ' + e)
+        }
     }
 
     //Función que reactiva una reunión, actualmente no se utiliza
@@ -379,6 +406,7 @@ export const useReunionStore = defineStore('reuniones', () => {
         actualizarMinuta,
         obtenerDetalleReunion,
         ReactivarReunion,
+        ObtenerUsuarioEnReunion,
         message
     }
 }

@@ -4,8 +4,7 @@
     import { onMounted, ref, watch } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
     import { Field, ErrorMessage, Form } from 'vee-validate';
-    import AlertaError from '@/components/AlertaError.vue';
-import { useUsuarioStore } from '@/stores/usuarios';
+    import { useUsuarioStore } from '@/stores/usuarios';
 
     //Variables del sistema
     const route = useRoute()
@@ -38,6 +37,14 @@ import { useUsuarioStore } from '@/stores/usuarios';
     onMounted(async ()=>{
         reunion.value = await store.obtenerReunion(idReunion)
         participantes.value = await store.obtenerParticipantes(idReunion)
+
+        if(reunion.value.id_estado === 3){
+            router.push({name: 'login'})  
+        }
+
+        if(calcularExpiracion(reunion.value.expiracion)){
+            router.push({name: 'login'})
+        }
     })
 
     watch(formData, ()=>{
@@ -52,7 +59,7 @@ import { useUsuarioStore } from '@/stores/usuarios';
 
     // Variables con diferentes funcionalidades del sistema
     const agregarParticipante = async (values, { resetForm }) => {
-        
+
         //Valida que existe participante con ese correo
         if(participantes.value.find(participante => participante.correo === formData.value.correo)){
             error.value = 'El participante ya fue agregado segun correo electrónico...'
@@ -65,8 +72,6 @@ import { useUsuarioStore } from '@/stores/usuarios';
             await store.agregarParticipante(formData.value)
             participantes.value = await store.obtenerParticipantes(idReunion)
             
-            storeUs.MostrarMensaje('success', 'Se registro su asistencia correctamente', 5000)
-            enviado.value = true;
             resetForm();
             Object.assign(formData.value, {
                 participante: '',
@@ -79,9 +84,8 @@ import { useUsuarioStore } from '@/stores/usuarios';
                 
             })
 
-            setTimeout(() => {
-                router.push({name: 'agradecimiento'})
-            }, 3000)
+            router.push({name: 'agradecimiento'})
+
         }catch(e){
             console.error('Error al agregar participante: ', error.message)
             storeUs.MostrarMensaje('error', 'Error al agregar participante: ' + e.message, 3000)
@@ -90,6 +94,17 @@ import { useUsuarioStore } from '@/stores/usuarios';
 
     }
 
+    //Calcula la expiración del código de la reunión
+    const calcularExpiracion = (tiempoExpiracion) => {
+        
+        const fechaActual = new Date().getTime()            //Fecha convertida a segundos
+        const expiracion =  new Date(tiempoExpiracion).getTime()         //Fecha convertida a segundos
+        return fechaActual > expiracion // Si retorna true es porque ya expiró
+
+    }
+
+    //b33a0f
+
 </script>
 
 <template>
@@ -97,6 +112,7 @@ import { useUsuarioStore } from '@/stores/usuarios';
     
 
     <h1 class="text-3xl font-extrabold text-center py-12 text-purple-300">Registro de Reunión</h1>
+    <h1 class="text-3xl font-extrabold text-center pb-2 text-purple-300"> {{ reunion.nombre }} </h1>
     
     <div class="container mx-auto min-h-screen">
 
