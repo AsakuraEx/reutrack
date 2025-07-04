@@ -21,7 +21,21 @@
     
     onMounted(async ()=>{
         
-        usuario.value = await storeUs.obtenerUsuario(decoded.id)
+        // Valida si existe decoded debido a que pueda que el getItem no exista
+        try{
+
+            if(!decoded){
+                usuario.value = await storeUs.obtenerUsuario(decoded.id)
+            }else{
+                usuario.value = decoded
+            }
+
+        }catch(e){
+            storeUs.MostrarMensaje('warning', 'No posee una sesión activa', 3000)
+        }
+
+        MostrarFrase()
+        ObtenerUltimasReuniones()
 
         setTimeout(()=>{
             if(storeUs.LoginExitoso){
@@ -30,19 +44,25 @@
             }
         }, 300)
 
-        MostrarFrase()
-        ObtenerUltimasReuniones()
-
     })
 
     const ObtenerUltimasReuniones = async () => {
         if(usuario.value.id_rol != 1){
-            const response = await store.obtenerReuniones(3,3,null, null, decoded.id, 1)
-            reuniones.value = response.data
+            try{
+                const response = await store.obtenerReuniones(3,3,null, null, decoded.id, 1)
+                reuniones.value = response.data
+            }catch(e) {
+                storeUs.MostrarMensaje('error', 'No se pudo obtener las últimas 3 reuniones', 3000)
+            }
             
         } else {
-            const response = await store.obtenerReuniones(3,3,null, null, null, 1)
-            reuniones.value = response.data
+
+            try{
+                const response = await store.obtenerReuniones(3,3,null, null, null, 1)
+                reuniones.value = response.data
+            }catch(e) {
+                storeUs.MostrarMensaje('error', 'No se pudo obtener las últimas 3 reuniones', 3000)
+            }
         }
     }
 
