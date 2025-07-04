@@ -59,7 +59,7 @@
     const expiracionCodigo = () => {
         const fechaActual = new Date();
         const expiracion = new Date(fechaActual);
-        expiracion.setMinutes(fechaActual.getMinutes() + 60);
+        expiracion.setMinutes(fechaActual.getMinutes() + 120);
 
         // Guarda en formato ISO (UTC) o timestamp para evitar problemas de zona horaria
         formData.fecha = fechaActual.toISOString(); // Ej: "2025-05-31T20:13:00.000Z"
