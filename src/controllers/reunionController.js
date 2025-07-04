@@ -617,13 +617,13 @@ console.log('Nueva página creada');
             pageRanges: '1-999',
 headerTemplate: `
   <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 96px;">
-    <img src="${base64Logo}" style="width: 120px; height: 40px;" />
-    <img src="${base64Logo3}" style="width: 120px; height: 40px;" />
+    <img src="${base64Logo}" style="width: 160px;" />
+    <img src="${base64Logo3}" style="width: 160px;" />
   </div>
 `,
 footerTemplate: `
   <div style="width: 100%; text-align: center; margin-top: 20px; opacity: 0.5;">
-    <img src="${base64Logo2}" style="width: 40%; margin: 0 auto;" />
+    <img src="${base64Logo2}" style="width: 20%; margin: 0 auto;" />
     <div style="display: flex; justify-content:space-between; padding-left: 60px; padding-right: 60px;">
         <span style="font-size: 12px; margin-top: 10px;">Generado por Reutrack el: ${moment().utcOffset(-6).format('DD/MM/YYYY HH:mm')}</span>
         <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
