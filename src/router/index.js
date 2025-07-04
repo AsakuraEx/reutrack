@@ -98,6 +98,13 @@ const router = createRouter({
       beforeEnter: authGuard
     },
     {
+      path: '/proyectos/seguimiento/:id',
+      name: 'seguimiento-proyectos',
+      component: () => import('../views/Proyectos/SeguimientoView.vue'),
+      meta: { requiresAuth: true },
+      beforeEnter: authGuard
+    },
+    {
       path: '/proyectos/nuevo',
       name: 'nuevoproyecto',
       component: () => import('../views/Proyectos/NuevoProyectoView.vue'),

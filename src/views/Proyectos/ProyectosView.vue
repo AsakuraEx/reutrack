@@ -9,10 +9,11 @@
     import Paginacion from '@/components/Paginacion.vue';
     import { jwtDecode } from 'jwt-decode';
     import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiGit, mdiPlus } from '@mdi/js';
+    import { mdiGit, mdiHistory, mdiPlus } from '@mdi/js';
     import { useUsuarioStore } from '@/stores/usuarios';
 
     //definición de variables
+    const path3 = mdiHistory
     const path2 = mdiPlus
     const path = mdiGit
     const decoded = jwtDecode(localStorage.getItem('token'))
@@ -119,13 +120,21 @@
                                 {{ transformarFecha(item.createdAt) }}
                             </p>
                         </td>
-                        <td class="py-2">
+                        <td class="py-2 space-y-2">
                             <RouterLink
                                 :to="{name: 'versiones', params:{id: item.id}}"
-                                class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300 flex gap-2 w-fit"
+                                class="border px-3 py-1 rounded hover:bg-blue-500 hover:border-blue-500 transition-colors duration-300 flex gap-2 w-60"
                             >
                                 <svg-icon type="mdi" :path="path"></svg-icon>
                                 Detalle de versiones
+                            </RouterLink>
+
+                            <RouterLink
+                                :to="{name: 'seguimiento-proyectos', params:{id: item.id}}"
+                                class="border px-3 py-1 rounded hover:bg-orange-500 hover:border-orange-500 transition-colors duration-300 flex gap-2 w-60"
+                            >
+                                <svg-icon type="mdi" :path="path3"></svg-icon>
+                                Historial de seguimiento
                             </RouterLink>
                         </td>
                     </tr>
