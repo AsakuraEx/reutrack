@@ -11,6 +11,7 @@
     //LIBRERIA DE ICONOS
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiFilePdfBox } from '@mdi/js';
+import { useUsuarioStore } from '@/stores/usuarios';
     const path1 = mdiFilePdfBox;
 
 
@@ -21,6 +22,7 @@
     const usuarioRol = decoded.id_rol
 
     const store = useReunionStore()
+    const storeUs = useUsuarioStore()
     const route = useRoute()
 
     let version
@@ -66,10 +68,15 @@
 
     //redirecciona para descargar el pdf
     const generarPDF = async () => {
+        
+        storeUs.MostrarMensaje('info', 'Procesando solicitud para generar el PDF', 1000)
+
         try {
             const response = await axios.get(`${baseURL}/reuniones/pdf/${id}`, {
             responseType: 'blob'
             });
+
+            
 
             const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
 
@@ -94,7 +101,7 @@
             @click="generarPDF()"
         >
             <svg-icon type="mdi" :path="path1"></svg-icon>
-            Descargar PDF
+            Generar PDF
         </button>
 
     </div>
