@@ -586,11 +586,6 @@ const reunion = await db.reunion.findOne({
             </table>
             </div>
         </div>
-        <div class="section">
-            <h2>
-            <b>Generado por Reutrack el: </b>${moment().utcOffset(-6).format('DD/MM/YYYY HH:mm')}
-            </h2>
-        </div>
     </main>
 </body>
     </html>
@@ -629,7 +624,10 @@ headerTemplate: `
 footerTemplate: `
   <div style="width: 100%; text-align: center; margin-top: 20px; opacity: 0.5;">
     <img src="${base64Logo2}" style="width: 40%; margin: 0 auto;" />
-    <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
+    <div style="display: flex; justify-content:space-between; padding-left: 60px; padding-right: 60px;">
+        <span style="font-size: 12px; margin-top: 10px;">Generado por Reutrack el: ${moment().utcOffset(-6).format('DD/MM/YYYY HH:mm')}</span>
+        <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
+    </div>
   </div>
 `,
 
