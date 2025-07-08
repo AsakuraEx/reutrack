@@ -46,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_reunion',
         as: 'acuerdos de reunion'
       })
+      // reunion.hasMany(models.bitacora_reactivaciones, {
+      //   foreignKey: 'id_reunion',
+      //   as: 'reactivaciones' // o 'bitacora_reactivaciones', pero debe coincidir
+      // })
     }
   }
   reunion.init({
@@ -53,6 +57,7 @@ module.exports = (sequelize, DataTypes) => {
     lugar: DataTypes.STRING,
     codigo: DataTypes.STRING,
     expiracion: DataTypes.DATE,
+    reactivado: DataTypes.BOOLEAN,
     id_usuario: DataTypes.INTEGER,
     id_version: DataTypes.INTEGER,
     id_estado: DataTypes.INTEGER

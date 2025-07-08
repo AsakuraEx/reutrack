@@ -1,7 +1,7 @@
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
 const moment = require('moment');
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 
 const puppeteer = require('puppeteer');
 const fs = require('fs');
@@ -103,7 +103,7 @@ exports.detalle = async (req, res) => {
             {
                 model: db.encargado,
                 as: 'encargado de reunion',
-                attributes: ['id'],
+                attributes: ['id', 'visitante'],
                 include: [
                     {
                         model: db.users,
@@ -111,6 +111,7 @@ exports.detalle = async (req, res) => {
                         attributes: ['nombre']
                     }
                 ],
+                where: { visitante: false } // Filtrar solo encargados que no son visitantes
             },
             {
                 model: db.puntoreunion,
@@ -310,6 +311,52 @@ exports.finalizar = async (req, res) => {
     }
 }
 
+// Reactivar una reunión e inserta registro en bitacora de reactivación
+// Autor: Francisco Escobar
+// Fecha: 2024-01-15 hora: 07:27 a.m
+exports.reactivar = async (req, res) => {
+
+    const { id, justificacion, id_usuario } = req.body;
+  
+    // Valida que exista el id_reunion y justificacion en el body de la petición
+    if(!id) {
+        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'ID de reunión es requerido' });
+    }
+
+    if(!justificacion) {
+        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'La justificación es requerida' });
+    }
+
+    // Valida que la justificación tenga al menos 20 caracteres
+    if(justificacion.length < 20) {
+        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'La justificación debe tener al menos 20 caracteres' });
+    }
+
+    try {
+
+        // Actualizar el estado de la reunión a "Iniciado""
+        await db.reunion.update({ 'id_estado': 1, 'reactivado': true }, { where: { id: id } });
+
+        // Insertar registro en bitácora de reactivación
+        // De esta manera se piensa insertar un registro en la bitácora de reactivación
+        await db.bitacora_reactivaciones.create({
+            id_reunion: id,
+            justificacion: justificacion,
+            id_usuario: id_usuario
+        });
+
+        // Log de bitacora registrada
+        console.warn('El usuario con ID:', id_usuario, 'ha reactivado la reunión con ID:', id, 'con la justificación:', justificacion);
+
+        // Respuesta exitosa
+        res.status(HttpCode.HTTP_OK).json({message: 'Reunión reactivada exitosamente y registro de reactivación creado.' });
+    }catch (error) {
+        // Manejo de errores
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'No fue posible reactivar la reunión: '+ error.message || error });
+    }
+
+}
+
 exports.generatePDF = async (req, res) => {
   console.log('generatePDF: función invocada');
   const logoPath = path.join(__dirname, '../public/images/logo-minsal.png');
@@ -359,7 +406,7 @@ const reunion = await db.reunion.findOne({
                 {
                     model: db.encargado,
                     as: 'encargado de reunion',
-                    attributes: ['id'],
+                    attributes: ['id', 'visitante'],
                     include: [
                         {
                             model: db.users,
@@ -367,6 +414,7 @@ const reunion = await db.reunion.findOne({
                             attributes: ['nombre', 'email']
                         }
                     ],
+                    where: { visitante: false } // Filtrar solo encargados que no son visitantes
                 },
                 {
                     model: db.listaasistencia,
@@ -538,11 +586,6 @@ const reunion = await db.reunion.findOne({
             </table>
             </div>
         </div>
-        <div class="section">
-            <h2>
-            <b>Generado por Reutrack el: </b>${moment().utcOffset(-6).format('DD/MM/YYYY HH:mm')}
-            </h2>
-        </div>
     </main>
 </body>
     </html>
@@ -574,14 +617,17 @@ console.log('Nueva página creada');
             pageRanges: '1-999',
 headerTemplate: `
   <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 96px;">
-    <img src="${base64Logo}" style="width: 120px; height: 40px;" />
-    <img src="${base64Logo3}" style="width: 120px; height: 40px;" />
+    <img src="${base64Logo}" style="width: 160px;" />
+    <img src="${base64Logo3}" style="width: 160px;" />
   </div>
 `,
 footerTemplate: `
   <div style="width: 100%; text-align: center; margin-top: 20px; opacity: 0.5;">
-    <img src="${base64Logo2}" style="width: 40%; margin: 0 auto;" />
-    <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
+    <img src="${base64Logo2}" style="width: 20%; margin: 0 auto;" />
+    <div style="display: flex; justify-content:space-between; padding-left: 60px; padding-right: 60px;">
+        <span style="font-size: 12px; margin-top: 10px;">Generado por Reutrack el: ${moment().utcOffset(-6).format('DD/MM/YYYY HH:mm')}</span>
+        <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
+    </div>
   </div>
 `,
 

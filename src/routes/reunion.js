@@ -7,6 +7,7 @@ const { verifyToken } = require('../middlewares/verifyToken');
 app.get('/',[verifyToken] , reunionController.index);
 app.get('/ultima', [verifyToken] ,reunionController.ultima);
 app.post('/create', [verifyToken] ,reunionController.create);
+app.patch('/reactivar', [verifyToken] ,reunionController.reactivar);
 app.patch('/cancelar/:id', [verifyToken] ,reunionController.cancelar);
 app.patch('/finalizar/:id', [verifyToken] ,reunionController.finalizar);
 app.get('/detalle/:id', [verifyToken] ,reunionController.detalle);

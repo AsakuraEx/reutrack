@@ -28,7 +28,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   encargado.init({
     id_usuario: DataTypes.INTEGER,
-    id_reunion: DataTypes.INTEGER
+    id_reunion: DataTypes.INTEGER,
+    visitante: DataTypes.BOOLEAN,
   }, {
     sequelize: db,
     freezeTableName: true,
