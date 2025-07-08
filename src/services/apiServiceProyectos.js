@@ -33,7 +33,7 @@ export default {
     },
 
     deleteProyecto(id, id_usuario){
-        return api.delete(`/proyectos/delete`, { id: id, id_usuario: id_usuario })
+        return api.delete(`/proyectos/delete`, { data: {id: id, id_usuario: id_usuario} })
     },
 
     //Obtiene todas las versiones, opcionalmente puede consultar todas las versiones de un proyecto y el estado que posea
