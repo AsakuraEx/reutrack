@@ -27,6 +27,24 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
         message.value.mensaje = '';              //Asigna un mensaje vacio
     }
 
+    async function eliminarProyecto(data){
+        try{
+
+            const { status } = await apiServiceProyectos.deleteProyecto(data)
+
+            if(status === 200){
+                message.value.tipo = 'Exito',
+                message.value.mensaje = 'Se ha eliminado el proyecto correctamente, se almacenó en la bitácora.'
+            }
+
+            return status
+
+
+        }catch(e){
+            console.error(e)
+        }
+    }
+
     //Función del store asincrona para mostrar proyectos
     async function mostrarProyectos(estado, limit, page){
         try{
@@ -159,6 +177,7 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
         message,
         mostrarProyectos,
         consultarProyecto,
+        eliminarProyecto,
         finalizarVersion,
         crearProyecto,
         crearVersion,

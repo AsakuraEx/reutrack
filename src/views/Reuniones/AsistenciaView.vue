@@ -2,9 +2,9 @@
     import Header from '@/components/Header.vue'
     import Footer from '@/components/Footer.vue'
     import Stepper from '@/components/Stepper.vue'
-    import BtnSubmit from '@/components/BtnSubmit.vue';
     import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiTrashCanOutline } from '@mdi/js';
+    import QRCodeVue3 from 'qrcode-vue3';
+    import { mdiTrashCanOutline, mdiQrcode } from '@mdi/js';
     import { useRoute, useRouter } from 'vue-router';
     import { computed, onMounted, ref, watch, reactive } from 'vue';
     import { useReunionStore } from '@/stores/reuniones';
@@ -12,8 +12,10 @@
     import { jwtDecode } from 'jwt-decode';
     import { useUsuarioStore } from '@/stores/usuarios';
 
+
     //Variables del sistema
     const path = mdiTrashCanOutline;
+    const path2 = mdiQrcode;
     const route = useRoute()
     const {id} = route.params;     //Se obtiene el id de la reunion actual
     const idReunion = id;
@@ -24,6 +26,7 @@
     const reunion = ref({})
     const listaEncargados = ref([])
     const decoded = jwtDecode(localStorage.getItem('token'))
+    const QRCode = 'http://10.168.241.44:5173/invitado/' + id
 
     //Variable que representa el formulario
     const formData = ref({
@@ -53,6 +56,7 @@
             reunion.value = await store.obtenerReunion(idReunion)
     
             listaEncargados.value = await store.obtenerEncargados(id) //Se obtiene información para la tabla
+
         }catch(e){
             storeUs.MostrarMensaje('error', 'Error al cargar los datos de la reunión: ' + e.message, 3000)
         }
@@ -294,11 +298,58 @@
             </div>
 
             
-            <div class="mx-auto mt-6 w-full lg:w-32">
-                <BtnSubmit />
+            <div class="mx-auto mt-6 w-full flex flex-col lg:flex-row justify-center gap-4 px-4">
+                <button 
+                    type="submit"
+                    class="bg-purple-400 hover:bg-purple-500 focus:scale-95 transition-colors duration-300 py-2 rounded w-full lg:w-32">
+                    Agregar
+                </button>
+                <button
+                    type="button"
+                    onclick="modalQR.showModal()"  
+                    class="bg-transparent text-purple-500 border-purple-500 
+                  hover:bg-purple-500 hover:text-white transition-colors duration-300 ease-in
+                    border-2 rounded-sm px-9 py-2 w-full lg:w-32 flex gap-2 items-center justify-center"
+                >
+                    <svg-icon type="mdi" :path="path2"></svg-icon>
+                    QR
+                </button>
             </div>
             
         </Form>
+
+        <!-- Modal de QR -->
+        <dialog id="modalQR" class="modal" onclick="modalQR.close()">
+            <div class="modal-box max-w-[42rem] bg-[#202c33]">
+                <div class="flex justify-center items-center gap-4">
+                    
+                    <p class="text-lg font-bold py-1 text-center">
+                        El código QR para registrarse, solamente tiene la vigencia de 2 horas despues de iniciada la reunión.
+                    </p>
+                </div>
+
+                <div class="flex justify-center">
+                    <QRCodeVue3 
+                        :value="QRCode"
+                        image="../../public/images/Reulito-6.svg"
+                        :dotsOptions="{
+                            type: 'square',
+                            color: '#a855f7'
+                        }"
+                    />
+                </div>
+
+                <div class="modal-action">
+                    <form method="dialog" class="w-full rounded text-center">
+                        <button 
+                            class="btn bg-slate-400 border-2 border-slate-400 text-white hover:bg-slate-700 transition-colors duration-300"
+                        >
+                            Cerrar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </dialog>
 
         <!-- TABLA DE DATOS DE ASISTENCIA -->
         <div class="overflow-x-auto px-4">

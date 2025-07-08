@@ -9,13 +9,14 @@
     import Paginacion from '@/components/Paginacion.vue';
     import { jwtDecode } from 'jwt-decode';
     import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiGit, mdiHistory, mdiPlus } from '@mdi/js';
+    import { mdiGit, mdiHistory, mdiPlus, mdiDelete } from '@mdi/js';
     import { useUsuarioStore } from '@/stores/usuarios';
 
     //definición de variables
     const path3 = mdiHistory
     const path2 = mdiPlus
     const path = mdiGit
+    const path4 = mdiDelete
     const decoded = jwtDecode(localStorage.getItem('token'))
     const usuarioRol = decoded.id_rol
     const arrayProyectos = ref([]);
@@ -81,6 +82,19 @@
         return fechaFormateada
     }
 
+    const eliminarProyecto = async (id) => {
+        const data = {
+            id: id,
+            id_usuario: decoded.id
+        }
+        
+        await store.eliminarProyecto(data)
+ 
+        const response = await store.mostrarProyectos(null, 10, 1);
+        arrayProyectos.value = response.data
+
+    }
+
 </script>
 
 <template>
@@ -136,6 +150,15 @@
                                 <svg-icon type="mdi" :path="path3"></svg-icon>
                                 Historial de seguimiento
                             </RouterLink>
+
+                            <button
+                                @click="eliminarProyecto(item.id)"
+                                class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300 flex gap-2 w-60"
+                            >
+                                <svg-icon type="mdi" :path="path4"></svg-icon>
+                                Eliminar proyecto
+                        </button>
+
                         </td>
                     </tr>
                 </tbody>
