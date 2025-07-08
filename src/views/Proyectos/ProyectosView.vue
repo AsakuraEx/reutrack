@@ -83,12 +83,8 @@
     }
 
     const eliminarProyecto = async (id) => {
-        const data = {
-            id: id,
-            id_usuario: decoded.id
-        }
         
-        await store.eliminarProyecto(data)
+        await store.eliminarProyecto(id, decoded.id)
  
         const response = await store.mostrarProyectos(null, 10, 1);
         arrayProyectos.value = response.data

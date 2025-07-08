@@ -27,10 +27,10 @@ export const useProyectoStore = defineStore('proyectos', ()=>{          //Inicia
         message.value.mensaje = '';              //Asigna un mensaje vacio
     }
 
-    async function eliminarProyecto(data){
+    async function eliminarProyecto(id, id_usuario){
         try{
 
-            const { status } = await apiServiceProyectos.deleteProyecto(data)
+            const { status } = await apiServiceProyectos.deleteProyecto(id, id_usuario)
 
             if(status === 200){
                 message.value.tipo = 'Exito',
