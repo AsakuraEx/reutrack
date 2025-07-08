@@ -177,3 +177,19 @@ exports.finalizar = async (req, res) => {
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
+exports.delete = async (req, res) => {
+    try {
+        const id = req.params.id
+        const versiones = await table.count({
+            where: {id: id}
+        })
+        if(versiones == 0){
+            await table.delete({where: {id:id}})
+            res.status(HttpCode.HTTP_OK).json("Registro eliminado con exito")            
+        }
+        res.status(HttpCode.HTTP_NOT_MODIFIED).json("El proyecto cuenta con veriones, no se puede eliminar.")
+    } catch (error) {
+        console.error('Error', error.message || error)
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'Internal server error'})
+    }
+}

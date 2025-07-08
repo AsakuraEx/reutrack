@@ -150,7 +150,7 @@ exports.index = async (req, res) => {
     try {
         const { id_version, id_proyecto, id_estado, id_usuario, desde, hasta } = req.query;
 
-        const limit = parseInt(req.query.limit) || 10;
+        const limit = parseInt(req.query.limit) || null;
         const page = parseInt(req.query.page) || 1;
         const offset = (page - 1) * limit;
 
