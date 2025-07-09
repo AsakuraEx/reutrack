@@ -190,17 +190,16 @@ exports.finalizar = async (req, res) => {
 // Autor: Walter Romero
 // Fecha: 2025-07-08 hora: 09:51a.m
 exports.delete = async (req, res) => {
-    
-    const {id, id_usuario} = req.body;
-    console.log(req.body.id)
+    console.log(req.body)
+    const {id, nombre_proyecto, id_usuario} = req.body;
      // Valida que exista el id_proyecto body de la petición
     if(!id) {
-        console.log("entra a usuario")
-        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'ID de proyecto es requerido' });
+        console.log("El id del proyecto no existe")
+        return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'ID de proyecto es requerido' });
     }
     if(!id_usuario) {
         
-        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'ID de usuario es requerido' });
+        return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'ID de usuario es requerido' });
     }
 
     try {
@@ -209,19 +208,20 @@ exports.delete = async (req, res) => {
             where: {id_proyecto: id}
         })
         if(versiones == 0){
+            
             await db.bitacora_proyecto_eliminacion.create({
-            id_proyecto: id,
-            nombre_proyecto: proyecto.nombre,
-            id_usuario: id_usuario
+                id_proyecto: id,
+                nombre_proyecto: nombre_proyecto,
+                id_usuario: id_usuario
             })
             console.log(proyecto)
-            await table.delete({where: {id:id}})
-            res.status(HttpCode.HTTP_OK).json("Registro eliminado con exito")
+            await db.proyecto.destroy({where: {id:id}})
+            return res.status(HttpCode.HTTP_OK).json("Registro eliminado con exito")
             
         }
-        res.status(HttpCode.HTTP_NOT_MODIFIED).json("El proyecto cuenta con veriones, no se puede eliminar.")
+        return res.status(HttpCode.HTTP_BAD_REQUEST).json("El proyecto cuenta con versiones, no se puede eliminar.")
     } catch (error) {
         console.error('Error', error.message || error)
-        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'Internal server error'})
+        return res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'Internal server error'})
     }
 }
