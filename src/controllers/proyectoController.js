@@ -23,17 +23,22 @@ exports.index = async (req, res) => {
     
     try {
         
+
         const options = {
-            attributes: {exclude: ['id_usuario','id_estado', 'updatedAt']}, 
+            attributes: {
+                exclude: ['id_usuario','id_estado', 'updatedAt'],
+                
+
+            }, 
         }
         const include = [
             
-                { model: db.users,
+                { 
+                    model: db.users,
                     as: 'usuario',
                     attributes: ['nombre'],
                     required: true,
-                },
-            
+                },       
         ]
         if(estado) {
             options.distinct= true,
@@ -46,13 +51,14 @@ exports.index = async (req, res) => {
                     required: true,
                     where: {id_estado: estado}
                     
-                }
+                },
             )   
         }
 
         const {count, rows} = await table.findAndCountAll({
             options,
             include,
+            
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],
@@ -62,6 +68,8 @@ exports.index = async (req, res) => {
         const start = (page - 1) * limit + 1;
         const end = Math.min(start + rows.length - 1, count);
         
+
+
         res.status(HttpCode.HTTP_OK).json({
             totalRecords: count,
             totalPages: Math.ceil(count / limit),
@@ -177,15 +185,39 @@ exports.finalizar = async (req, res) => {
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
+
+// Elimina un proyecto que no contenga versiones
+// Autor: Walter Romero
+// Fecha: 2025-07-08 hora: 09:51a.m
 exports.delete = async (req, res) => {
+    
+    const {id, id_usuario} = req.body;
+    console.log(req.body.id)
+     // Valida que exista el id_proyecto body de la petición
+    if(!id) {
+        console.log("entra a usuario")
+        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'ID de proyecto es requerido' });
+    }
+    if(!id_usuario) {
+        
+        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'ID de usuario es requerido' });
+    }
+
     try {
-        const id = req.params.id
-        const versiones = await table.count({
-            where: {id: id}
+        const proyecto = await db.proyecto.findByPk(id);
+        const versiones = await db.version.count({
+            where: {id_proyecto: id}
         })
         if(versiones == 0){
+            await db.bitacora_proyecto_eliminacion.create({
+            id_proyecto: id,
+            nombre_proyecto: proyecto.nombre,
+            id_usuario: id_usuario
+            })
+            console.log(proyecto)
             await table.delete({where: {id:id}})
-            res.status(HttpCode.HTTP_OK).json("Registro eliminado con exito")            
+            res.status(HttpCode.HTTP_OK).json("Registro eliminado con exito")
+            
         }
         res.status(HttpCode.HTTP_NOT_MODIFIED).json("El proyecto cuenta con veriones, no se puede eliminar.")
     } catch (error) {
