@@ -82,13 +82,17 @@
         return fechaFormateada
     }
 
-    const eliminarProyecto = async (id) => {
+    const eliminarProyecto = async (id, nombre) => {
         
-        await store.eliminarProyecto(id, decoded.id)
+        await store.eliminarProyecto(id, nombre, decoded.id)
  
         const response = await store.mostrarProyectos(null, 10, 1);
         arrayProyectos.value = response.data
 
+    }
+
+    const contarVersionesPorProyecto = async (id)=>{
+        await store.mostrarVersiones(id, null,null)
     }
 
 </script>
@@ -148,7 +152,8 @@
                             </RouterLink>
 
                             <button
-                                @click="eliminarProyecto(item.id)"
+                                v-if="decoded.id_rol===1"
+                                @click="eliminarProyecto(item.id, item.nombre)"
                                 class="border px-3 py-1 rounded hover:bg-red-500 hover:border-red-500 transition-colors duration-300 flex gap-2 w-60"
                             >
                                 <svg-icon type="mdi" :path="path4"></svg-icon>
