@@ -292,10 +292,10 @@
                 return
             }
 
-            if(calcularExpiracion(reu.value.expiracion)){
-                store.MostrarMensaje('error', 'El código de reunión ha expirado')
-                return
-            }
+            // if(calcularExpiracion(reu.value.expiracion)){
+            //     store.MostrarMensaje('error', 'El código de reunión ha expirado')
+            //     return
+            // }
             
             router.push({name:'invitado',params:{id: reu.value.id} })
     
@@ -307,12 +307,12 @@
     }
 
     //Calcula la expiración del código de la reunión
-    const calcularExpiracion = (tiempoExpiracion) => {
+    // const calcularExpiracion = (tiempoExpiracion) => {
         
-        const fechaActual = new Date().getTime()            //Fecha convertida a segundos
-        const expiracion =  new Date(tiempoExpiracion).getTime()         //Fecha convertida a segundos
-        return fechaActual > expiracion // Si retorna true es porque ya expiró
+    //     const fechaActual = new Date().getTime()            //Fecha convertida a segundos
+    //     const expiracion =  new Date(tiempoExpiracion).getTime()         //Fecha convertida a segundos
+    //     return fechaActual > expiracion // Si retorna true es porque ya expiró
 
-    }
+    // }
 
 </script>

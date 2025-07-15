@@ -116,12 +116,19 @@ const router = createRouter({
       name: 'versiones',
       component: () => import('../views/Versiones/VersionesView.vue'),
       meta: { requiresAuth: true },
-      beforeEnter: authGuard
+      beforeEnter: authGuard,
     },
     {
       path: '/proyectos/versiones/nuevo/:id',
       name: 'nuevaversion',
       component: () => import('../views/Versiones/NuevaVersionView.vue'),
+      meta: { requiresAuth: true },
+      beforeEnter: authGuard
+    },
+    {
+      path: '/proyectos/versiones/aceptacion/',
+      name: 'aceptacion',
+      component: () => import('../views/Aceptacion/AceptacionView.vue'),
       meta: { requiresAuth: true },
       beforeEnter: authGuard
     },

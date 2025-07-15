@@ -42,9 +42,9 @@
             router.push({name: 'login'})  
         }
 
-        if(calcularExpiracion(reunion.value.expiracion)){
-            router.push({name: 'login'})
-        }
+        // if(calcularExpiracion(reunion.value.expiracion)){
+        //     router.push({name: 'login'})
+        // }
     })
 
     watch(formData, ()=>{
@@ -94,16 +94,15 @@
 
     }
 
-    //Calcula la expiración del código de la reunión
-    const calcularExpiracion = (tiempoExpiracion) => {
+    // //Calcula la expiración del código de la reunión
+    // const calcularExpiracion = (tiempoExpiracion) => {
         
-        const fechaActual = new Date().getTime()            //Fecha convertida a segundos
-        const expiracion =  new Date(tiempoExpiracion).getTime()         //Fecha convertida a segundos
-        return fechaActual > expiracion // Si retorna true es porque ya expiró
+    //     const fechaActual = new Date().getTime()            //Fecha convertida a segundos
+    //     const expiracion =  new Date(tiempoExpiracion).getTime()         //Fecha convertida a segundos
+    //     return fechaActual > expiracion // Si retorna true es porque ya expiró
 
-    }
+    // }
 
-    //b33a0f
 
 </script>
 
