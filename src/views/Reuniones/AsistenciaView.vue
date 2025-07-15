@@ -26,7 +26,7 @@
     const reunion = ref({})
     const listaEncargados = ref([])
     const decoded = jwtDecode(localStorage.getItem('token'))
-    const QRCode = 'http://10.168.241.44:5173/invitado/' + id
+    const QRCode = 'https://reutrack.salud.gob.sv/invitado/' + id
 
     //Variable que representa el formulario
     const formData = ref({
