@@ -331,7 +331,7 @@
                 <div class="flex justify-center">
                     <QRCodeVue3 
                         :value="QRCode"
-                        image="../../public/images/Reulito-6.svg"
+                        image="/images/Reulito-6.svg"
                         :dotsOptions="{
                             type: 'square',
                             color: '#a855f7'
