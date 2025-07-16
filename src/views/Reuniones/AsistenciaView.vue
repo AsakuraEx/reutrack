@@ -14,6 +14,8 @@
 
 
     //Variables del sistema
+    const front = import.meta.env.VITE_FRONTEND_URL;
+    const QRCode = front + '/invitado/' + id
     const path = mdiTrashCanOutline;
     const path2 = mdiQrcode;
     const route = useRoute()
@@ -26,7 +28,6 @@
     const reunion = ref({})
     const listaEncargados = ref([])
     const decoded = jwtDecode(localStorage.getItem('token'))
-    const QRCode = 'https://reutrack.salud.gob.sv/invitado/' + id
 
     //Variable que representa el formulario
     const formData = ref({
@@ -324,7 +325,7 @@
                 <div class="flex justify-center items-center gap-4">
                     
                     <p class="text-lg font-bold py-1 text-center">
-                        El código QR para registrarse, solamente tiene la vigencia de 2 horas despues de iniciada la reunión.
+                        Puede realizar el registro de asistencia mediante el siguiente código QR.
                     </p>
                 </div>
 
