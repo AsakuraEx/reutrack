@@ -14,13 +14,9 @@
 
 
     //Variables del sistema
-    const front = import.meta.env.VITE_FRONTEND_URL;
-    const QRCode = front + '/invitado/' + id
     const path = mdiTrashCanOutline;
     const path2 = mdiQrcode;
     const route = useRoute()
-    const {id} = route.params;     //Se obtiene el id de la reunion actual
-    const idReunion = id;
     const store = useReunionStore()
     const storeUs = useUsuarioStore();
     const router = useRouter()
@@ -28,6 +24,12 @@
     const reunion = ref({})
     const listaEncargados = ref([])
     const decoded = jwtDecode(localStorage.getItem('token'))
+    
+    //QR
+    const front = import.meta.env.VITE_FRONTEND_URL;
+    const { id } = route.params;     //Se obtiene el id de la reunion actual
+    const idReunion = id;
+    const QRCode = front + '/invitado/' + id
 
     //Variable que representa el formulario
     const formData = ref({
