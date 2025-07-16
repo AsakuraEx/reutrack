@@ -327,11 +327,11 @@
                 <div class="flex justify-center items-center gap-4">
                     
                     <p class="text-lg font-bold py-1 text-center">
-                        Puede realizar el registro de asistencia mediante el siguiente código QR.
+                        Puede realizar el registro de asistencia mediante el siguiente código QR, estará vigente hasta finalizar la reunión.
                     </p>
                 </div>
 
-                <div class="flex justify-center">
+                <div class="flex justify-center pt-4">
                     <QRCodeVue3 
                         :value="QRCode"
                         image="/images/Reulito-6.svg"
