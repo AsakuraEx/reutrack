@@ -12,11 +12,12 @@ var app = express();
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-let origen = ""
-if(process.env.FRONTEND_PORT == 5173){
-  origen = `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`
-}else{
-  origen = `https://reutrack.salud.gob.sv`
+let origen = "";
+
+if (process.env.NODE_ENV === "production") {
+  origen = "https://reutrack.salud.gob.sv";
+} else {
+  origen = `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`;
 }
 
 

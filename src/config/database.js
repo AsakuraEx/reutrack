@@ -1,25 +1,30 @@
 const Sequelize = require("sequelize");
 require('dotenv').config();
+const config = require('./config');
+
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = config[env];
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USERNAME,
-    process.env.DB_PASSWORD,
+    dbConfig.database,
+    dbConfig.username,
+    dbConfig.password,
     {
-        host:process.env.DB_HOST,
-        port:process.env.DB_PORT,
-        dialect:'mariadb',
+        host: dbConfig.host,
+        port: dbConfig.port,
+        dialect: dbConfig.dialect,
+        connectTimeout: dbConfig.connectTimeout,
         dialectOptions: {
-            dateStrings: true, //Force date types (TIMESTAMP, DATETIME, DATE) to be returned as strings
-            typeCast: true, //Determines if column values should be converted to native JavaScript types.
+            dateStrings: true,
+            typeCast: true,
         },
-        timezone: '-06:00', // -->Add this line. for writing to database
+        timezone: '-06:00',
         define: {
-            timestamps: true, //Times and dates for createdAt and updatedAt 
+            timestamps: true,
         },
         logging: false,
 
-        
+
     }
 );
 sequelize.authenticate()

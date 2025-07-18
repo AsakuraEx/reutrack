@@ -1,6 +1,10 @@
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
 
+
+// Muestra todos los acuerdos asociados a una reunión
+// Autor: Walter Romero
+// Fecha: 18/07/2025 hora: 02:43 p.m
 exports.index = async (req, res) => {
     const id = req.params.id_reunion
     try {
@@ -14,6 +18,9 @@ exports.index = async (req, res) => {
     }
 };
 
+// Crea un acuerdo para una reunión
+// Autor: Walter Romero
+// Fecha: 18/07/2025 hora: 02:43 p.m
 exports.create = async (req, res) => {
     const {nombre, id_reunion} = req.body;
     try {
@@ -28,6 +35,9 @@ exports.create = async (req, res) => {
     }
 }
 
+// Actualiza un acuerdo para una reunión
+// Autor: Walter Romero
+// Fecha: 18/07/2025 hora: 02:43 p.m
 exports.update = async (req, res) => {
     try {
         const {nombre, id_reunion} = req.body;
@@ -42,6 +52,9 @@ exports.update = async (req, res) => {
     }
 }
 
+// Elimina acuerdo para una reunión
+// Autor: Walter Romero
+// Fecha: 18/07/2025 hora: 02:43 p.m
 exports.delete = async (req, res) => {
     try {
         const id = req.params.id;
