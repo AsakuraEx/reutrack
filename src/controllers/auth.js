@@ -5,10 +5,10 @@ const bcrypt = require('bcrypt');
 const speakeasy = require('speakeasy'); 
 const nodemailer = require('nodemailer'); 
 const path = require('path');
-const { error } = require('console');
 
 const accessToken = db.personal_access_token;
 
+//Variable utilizada para el envio de correos
 const transporter = nodemailer.createTransport({
     service: process.env.MAIL_SERVICE,
     host: process.env.MAIL_HOST,
@@ -19,12 +19,14 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Function to send 2FA code via email
+// Enviar codigo de 2FA
+// Autor: Walter Romero
+// Fecha: 21/07/2025 hora: 09:00 a.m
 exports.send2FACode = async function send2FACode(user) {
     try {
         let secret = user.two_factor_secret;
 
-        // Si el usuario no tiene un secreto 2FA, generarlo y guardarlo
+        // Si el usuario no tiene un secret 2FA, generarlo y guardarlo
         if (!secret) {
             const newSecret = speakeasy.generateSecret();
             secret = newSecret.base32;
@@ -38,7 +40,7 @@ exports.send2FACode = async function send2FACode(user) {
             step: process.env.TWO_FACTOR_STEP, 
           });
               
-        // Send the 2FA code via email
+        // Envia el codigo 2FA mediante correo electronico
         const mailOptions = {
             from: process.env.MAIL_USER,
             to: user.email,
@@ -83,6 +85,9 @@ exports.send2FACode = async function send2FACode(user) {
     }
 }
 
+// Inicio de sesión
+// Autor: Walter Romero
+// Fecha: 21/07/2025 hora: 09:00 a.m
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -107,10 +112,13 @@ exports.login = async (req, res) => {
     }
 };
 
+// Verificar el 2FA ingresado
+// Autor: Walter Romero
+// Fecha: 21/07/2025 hora: 09:00 a.m
 exports.verify2fa = async (req, res) => {
     try {
         const { email, code } = req.body; 
-        
+
         let user = await db.users.findOne({where: { email: email }});
         
         if (!user || !user.two_factor_secret) {
@@ -139,7 +147,6 @@ exports.verify2fa = async (req, res) => {
             { expiresIn: "12h" });
             
             await accessToken.create({ 
-                // Remove the two-factor authentication secret after token creation
                 id_usuario: user.id,
                 token: token,
                 expires_in: new Date(Date.now() + (12 * 60 * 60 * 1000)) // Updated to 12 hours
@@ -157,6 +164,9 @@ exports.verify2fa = async (req, res) => {
     }
 }
 
+// Cerrar sesión
+// Autor: Walter Romero
+// Fecha: 21/07/2025 hora: 09:00 a.m
 exports.logout = async (req, res) => {
     try {
         const usuario = req.body.id;
