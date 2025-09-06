@@ -6,7 +6,15 @@ const table = db.version
 exports.getOne = async (req,res) => {
     try {
         const id = req.params.id;
-        const version = await db.version.findByPk(id);
+        const version = await db.version.findByPk(id, {
+            include: [
+                {
+                    as: 'proyecto',
+                    model: db.proyecto,
+                    atributes: ['id', 'nombre']
+                }
+            ]
+        });
         res.status(HttpCode.HTTP_OK).json(version);        
     } catch (err) {
         console.error('Error: ', err.message || err);
