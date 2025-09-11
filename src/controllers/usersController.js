@@ -22,11 +22,14 @@ exports.index = async (req, res) => {
     try {
         const { count, rows } = await db.users.findAndCountAll({
             attributes: {
-                exclude: ['password', 'first_session', 'remember_token', 'id_rol']
+                exclude: ['password', 'first_session', 'remember_token']
             },
             limit: limit,
             offset: (page - 1) * limit,
-            order: [['id', 'DESC']],
+            order: [
+                ['id_rol', 'DESC'],
+                ['createdAt', 'DESC']
+            ],
         });
 
         const start = (page - 1) * limit + 1;

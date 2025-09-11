@@ -139,18 +139,12 @@ exports.update = async (req, res) => {
     const { id } = req.params;
     const {
         nombre,
-        version,
-        id_usuario,
-        id_estado,
-        acta_aceptacion
+        id_usuario
     } = req.body
     try {
         await table.update({
             nombre,
-            version,
-            id_usuario,
-            id_estado,
-            acta_aceptacion
+            id_usuario
         }, {where: {id: id}});
 
         const updatedData = await table.findByPk(id)
