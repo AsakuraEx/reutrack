@@ -45,12 +45,15 @@ exports.actual = async (req,res) => {
             where: {codigo: codigo }
         });
         if(!reunion){
-            res.status(HttpCode.HTTP_OK).json({error: 'La reunión no existe'});
+            res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'La reunión no existe'});
         }
-        else if(reunion.id_estado == 3){
-            res.status(HttpCode.HTTP_OK).json({error: 'La reunión ha finalizado'});
+        else if(reunion.id_estado === 3){
+            res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'La reunión ha finalizado'});
         }
-        else if(reunion.id_estado != 3){
+        else if(reunion.id_estado === 2){
+            res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'La reunión se canceló'});
+        }
+        else if(reunion.id_estado === 1){
             res.status(HttpCode.HTTP_OK).json(reunion);
         }
     } catch (err) {

@@ -106,7 +106,7 @@ exports.updatePassword = async (req, res) => {
     const oldPassword = await db.users.findByPk(id_usuario); 
     try {
         if (!bcrypt.compareSync(oldpassword, oldPassword.password)) {
-            return res.status(HttpCode.HTTP_OK).json('Las contraseñas no coinciden')}
+            return res.status(HttpCode.HTTP_BAD_REQUEST).json('Las contraseñas no coinciden')}
         if(first_session == 1){
             await db.users.update({ first_session: 2 },
             { where: { id: id_usuario } }
