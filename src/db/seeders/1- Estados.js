@@ -8,7 +8,9 @@ module.exports = {
         {nombre: 'Cancelado', createdAt: new Date(), updatedAt: new Date()},
         {nombre: 'Finalizado', createdAt: new Date(), updatedAt: new Date()},
         {nombre: 'Activo', createdAt: new Date(), updatedAt: new Date()},
-        {nombre: 'Inactivo', createdAt: new Date(), updatedAt: new Date()}
+        {nombre: 'Inactivo', createdAt: new Date(), updatedAt: new Date()},
+        {nombre: 'Pendiente', createdAt: new Date(), updatedAt: new Date()},
+        {nombre: 'Aprobado', createdAt: new Date(), updatedAt: new Date()}
     ], {});
   },
 

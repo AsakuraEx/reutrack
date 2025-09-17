@@ -12,7 +12,9 @@ const listaAsistenciaRouter = require('../routes/listaasistencia')
 const minutaReunionRouter = require('../routes/minutareunion')
 const puntoreunionRouter = require('../routes/puntoreunion')
 const versionRouter = require('../routes/version')
-const authRouter = require('../routes/auth');
+const authRouter = require('../routes/auth')
+const actaAceptacionRouter = require('../routes/acta_aceptacion.routes')
+const actaFuncionalidades = require('../routes/acta_funcionalidades.routes')
 const { verifyToken } = require('../middlewares/verifyToken');
 
 
@@ -29,6 +31,8 @@ app.use('/acuerdocompromiso',[verifyToken],acuerdoCompromisoRouter)
 app.use('/minutareunion', [verifyToken], minutaReunionRouter)
 app.use('/puntoreunion', [verifyToken], puntoreunionRouter)
 app.use('/versiones', [verifyToken], versionRouter);
+app.use('/acta_aceptacion', [verifyToken], actaAceptacionRouter);
+app.use('/acta_funcionalidades', [verifyToken], actaFuncionalidades);
 
 
 module.exports = app

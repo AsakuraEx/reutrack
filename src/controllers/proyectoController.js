@@ -213,7 +213,7 @@ exports.delete = async (req, res) => {
             return res.status(HttpCode.HTTP_OK).json("Registro eliminado con exito")
             
         }
-        return res.status(HttpCode.HTTP_BAD_REQUEST).json("El proyecto cuenta con versiones, no se puede eliminar.")
+        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'El proyecto no puede eliminarse porque ya cuenta con versiones creadas' })
     } catch (error) {
         console.error('Error', error.message || error)
         return res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'Internal server error'})

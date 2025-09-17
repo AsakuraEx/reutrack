@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === "production") {
 
 
 app.use(cors({
-  origin: origen,
+  origin: [origen],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
   allowedHeaders: [

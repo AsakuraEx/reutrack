@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+
+      users.hasOne(models.acta_aceptacion,{
+        foreignKey: 'id_usuario',
+        as: 'usuario'
+      })
       users.hasMany(models.encargado,{
         foreignKey: 'id_usuario',
         as: 'usuario encargado'
