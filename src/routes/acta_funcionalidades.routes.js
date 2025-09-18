@@ -10,4 +10,6 @@ router.post('/', acta.create);
 
 router.put('/:id', acta.update);
 
+router.delete('/:id', acta.delete);
+
 module.exports = router;

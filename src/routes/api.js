@@ -15,6 +15,7 @@ const versionRouter = require('../routes/version')
 const authRouter = require('../routes/auth')
 const actaAceptacionRouter = require('../routes/acta_aceptacion.routes')
 const actaFuncionalidades = require('../routes/acta_funcionalidades.routes')
+const actaUsuarios = require('../routes/acta_usuarios.routes')
 const { verifyToken } = require('../middlewares/verifyToken');
 
 
@@ -33,6 +34,7 @@ app.use('/puntoreunion', [verifyToken], puntoreunionRouter)
 app.use('/versiones', [verifyToken], versionRouter);
 app.use('/acta_aceptacion', [verifyToken], actaAceptacionRouter);
 app.use('/acta_funcionalidades', [verifyToken], actaFuncionalidades);
+app.use('/acta_usuarios', [verifyToken], actaUsuarios);
 
 
 module.exports = app

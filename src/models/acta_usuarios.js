@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     nombre: DataTypes.STRING(200),
     institucion: DataTypes.STRING(200),
     cargo: DataTypes.STRING(200),
+    documento: DataTypes.STRING(20),
     documento_identidad: DataTypes.TEXT,
     documento_institucional: DataTypes.TEXT
   }, {

@@ -67,3 +67,21 @@ exports.update = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+
+exports.delete = async (req, res) => {
+  try {
+
+    const deletedCount = await db.acta_funcionalidades.destroy({
+      where: { id: req.params.id }
+    });
+
+    if (deletedCount === 0) {
+      return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Registro no encontrado' });
+    }
+
+    res.status(HttpCode.HTTP_OK).json({ message: 'Registro eliminado correctamente' });
+
+  }catch (err) {
+    res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: err.message})
+  }
+}
