@@ -95,17 +95,17 @@ exports.login = async (req, res) => {
         let user = await db.users.findOne({ where: { email: email }});
 
         if (!user) {
-            return res.status(HttpCode.HTTP_OK).json({ error: 'Usuario no encontrado' });
+            return res.status(HttpCode.HTTP_OK).json({ error: 'El usuario al que intenta acceder, no existe' });
         }
         else if (user.id_estado == 5){
-            return res.status(HttpCode.HTTP_OK).json({ error: 'Usuario inactivo' });
+            return res.status(HttpCode.HTTP_OK).json({ error: 'El usuario está deshabilitado' });
         }
         if (bcrypt.compareSync(password, user.password)) {
             // Generate and send 2FA code
             await this.send2FACode(user);
             res.status(HttpCode.HTTP_OK).json({exito: 'Se ha enviado un código a su correo electrónico registrado'});
         } else {
-            return res.status(HttpCode.HTTP_OK).json({ error: 'Credenciales incorrectas' });
+            return res.status(HttpCode.HTTP_OK).json({ error: 'Las credenciales son incorrectas' });
         }
     } catch (error) {
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });

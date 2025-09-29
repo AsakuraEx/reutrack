@@ -22,6 +22,8 @@ const { verifyToken } = require('../middlewares/verifyToken');
 app.use('/auth', authRouter),
 app.use('/reuniones', reunionRouter);
 app.use('/asistencia', listaAsistenciaRouter)
+app.use('/acta_usuarios', actaUsuarios);
+app.use('/acta_aceptacion', actaAceptacionRouter);
 
 app.use('/',[verifyToken],indexRouter);
 app.use('/usuarios',[verifyToken], usersRouter);
@@ -32,9 +34,8 @@ app.use('/acuerdocompromiso',[verifyToken],acuerdoCompromisoRouter)
 app.use('/minutareunion', [verifyToken], minutaReunionRouter)
 app.use('/puntoreunion', [verifyToken], puntoreunionRouter)
 app.use('/versiones', [verifyToken], versionRouter);
-app.use('/acta_aceptacion', [verifyToken], actaAceptacionRouter);
+
 app.use('/acta_funcionalidades', [verifyToken], actaFuncionalidades);
-app.use('/acta_usuarios', [verifyToken], actaUsuarios);
 
 
 module.exports = app

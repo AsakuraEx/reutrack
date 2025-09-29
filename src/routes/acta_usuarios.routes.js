@@ -13,9 +13,6 @@ router.get('/:id', acta.getOneByPk);
 
 router.post('/', upload.fields([{name: "documento_identidad", maxCount: 1}, {name: "documento_institucional", maxCount: 1} ]), acta.create);
 
-router.put('/:id', acta.update);
-
-router.delete('/:id', acta.delete);
 
 
 module.exports = router;

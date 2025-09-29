@@ -1,4 +1,4 @@
-var createError = require('http-errors');
+const fs = require('fs');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -49,9 +49,17 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/documentos', (req, res, next) => {
+
+  // Headers específicos para evitar ERR_BLOCKED_BY_ORB
+  res.header('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.header('Cross-Origin-Embedder-Policy', 'unsafe-none');
+  next();
+}, express.static(path.join(__dirname, 'uploads/documentos')));
+
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'jade');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -60,21 +68,17 @@ app.use(cookieParser());
 
 app.use('/api', apiRouter);
 
-// catch 404 and forward to error handler
+// Catch 404 (no encontrado)
 app.use(function(req, res, next) {
-  next(createError(200));
+  res.status(404).json({ error: 'Not Found' });
 });
 
-
+// Manejador de errores
 app.use(function(err, req, res, next) {
-  
-  res.locals.message = 'Server'
-  res.locals.error = 'Server'
-  res.locals.title = 'Server'; 
-  
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error'
+  });
 });
 
 const port = process.env.PORT;

@@ -38,7 +38,7 @@ exports.index = async (req, res) => {
                     as: 'usuario',
                     attributes: ['nombre'],
                     required: true,
-                },       
+                },    
         ]
         if(estado) {
             options.distinct= true,
@@ -47,7 +47,7 @@ exports.index = async (req, res) => {
                 {
                     model: db.version,
                     as: 'version',
-                    attributes: [],
+                    attributes: ['id'],
                     required: true,
                     where: {id_estado: estado}
                     
@@ -59,6 +59,61 @@ exports.index = async (req, res) => {
             options,
             include,
             
+            limit: limit,
+            offset: (page - 1) * limit,
+            order: [['id', 'DESC']],
+            
+        });
+
+        const start = (page - 1) * limit + 1;
+        const end = Math.min(start + rows.length - 1, count);
+        
+
+
+        res.status(HttpCode.HTTP_OK).json({
+            totalRecords: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            start: start,
+            end: end,
+            data: rows,
+        });
+    } catch (error) {
+        console.error('Error', error.message || error);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
+}
+
+exports.indexWithVersion = async (req, res) => {
+    const limit = parseInt(req.query.limit) || null
+    const page = parseInt(req.query.page) || 1
+    
+    try {
+        
+        const options = {
+            attributes: {
+                exclude: ['id_estado', 'updatedAt'],
+            }, 
+        }
+        const include = [
+                { 
+                    model: db.users,
+                    as: 'usuario',
+                    attributes: ['nombre'],
+                    required: true,
+                },    
+                {
+                    model: db.version,
+                    as: 'version',
+                    attributes: ['id'],
+                }, 
+        ]
+
+        const {count, rows} = await table.findAndCountAll({
+            options,
+            include,
+            distinct: true,
+            col: 'id',
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],

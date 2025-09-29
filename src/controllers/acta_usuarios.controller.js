@@ -76,13 +76,14 @@ exports.create = async (req, res) => {
     const { documento } = req.body
 
     //Crea el directorio donde se almacenara
-    const outputDir = path.join(__dirname, `../../public/documentos/${documento}`);
+    const outputDir = path.join(__dirname, `../uploads/documentos/${documento}`);
+
     if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
 
     // Esta funcion convierte el archivo a webp y retorna la ruta donde se guarda
-    const processImage = async (file) => {
-      const fileName = Date.now() + "-" + file.originalname.split(".")[0] + ".webp";
+    const processImage = async (file, nombre) => {
+      const fileName = Date.now()+ '-' + nombre + ".webp";
       const outputPath = path.join(outputDir, fileName);
 
       await sharp(file.path)
@@ -99,8 +100,8 @@ exports.create = async (req, res) => {
     let institucionUrl = null;
 
 
-    if(req.files?.documento_identidad) identidadUrl = await processImage(req.files.documento_identidad[0]);
-    if(req.files?.documento_institucional) institucionUrl = await processImage(req.files.documento_institucional[0]);
+    if(req.files?.documento_identidad) identidadUrl = await processImage(req.files.documento_identidad[0], 'documento_identidad');
+    if(req.files?.documento_institucional) institucionUrl = await processImage(req.files.documento_institucional[0], 'documento_institucional');
 
     // Se crea el usuario
     const nueva = await db.acta_usuarios.create({
@@ -114,35 +115,3 @@ exports.create = async (req, res) => {
     res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: err.message });
   }
 };
-
-// Actualizar
-exports.update = async (req, res) => {
-  try {
-    const [updated] = await db.acta_usuarios.update(req.body, {
-      where: { id: req.params.id }
-    });
-    if (!updated) return res.status(404).json({ message: 'No encontrada' });
-    const acta = await db.acta_usuarios.findByPk(req.params.id);
-    res.json(acta);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-};
-
-exports.delete = async (req, res) => {
-  try {
-
-    const deletedCount = await db.acta_usuarios.destroy({
-      where: { id: req.params.id }
-    });
-
-    if (deletedCount === 0) {
-      return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Registro no encontrado' });
-    }
-
-    res.status(HttpCode.HTTP_OK).json({ message: 'Registro eliminado correctamente' });
-
-  }catch (err) {
-    res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: err.message})
-  }
-}
