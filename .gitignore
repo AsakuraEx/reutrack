@@ -8,6 +8,7 @@ npm-debug.log
 # Directorios de construcción y distribución
 dist/
 build/
+src/uploads/documentos
 
 # Sistema operativo
 .DS_Store
