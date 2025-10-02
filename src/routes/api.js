@@ -24,9 +24,9 @@ app.use('/reuniones', reunionRouter);
 app.use('/asistencia', listaAsistenciaRouter)
 app.use('/acta_usuarios', actaUsuarios);
 app.use('/acta_aceptacion', actaAceptacionRouter);
+app.use('/usuarios', usersRouter);
 
 app.use('/',[verifyToken],indexRouter);
-app.use('/usuarios',[verifyToken], usersRouter);
 app.use('/estado', [verifyToken], estadoRouter);
 app.use('/proyectos', [verifyToken],proyectoRouter);
 app.use('/encargados', [verifyToken], encargadoRouter);

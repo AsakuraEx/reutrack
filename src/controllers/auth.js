@@ -181,3 +181,137 @@ exports.logout = async (req, res) => {
         });
     }
 }
+
+
+
+
+// Enviar codigo para actualización de contraseña
+// Autor: Francisco Escobar
+// Fecha: 01/10/2025 hora: 2:30 p.m
+exports.sendCodePassword = async function sendCodePassword(req, res) {
+    try {
+
+        const {email} = req.body;
+
+        let user = await db.users.findOne({ where: { email: email }});
+
+        if (!user) {
+            return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'El usuario al que intenta acceder, no existe' });
+        }
+        else if (user.id_estado == 5){
+            return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'El usuario está deshabilitado' });
+        }
+
+        let secret = user.two_factor_secret;
+
+        // Si el usuario no tiene un secret 2FA, generarlo y guardarlo
+        if (!secret) {
+            const newSecret = speakeasy.generateSecret();
+            secret = newSecret.base32;
+            await db.users.update({ two_factor_secret: secret }, { where: { id: user.id } });
+        }
+        
+        const code = speakeasy.totp({
+            secret: secret,
+            encoding: process.env.TWO_FACTOR_ENCODING,
+            window: process.env.TWO_FACTOR_WINDOW,
+            step: process.env.TWO_FACTOR_STEP, 
+          });
+              
+        // Envia el codigo 2FA mediante correo electronico
+        const mailOptions = {
+            from: process.env.MAIL_USER,
+            to: user.email,
+            subject: 'REUTRACK - Código de verificación para actualización de contraseña',
+            html: `
+                <div style="text-align: center; font-family: Arial, sans-serif;">
+                    <div style="background-color: #f9f9f9; border-radius: 10px">
+                        <img src="cid:logo_reutrack" style="width: 300px;">
+                    </div>    
+                    <div style="background-color: #F6EDFF; border-radius: 10px; margin-top: 12px; padding-top:8px; padding-bottom: 8px">
+                        <h2>Su código de verificación es el siguiente</h2>
+                        <center>
+                            <div style="width: 6.5rem;">
+                                <p style="font-size: 24px; font-weight: bold; color: #A855F7; border: 2px solid #A855F7; ">${code}</p>
+                            </div>
+                        </center>
+                        
+                        <p>Ingrese este código en la plataforma para recuperar su cuenta en Reutrack.</p>
+                        <p>Si no solicitó este cambio, puede ignorar este correo electrónico.</p>
+                    </div>
+                </div>
+            `,
+            attachments: [
+                {
+                    filename: 'Logo-reutrack-fondo-blanco.png',
+                    path: path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png'), 
+                    cid: 'logo_reutrack'
+                }
+            ]
+        };
+        
+        await db.users.update({ 
+            two_factor_secret: secret.base32,
+        },
+            { where: { id: user.id } 
+          });
+
+        await transporter.sendMail(mailOptions);
+        res.status(HttpCode.HTTP_OK).json({exito: 'Se ha enviado un código a su correo electrónico registrado'});
+        return
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+
+}
+
+// Validar código para actualización de contraseña
+// Autor: Francisco Escobar
+// Fecha: 01/10/2025 hora: 2:30 p.m
+exports.verifyCodePassword = async (req, res) => {
+    try {
+        const { email, codigo } = req.body; 
+
+        let user = await db.users.findOne({where: { email: email }});
+        
+        if (!user || !user.two_factor_secret) {
+            return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: "El usuario no existe" });
+        }
+        
+        const verified = speakeasy.totp.verify({
+            secret: user.two_factor_secret,
+            token: codigo,
+            encoding: process.env.TWO_FACTOR_ENCODING,
+            window: process.env.TWO_FACTOR_WINDOW,
+            step: process.env.TWO_FACTOR_STEP,
+          });
+          
+        if (verified) {
+            await accessToken.destroy({where: { id_usuario: user.id }});
+            await db.users.update({ two_factor_secret: null},{ where: { id: user.id }});
+            
+            const token = jwt.sign({
+                id: user.id,
+                password_reset: true
+            }, 
+            process.env.SECRET_ACCESS_TOKEN, 
+            { expiresIn: "10min" });
+            
+            await accessToken.create({ 
+                id_usuario: user.id,
+                token: token,
+                expires_in: new Date(Date.now() + (1 * 10 * 60 * 1000)) // Updated to 10 min
+            });
+            
+            res.status(HttpCode.HTTP_OK).json({
+                token: token,
+            });
+        } else {
+            res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'Código de verificación incorrecto o caducado' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
+}

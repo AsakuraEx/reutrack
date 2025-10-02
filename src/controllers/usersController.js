@@ -103,6 +103,26 @@ exports.update = async (req, res) => {
 exports.updatePassword = async (req, res) => {
     const { id_usuario, password, oldpassword, first_session } = req.body;
     
+    // Flujo de recuperacion de contraseña
+    if(oldpassword==='temporal') {
+
+        try {
+            if(first_session == 1){
+                await db.users.update({ first_session: 2 },
+                { where: { id: id_usuario } }
+            )}
+            await db.users.update({ password: bcrypt.hashSync(password, 12) },
+            { where: { id: id_usuario }});
+            res.status(HttpCode.HTTP_OK).json({exito: 'Contraseña actualizada con exito'});
+            return
+        }catch (error) {
+            console.error('Error', error.message || error);
+            res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json('Internal server error');
+        }
+
+    }
+
+    // Flujo de cambio de contraseña común
     const oldPassword = await db.users.findByPk(id_usuario); 
     try {
         if (!bcrypt.compareSync(oldpassword, oldPassword.password)) {

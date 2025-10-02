@@ -1,18 +1,18 @@
 const express = require('express');
 var app = express.Router();
-
+const { verifyToken } = require('../middlewares/verifyToken');
 
 const usuariosController = require('../controllers/usersController')
 
 
-app.get('/',     usuariosController.index)
+app.get('/', [verifyToken], usuariosController.index)
 
-app.post('/create',  usuariosController.create)
+app.post('/create', [verifyToken], usuariosController.create)
 
 app.patch('/updatepassword', usuariosController.updatePassword)
-app.patch('/updateStatus', usuariosController.status)
+app.patch('/updateStatus', [verifyToken], usuariosController.status)
 
-app.patch('/:id', usuariosController.update)
-app.get('/:id',  usuariosController.getOne)
+app.patch('/:id', [verifyToken], usuariosController.update)
+app.get('/:id', [verifyToken],  usuariosController.getOne)
  
 module.exports = app;
