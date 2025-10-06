@@ -12,11 +12,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      bitacora_reactivaciones.hasMany(models.users,{
-        foreignKey: 'id',
+      bitacora_reactivaciones.belongsTo(models.users,{
+        foreignKey: 'id_usuario',
+        as: 'usuario'
       }),
-      bitacora_reactivaciones.hasMany(models.reunion,{
-        foreignKey: 'id',
+      bitacora_reactivaciones.belongsTo(models.reunion,{
+        foreignKey: 'id_reunion',
+        as: 'reunion'
       })
     }
   }
@@ -39,8 +41,7 @@ module.exports = (sequelize, DataTypes) => {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
     },
-    justificacion: DataTypes.STRING,
-    descripcion: DataTypes.STRING
+    justificacion: DataTypes.STRING
   }, {
     sequelize: db,
     freezeTableName: true,

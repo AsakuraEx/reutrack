@@ -360,6 +360,61 @@ exports.reactivar = async (req, res) => {
 
 }
 
+// Extrae la data completa sin filtro de las reuniones reactivadas
+// Autor: Francisco Escobar
+// Fecha: 2025-10-03 hora: 09:55 a.m
+exports.verReactivadas = async (req, res) => {
+
+    try {
+        console.log('Buscando en la base de datos')
+        const reuniones = await db.bitacora_reactivaciones.findAll({
+            include: [
+                {
+                    model: db.users,
+                    as: "usuario",
+                    attributes: ["nombre"],
+                    required: true,
+                },
+                {
+                    model: db.reunion,
+                    as: "reunion",
+                    attributes: ["nombre", "lugar"],
+                    required: true,
+                    include: [
+                        {
+                            model: db.version,
+                            as: "version",
+                            attributes: ["nombre"],
+                            include: [
+                                {
+                                    model: db.proyecto,
+                                    as: "proyecto",
+                                    attributes: ["nombre"]
+                                }
+                            ]
+                        },
+                        {
+                            model: db.users,
+                            as: "user",
+                            attributes: ["nombre"],
+                        }
+                    ]
+                },
+            ],
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
+        console.log('Reuniones encontradas: ' + reuniones.length)
+        res.status(HttpCode.HTTP_OK).json(reuniones)
+    }catch (e) {
+        console.log(e)
+        res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'Hubo un problema para procesar las reuniones reactivadas'})
+    }
+
+
+}
+
 exports.generatePDF = async (req, res) => {
   console.log('generatePDF: función invocada');
   const logoPath = path.join(__dirname, '../public/images/logo-minsal.png');

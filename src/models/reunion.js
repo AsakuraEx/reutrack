@@ -46,10 +46,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_reunion',
         as: 'acuerdos de reunion'
       })
-      // reunion.hasMany(models.bitacora_reactivaciones, {
-      //   foreignKey: 'id_reunion',
-      //   as: 'reactivaciones' // o 'bitacora_reactivaciones', pero debe coincidir
-      // })
+      reunion.hasMany(models.bitacora_reactivaciones, {
+        foreignKey: 'id_reunion',
+        as: 'reactivaciones' // o 'bitacora_reactivaciones', pero debe coincidir
+      })
     }
   }
   reunion.init({

@@ -42,6 +42,14 @@ module.exports = (sequelize, DataTypes) => {
       users.belongsTo(models.ctl_rol,{
         foreignKey: 'id_rol',
         as: 'rol usuario'
+      }),
+      users.hasMany(models.bitacora_reactivaciones, {
+        foreignKey: 'id_usuario',
+        as: 'reactivaciones'
+      }),
+      users.hasMany(models.bitacora_proyecto_eliminacion, {
+        foreignKey: 'id_usuario',
+        as: 'proyectos_eliminados'
       })
     }
   }
