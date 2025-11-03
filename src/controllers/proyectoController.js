@@ -216,13 +216,11 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     const { id } = req.params;
     const {
-        nombre,
-        id_usuario
+        nombre
     } = req.body
     try {
         await table.update({
-            nombre,
-            id_usuario
+            nombre
         }, {where: {id: id}});
 
         const updatedData = await table.findByPk(id)

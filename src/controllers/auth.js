@@ -13,6 +13,7 @@ const transporter = nodemailer.createTransport({
     service: process.env.MAIL_SERVICE,
     host: process.env.MAIL_HOST,
     port: process.env.MAIL_PORT,
+    secure: true,
     auth: {
         user: process.env.MAIL_USER, 
         pass: process.env.MAIL_PASS,
@@ -42,7 +43,7 @@ exports.send2FACode = async function send2FACode(user) {
               
         // Envia el codigo 2FA mediante correo electronico
         const mailOptions = {
-            from: process.env.MAIL_USER,
+            from: '"Notificación Requerimientos" '+ process.env.MAIL_FROM,
             to: user.email,
             subject: 'REUTRACK - Código de autenticación',
             html: `

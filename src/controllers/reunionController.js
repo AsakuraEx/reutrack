@@ -469,7 +469,7 @@ const reunion = await db.reunion.findOne({
                         {
                             model: db.users,
                             as: 'usuario',
-                            attributes: ['nombre', 'email']
+                            attributes: ['nombre', 'email', 'documento', 'telefono']
                         }
                     ],
                     where: { visitante: false } // Filtrar solo encargados que no son visitantes
@@ -596,7 +596,7 @@ const reunion = await db.reunion.findOne({
             </ul>
         </div>
         <div class="section">
-            <h2>Minuta:</h2>
+            <h2>Desarrollo de la reunión:</h2>
             <p>${reunion['minutadereunion'][0].minuta}</p>
         </div>
         <div class="section">
@@ -609,7 +609,7 @@ const reunion = await db.reunion.findOne({
         </div>
         <div class="page-break"></div>
         <div class="section">
-            <h2>Asistentes:</h2>
+            <h2>Listado de asistencia:</h2>
             <div class= "table">
             <table class="asistentes">
                 <tr>
@@ -624,9 +624,9 @@ const reunion = await db.reunion.findOne({
                 <tr>
                     <td>${encargado.usuario.nombre}</td>
                     <td>${encargado.usuario.institucion || 'DTIC / MINSAL'}</td>
-                    <td>-</td>
+                    <td>${encargado.usuario.documento}</td>
                     <td>Técnico Informático</td>
-                    <td>-</td>
+                    <td>${encargado.usuario.telefono}</td>
                     <td>${encargado.usuario.email}</td>
                 </tr>
                 `).join('') : ''}

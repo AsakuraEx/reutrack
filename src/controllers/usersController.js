@@ -52,12 +52,17 @@ exports.index = async (req, res) => {
 
 
 exports.create = async (req, res) => {
-    const {nombre, email, password} = req.body;
+    const {nombre, email, password, telefono, documento} = req.body;
+
+    console.log('creando usuario...')
+    console.log(req.body)
 
     try {
         const newUser = await db.users.create({ 
             nombre,
             email,
+            telefono,
+            documento,
             password: bcrypt.hashSync(password, 12),
             id_estado: 4,
             id_rol: 2,
@@ -72,13 +77,18 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     const { id } = req.params;
-    const {nombre, email, password} = req.body;
+    const {nombre, email, password, telefono, documento} = req.body;
     
+    console.log('creando usuario...')
+    console.log(req.body)
+
     try {
         if(password){
             await db.users.update({ 
                 nombre,
                 email,
+                telefono,
+                documento,
                 password: bcrypt.hashSync(password, 12),
                 first_session: 1
             }, {where: {id: id}});
@@ -86,6 +96,8 @@ exports.update = async (req, res) => {
         await db.users.update({ 
             nombre,
             email,
+            telefono,
+            documento
         }, {where: {id: id}});
 
         const updatedData = await db.users.findByPk(id)

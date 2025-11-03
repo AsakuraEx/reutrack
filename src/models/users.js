@@ -69,6 +69,16 @@ module.exports = (sequelize, DataTypes) => {
     allowNull: false,
     unique: true,
   },
+  telefono: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: false,
+  },
+  documento: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: false,
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
