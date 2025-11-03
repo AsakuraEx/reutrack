@@ -10,8 +10,6 @@ const { swaggerUi, swaggerDocs } = require('./docs/swagger/swagger');
 
 var app = express();
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
 let origen = "";
 
 if (process.env.NODE_ENV === "production") {
@@ -19,7 +17,6 @@ if (process.env.NODE_ENV === "production") {
 } else {
   origen = `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`;
 }
-
 
 app.use(cors({
   origin: [origen],
@@ -35,6 +32,7 @@ app.use(cors({
   exposedHeaders: ['Content-Disposition']
 }));
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 //Encabezados y Proteccion
 app.use((req, res, next) => {
@@ -43,6 +41,9 @@ app.use((req, res, next) => {
   res.header('Content-Security-Policy', "frame-ancestors 'self'; default-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none'; frame-src 'none';");
   res.header('X-Content-Type-Options', 'nosniff');
   res.header('X-XSS-Protection', '1; mode=block');
+  res.header('Access-Control-Allow-Origin', origen); // o '*'
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept, Accept-Language, Accept-Encoding');
   res.header('Referrer-Policy', 'same-origin');
   next();
 });
