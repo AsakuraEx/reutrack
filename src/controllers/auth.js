@@ -40,7 +40,7 @@ exports.send2FACode = async function send2FACode(user) {
               
         // Send the 2FA code via email
         const mailOptions = {
-            from: process.env.MAIL_FROM,
+            from: process.env.MAIL_USER,
             to: user.email,
             subject: 'REUTRACK - Código de autenticación',
             html: `
