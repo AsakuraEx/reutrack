@@ -425,6 +425,31 @@ exports.generatePDF = async (req, res) => {
   console.log("¿Existe logo 2?", fs.existsSync(logoPath2));
   console.log("¿Existe logo 3?", fs.existsSync(logoPath3));
 
+  formatearTelefono = (telefono) => {
+    if (telefono.length > 0 && telefono.length < 9) {
+      cadena = telefono.substring(0, 4) + '-' + telefono.substring(4, 8);
+      return cadena;
+    } 
+    
+    else if(telefono.length === 9){
+      return telefono;
+    } else{
+      return telefono;
+    }
+  }
+
+  formatearDUI = (dui) => {
+    if (dui.length > 0 && dui.length < 10) {
+      cadena = dui.substring(0, 8) + '-' + dui.substring(8,9);
+      return cadena;
+    } 
+    else if(dui.length === 10){
+      return dui;
+    } else {
+      return dui;
+    }
+  }
+
 let base64Logo, base64Logo2, base64Logo3;
 
 try {
@@ -624,9 +649,9 @@ const reunion = await db.reunion.findOne({
                 <tr>
                     <td>${encargado.usuario.nombre}</td>
                     <td>${encargado.usuario.institucion || 'DTIC / MINSAL'}</td>
-                    <td>${encargado.usuario.documento}</td>
+                    <td>${formatearDUI(encargado.usuario.documento)}</td>
                     <td>Técnico Informático</td>
-                    <td>${encargado.usuario.telefono}</td>
+                    <td>${formatearTelefono(encargado.usuario.telefono)}</td>
                     <td>${encargado.usuario.email}</td>
                 </tr>
                 `).join('') : ''}
@@ -635,9 +660,9 @@ const reunion = await db.reunion.findOne({
                 <tr>
                     <td>${asistente.participante}</td>
                     <td>${asistente.institucion}</td>
-                    <td>${asistente.doc_identidad || '-'}</td>
+                    <td>${formatearDUI(asistente.doc_identidad) || '-'}</td>
                     <td>${asistente.cargo}</td>
-                    <td>${asistente.telefono || '-'}</td>
+                    <td>${formatearTelefono(asistente.telefono) || '-'}</td>
                     <td>${asistente.correo}</td>
                 </tr>
                 `).join('')}
@@ -718,3 +743,5 @@ res.end(pdfBuffer);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Error generando PDF' });
     }
 }
+
+
