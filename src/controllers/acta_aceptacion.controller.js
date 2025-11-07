@@ -346,7 +346,7 @@ exports.createPdf = async (req, res) => {
     </body>
         </html>
             `
-            const puppeteer = require('puppeteer');
+            
     console.log('Lanzando navegador...');
            const browser = await puppeteer.launch({
       headless: 'new',
