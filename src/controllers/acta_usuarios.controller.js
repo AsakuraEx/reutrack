@@ -115,3 +115,36 @@ exports.create = async (req, res) => {
     res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: err.message });
   }
 };
+
+exports.delete = async (req, res) => {
+  
+  const row = req.body
+  console.log(row)
+  try {
+
+    if(row.documento) {
+      const filePath = path.join(__dirname, '../uploads', row.documento_identidad);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log(`Archivo eliminado: ${filePath}`);
+      } else {
+        console.log('El archivo no pudo eliminarse');
+      }
+
+      const filePath2 = path.join(__dirname, '../uploads', row.documento_institucional);
+      if (fs.existsSync(filePath2)) {
+        fs.unlinkSync(filePath2);
+        console.log(`Archivo eliminado: ${filePath2}`);
+      } else {
+        console.log('El archivo no pudo eliminarse');
+      }
+    }
+
+    await db.acta_usuarios.destroy({
+      where: { id: row.id }
+    })
+    res.status(200).json({ message: 'Eliminado correctamente'})
+  }catch (err) {
+    res.status(404).json({ error: err.message})
+  }
+};
