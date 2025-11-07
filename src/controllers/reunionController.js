@@ -776,12 +776,12 @@ exports.emailPDF = async (req, res) => {
         pdf_minuta= await this.generatePDF(req)
         
         const mailOptions = {
-                from: process.env.MAIL_USER,
+                from: '"Notificación Requerimientos" '+ process.env.MAIL_FROM,
                 to: asistentes,
                 subject: 'Minuta de reunión',
                 html: `
-                    <div style="text-align: center; font-family: Arial, sans-serif;">
-                            <p>Se adjunta el documento correspondiente a la reunión sostenida</p>
+                    <div style="text-align: left; font-family: Arial, sans-serif;">
+                            <p>Se adjunta el documento correspondiente a la reunión sostenida.</p>
                         </div>
                     </div>
                 `,
@@ -790,11 +790,6 @@ exports.emailPDF = async (req, res) => {
                         filename: 'minuta.pdf',
                         content: pdf_minuta,
                         contentType: 'application/pdf'
-                    },                
-                    {
-                        filename: 'Logo-reutrack-fondo-blanco.png',
-                        path: path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png'), 
-                        cid: 'logo_reutrack'
                     }
                 ]
             };
