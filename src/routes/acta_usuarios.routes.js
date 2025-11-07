@@ -4,7 +4,7 @@ const acta = require('../controllers/acta_usuarios.controller');
 
 // Para manejar los archivos
 const multer = require("multer");
-const upload = multer({dest: "C:/Users/frane/Documents/tmp"})
+const upload = multer({dest: "../tmp"})
 
 
 router.get('/documentos', acta.getOneByDocument);
