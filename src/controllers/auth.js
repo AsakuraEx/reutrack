@@ -221,7 +221,7 @@ exports.sendCodePassword = async function sendCodePassword(req, res) {
               
         // Envia el codigo 2FA mediante correo electronico
         const mailOptions = {
-            from: process.env.MAIL_USER,
+            from: '"Notificación Requerimientos" '+ process.env.MAIL_FROM,
             to: user.email,
             subject: 'REUTRACK - Código de verificación para actualización de contraseña',
             html: `

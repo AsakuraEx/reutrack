@@ -52,7 +52,20 @@ exports.index = async (req, res) => {
 
 
 exports.create = async (req, res) => {
-    const {nombre, email, password, telefono, documento} = req.body;
+    
+    //Variable utilizada para el envio de correos
+    const transporter = nodemailer.createTransport({
+        service: process.env.MAIL_SERVICE,
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
+        secure: true,
+        auth: {
+            user: process.env.MAIL_USER, 
+            pass: process.env.MAIL_PASS,
+        }
+    });
+
+    const {nombre, email, flat_password, telefono, documento} = req.body;
 
     console.log('creando usuario...')
     console.log(req.body)
@@ -63,11 +76,41 @@ exports.create = async (req, res) => {
             email,
             telefono,
             documento,
-            password: bcrypt.hashSync(password, 12),
+            password: bcrypt.hashSync(flat_password, 12),
             id_estado: 4,
             id_rol: 2,
             first_session: 1
         });
+        const mailOptions = {
+                    from: '"Notificación Requerimientos" '+ process.env.MAIL_FROM,
+                    to: user.email,
+                    subject: 'REUTRACK - Usuario creado',
+                    html: `
+                        <div style="text-align: center; font-family: Arial, sans-serif;">
+                            <div style="background-color: #f9f9f9; border-radius: 10px">
+                                <img src="cid:logo_reutrack" style="width: 300px;">
+                            </div>    
+                            <div style="background-color: #F6EDFF; border-radius: 10px; margin-top: 12px; padding-top:8px; padding-bottom: 8px">
+                                <h2>Se ha creado su cuenta asociada a su correo, su contraseña temporal es la siguiente:</h2>
+                                <center>
+                                    <div style="width: 6.5rem;">
+                                        <p style="font-size: 24px; font-weight: bold; color: #A855F7; border: 2px solid #A855F7; ">${flat_password}</p>
+                                    </div>
+                                </center>
+                                
+                                <p>Inicie sesión con su contraseña temporal .</p>
+                            </div>
+                        </div>
+                    `,
+                    attachments: [
+                        {
+                            filename: 'Logo-reutrack-fondo-blanco.png',
+                            path: path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png'), 
+                            cid: 'logo_reutrack'
+                        }
+                    ]
+                };
+                await transporter.sendMail(mailOptions);
         res.status(HttpCode.HTTP_CREATED).json(newUser);
     } catch (error) {
         console.error('Error', error.message || error);
