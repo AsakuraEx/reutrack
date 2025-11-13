@@ -1,0 +1,17 @@
+# Node.js
+node_modules/
+npm-debug.log
+
+# Archivos de log
+*.log
+
+# Directorios de construcción y distribución
+dist/
+build/
+src/uploads/documentos
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+.env
