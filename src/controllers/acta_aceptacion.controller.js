@@ -10,22 +10,35 @@ const moment = require('moment');
 // Obtener todas
 exports.getAll = async (req, res) => {
   try {
+
+    const { id_proyecto, estado } = req.query;
+
     const actas = await db.acta_aceptacion.findAll({
+        where: estado ? {id_estado: Number(estado)} : undefined,
         include: [ 
             {
-                model: db.version,
-                as: 'version',
-                attributes: ['id', 'nombre', 'id_proyecto']
+              model: db.version,
+              as: 'version',
+              attributes: ['id', 'nombre', 'id_proyecto'],
+              // si se manda el query, aplica el filtro, sino lo deja libre
+              where: id_proyecto ? { id_proyecto: Number(id_proyecto) } : undefined,
+              include: [
+                {
+                  model: db.proyecto,   // <-- relación de version con proyecto
+                  as: 'proyecto',       // usa el alias que definiste en tus asociaciones
+                  attributes: ['id', 'nombre']
+                }
+              ]
             },
             {
-                model: db.users,
-                as: 'usuario',
-                attributes: ['id', 'nombre']
+              model: db.users,
+              as: 'usuario',
+              attributes: ['id', 'nombre']
             },
             {
-                model: db.ctl_estado,
-                as: 'estado',
-                attributes: ['id', 'nombre']
+              model: db.ctl_estado,
+              as: 'estado',
+              attributes: ['id', 'nombre']
             },
         ] // usa los alias de tus asociaciones
     });
@@ -333,7 +346,7 @@ exports.createPdf = async (req, res) => {
     </body>
         </html>
             `
-            const puppeteer = require('puppeteer');
+            
     console.log('Lanzando navegador...');
            const browser = await puppeteer.launch({
       headless: 'new',

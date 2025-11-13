@@ -12,8 +12,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      bitacora_proyecto_eliminacion.hasMany(models.users,{
-        foreignKey: 'id',
+      bitacora_proyecto_eliminacion.belongsTo(models.users,{
+        foreignKey: 'id_usuario',
+        as: 'usuario'
       })
     }
   }

@@ -6,8 +6,8 @@ const { Op, where } = require('sequelize');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-
-
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 const imageToBase64 = async (filePath) => {
     return new Promise((resolve, reject) => {
@@ -360,102 +360,170 @@ exports.reactivar = async (req, res) => {
 
 }
 
-exports.generatePDF = async (req, res) => {
-  console.log('generatePDF: función invocada');
-  const logoPath = path.join(__dirname, '../public/images/logo-minsal.png');
-  const logoPath2 = path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png');
-  const logoPath3 = path.join(__dirname, '../public/images/logo-dtic.png');
-
-  console.log("¿Existe logo 1?", fs.existsSync(logoPath));
-  console.log("¿Existe logo 2?", fs.existsSync(logoPath2));
-  console.log("¿Existe logo 3?", fs.existsSync(logoPath3));
-
-let base64Logo, base64Logo2, base64Logo3;
-
-try {
-  console.log('Convirtiendo logo 1');
-  base64Logo = await imageToBase64(logoPath);
-  console.log('Logo 1 convertido');
-
-  console.log('Convirtiendo logo 2');
-  base64Logo2 = await imageToBase64(logoPath2);
-  console.log('Logo 2 convertido');
-
-  console.log('Convirtiendo logo 3');
-  base64Logo3 = await imageToBase64(logoPath3);
-  console.log('Logo 3 convertido');
-
-  if (!base64Logo || !base64Logo2 || !base64Logo3) {
-    throw new Error('No se pudo convertir uno o más logos a base64');
-  }
-} catch (e) {
-  console.error('Error convirtiendo imagen a base64:', e.message);
-  return res.status(500).json({ error: 'Error al convertir imagen a base64' });
-}
-
-console.log('base64Logo:', base64Logo?.slice(0, 30));
-console.log('base64Logo2:', base64Logo2?.slice(0, 30));
-console.log('base64Logo3:', base64Logo3?.slice(0, 30));
-
-
+// Extrae la data completa sin filtro de las reuniones reactivadas
+// Autor: Francisco Escobar
+// Fecha: 2025-10-03 hora: 09:55 a.m
+exports.verReactivadas = async (req, res) => {
 
     try {
-        const id = req.params.id;
-console.log('generatePDF: id recibido:', id);
-        
-const reunion = await db.reunion.findOne({
+        console.log('Buscando en la base de datos')
+        const reuniones = await db.bitacora_reactivaciones.findAll({
+            include: [
+                {
+                    model: db.users,
+                    as: "usuario",
+                    attributes: ["nombre"],
+                    required: true,
+                },
+                {
+                    model: db.reunion,
+                    as: "reunion",
+                    attributes: ["nombre", "lugar"],
+                    required: true,
+                    include: [
+                        {
+                            model: db.version,
+                            as: "version",
+                            attributes: ["nombre"],
+                            include: [
+                                {
+                                    model: db.proyecto,
+                                    as: "proyecto",
+                                    attributes: ["nombre"]
+                                }
+                            ]
+                        },
+                        {
+                            model: db.users,
+                            as: "user",
+                            attributes: ["nombre"],
+                        }
+                    ]
+                },
+            ],
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
+        console.log('Reuniones encontradas: ' + reuniones.length)
+        res.status(HttpCode.HTTP_OK).json(reuniones)
+    }catch (e) {
+        console.log(e)
+        res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'Hubo un problema para procesar las reuniones reactivadas'})
+    }
+
+
+}
+
+exports.generatePDF = async (req, res) => {
+    const logoPath = path.join(__dirname, "../public/images/logo-minsal.png");
+    const logoPath2 = path.join(__dirname,"../public/images/Logo-reutrack-fondo-blanco.png");
+    const logoPath3 = path.join(__dirname, "../public/images/logo-dtic.png");
+
+    formatearTelefono = (telefono) => {
+        if (telefono.length > 0 && telefono.length < 9) {
+            cadena = telefono.substring(0, 4) + "-" + telefono.substring(4, 8);
+            return cadena;
+        } else if (telefono.length === 9) {
+            return telefono;
+        } else {
+            return telefono;
+        }
+    };
+
+    formatearDUI = (dui) => {
+        if (dui.length > 0 && dui.length < 10) {
+            cadena = dui.substring(0, 8) + "-" + dui.substring(8, 9);
+            return cadena;
+        } else if (dui.length === 10) {
+            return dui;
+        } else {
+            return dui;
+        }
+    };
+
+    let base64Logo, base64Logo2, base64Logo3;
+
+    try {
+        base64Logo = await imageToBase64(logoPath);
+        base64Logo2 = await imageToBase64(logoPath2);
+        base64Logo3 = await imageToBase64(logoPath3);
+
+        if (!base64Logo || !base64Logo2 || !base64Logo3) {
+            throw new Error("No se pudo convertir uno o más logos a base64");
+        }
+    } catch (e) {
+        console.error("Error convirtiendo imagen a base64:", e.message);
+        return res
+            .status(500)
+            .json({ error: "Error al convertir imagen a base64" });
+    }
+
+    try {
+        const id = req.body.id;
+
+        const reunion = await db.reunion.findOne({
             where: { id: id },
             include: [
                 {
                     model: db.encargado,
-                    as: 'encargado de reunion',
-                    attributes: ['id', 'visitante'],
+                    as: "encargado de reunion",
+                    attributes: ["id", "visitante"],
                     include: [
                         {
                             model: db.users,
-                            as: 'usuario',
-                            attributes: ['nombre', 'email']
-                        }
+                            as: "usuario",
+                            attributes: ["nombre", "email", "documento", "telefono"],
+                        },
                     ],
-                    where: { visitante: false } // Filtrar solo encargados que no son visitantes
+                    where: { visitante: false }, // Filtrar solo encargados que no son visitantes
                 },
                 {
                     model: db.listaasistencia,
-                    as: 'asistencia reunion',
-                    attributes: ['participante', 'institucion', 'doc_identidad', 'cargo', 'telefono', 'correo'],
+                    as: "asistencia reunion",
+                    attributes: [
+                        "participante",
+                        "institucion",
+                        "doc_identidad",
+                        "cargo",
+                        "telefono",
+                        "correo",
+                    ],
                 },
                 {
                     model: db.puntoreunion,
-                    as: 'puntos de reunion',
-                    attributes: ['nombre'],
+                    as: "puntos de reunion",
+                    attributes: ["nombre"],
                 },
                 {
                     model: db.minutareunion,
-                    as: 'minutadereunion',
-                    attributes: ['minuta'],
+                    as: "minutadereunion",
+                    attributes: ["minuta"],
                 },
                 {
                     model: db.acuerdocompromiso,
-                    as: 'acuerdos de reunion',
-                    attributes: ['nombre'],
+                    as: "acuerdos de reunion",
+                    attributes: ["nombre"],
                 },
                 {
                     model: db.version,
-                    as: 'version',
-                    attributes: ['nombre'],
+                    as: "version",
+                    attributes: ["nombre"],
                     include: [
                         {
                             model: db.proyecto,
-                            as: 'proyecto',
-                            attributes: ['nombre'],
+                            as: "proyecto",
+                            attributes: ["nombre"],
                         },
-                    ]
-                }
+                    ],
+                },
             ],
         });
 
         if (!reunion) {
-            return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Reunión no encontrada' });
+            return res
+                .status(HttpCode.HTTP_NOT_FOUND)
+                .json({ error: "Reunión no encontrada" });
         }
 
         const html = `
@@ -515,151 +583,222 @@ const reunion = await db.reunion.findOne({
             </style>
         </head>
         <body>
-    <main>
-        <div class="title">${reunion['version']['proyecto']['nombre']} - ${reunion['version']['nombre']}</div>
-        <div class="section">
-            <h2>
-            <b>Nombre de reunión: </b>${reunion.nombre}
-            <br>Lugar: </b>${reunion.lugar}
-            <br> <b>Fecha:</b> ${moment(reunion.expiracion).format('DD/MM/YYYY HH:mm')}
-            </h2>
-        </div>
-        <div class="section">
-            <h2>Encargados de la reunión:</h2>
-            <ul class="puntos-reunion">
-                ${reunion['encargado de reunion'] && reunion['encargado de reunion'].length > 0 ? reunion['encargado de reunion'].map(encargado => `
-                <li>• ${encargado.usuario.nombre}</li>
-                `).join('') : ''}
-            </ul>
-        </div>
-        <div class="section">
-            <h2>Puntos de la reunión:</h2>
-            <ul class="puntos-reunion">
-            ${reunion['puntos de reunion'].map(punto => `
-            <li>• ${punto.nombre}</li>
-            `).join('')}
-            </ul>
-        </div>
-        <div class="section">
-            <h2>Minuta:</h2>
-            <p>${reunion['minutadereunion'][0].minuta}</p>
-        </div>
-        <div class="section">
-            <h2>Acuerdos:</h2>
-            <ul>
-            ${reunion['acuerdos de reunion'].map(acuerdo => `
-            <li>${acuerdo.nombre}</li>
-            `).join('')}
-            </ul>
-        </div>
-        <div class="page-break"></div>
-        <div class="section">
-            <h2>Asistentes:</h2>
-            <div class= "table">
-            <table class="asistentes">
-                <tr>
-                    <th>Participante</th>
-                    <th>Institución</th>
-                    <th>Doc de identidad</th>
-                    <th>Cargo</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                </tr>
-                ${reunion['encargado de reunion'] && reunion['encargado de reunion'].length > 0 ? reunion['encargado de reunion'].map(encargado => `
-                <tr>
-                    <td>${encargado.usuario.nombre}</td>
-                    <td>${encargado.usuario.institucion || 'DTIC / MINSAL'}</td>
-                    <td>-</td>
-                    <td>Técnico Informático</td>
-                    <td>-</td>
-                    <td>${encargado.usuario.email}</td>
-                </tr>
-                `).join('') : ''}
-                ${reunion['asistencia reunion'].map(asistente => `
+            <main>
+                <div class="title">${reunion["version"]["proyecto"]["nombre"]} - ${reunion["version"]["nombre"]
+                    }</div>
+                <div class="section">
+                    <h2>
+                    <b>Nombre de reunión: </b>${reunion.nombre}
+                    <br>Lugar: </b>${reunion.lugar}
+                    <br> <b>Fecha:</b> ${moment(reunion.expiracion).format(
+                        "DD/MM/YYYY HH:mm"
+                    )}
+                    </h2>
+                </div>
+                <div class="section">
+                    <h2>Encargados de la reunión:</h2>
+                    <ul class="puntos-reunion">
+                        ${reunion["encargado de reunion"] &&
+                        reunion["encargado de reunion"].length > 0
+                        ? reunion["encargado de reunion"]
+                            .map(
+                                (encargado) => `
+                        <li>• ${encargado.usuario.nombre}</li>
+                        `
+                            )
+                            .join("")
+                        : ""
+                    }
+                    </ul>
+                </div>
+                <div class="section">
+                    <h2>Puntos de la reunión:</h2>
+                    <ul class="puntos-reunion">
+                    ${reunion["puntos de reunion"]
+                        .map(
+                            (punto) => `
+                    <li>• ${punto.nombre}</li>
+                    `
+                        )
+                        .join("")}
+                    </ul>
+                </div>
+                <div class="section">
+                    <h2>Desarrollo de la reunión:</h2>
+                    <p>${reunion["minutadereunion"][0].minuta}</p>
+                </div>
+                <div class="section">
+                    <h2>Acuerdos:</h2>
+                    <ul>
+                    ${reunion["acuerdos de reunion"]
+                        .map(
+                            (acuerdo) => `
+                    <li>${acuerdo.nombre}</li>
+                    `
+                        )
+                        .join("")}
+                    </ul>
+                </div>
+                <div class="page-break"></div>
+                <div class="section">
+                    <h2>Listado de asistencia:</h2>
+                    <div class= "table">
+                    <table class="asistentes">
+                        <tr>
+                            <th>Participante</th>
+                            <th>Institución</th>
+                            <th>Doc de identidad</th>
+                            <th>Cargo</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                        </tr>
+                        ${reunion["encargado de reunion"] &&
+                        reunion["encargado de reunion"].length > 0
+                        ? reunion["encargado de reunion"]
+                            .map(
+                                (encargado) => `
+                        <tr>
+                            <td>${encargado.usuario.nombre}</td>
+                            <td>${encargado.usuario.institucion || "DTIC / MINSAL"}</td>
+                            <td>${formatearDUI(encargado.usuario.documento)}</td>
+                            <td>Técnico Informático</td>
+                            <td>${formatearTelefono(encargado.usuario.telefono)}</td>
+                            <td>${encargado.usuario.email}</td>
+                        </tr>
+                        `
+                            )
+                            .join("")
+                        : ""
+                    }
+                        ${reunion["asistencia reunion"]
+                        .map(
+                            (asistente) => `
 
-                <tr>
-                    <td>${asistente.participante}</td>
-                    <td>${asistente.institucion}</td>
-                    <td>${asistente.doc_identidad || '-'}</td>
-                    <td>${asistente.cargo}</td>
-                    <td>${asistente.telefono || '-'}</td>
-                    <td>${asistente.correo}</td>
-                </tr>
-                `).join('')}
-            </table>
-            </div>
-        </div>
-    </main>
-</body>
+                        <tr>
+                            <td>${asistente.participante}</td>
+                            <td>${asistente.institucion}</td>
+                            <td>${formatearDUI(asistente.doc_identidad) || "-"}</td>
+                            <td>${asistente.cargo}</td>
+                            <td>${formatearTelefono(asistente.telefono) || "-"}</td>
+                            <td>${asistente.correo}</td>
+                        </tr>
+                        `
+                        )
+                        .join("")}
+                    </table>
+                    </div>
+                </div>
+            </main>
+        </body>
     </html>
-        `
-        const puppeteer = require('puppeteer');
-console.log('Lanzando navegador...');
-       const browser = await puppeteer.launch({
-  headless: 'new',
-  args: [
-    '--no-sandbox', '--disable-setuid-sandbox'
-  ],
-});
+        `;
 
- 
-console.log('Navegador lanzado');
+        const browser = await puppeteer.launch({
+            headless: "new",
+            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        });
+
         const page = await browser.newPage(); // Create a new page instance
-console.log('Nueva página creada');
-        await page.setContent(html, { waitUntil: 'networkidle0' })
+        console.log("Nueva página creada");
+        await page.setContent(html, { waitUntil: "networkidle0" });
         const pdf = await page.pdf({
-            format: 'letter',
+            format: "letter",
             margin: {
-                top: '96px',
-                right: '96px',
-                bottom: '96px',
-                left: '96px',
+                top: "96px",
+                right: "96px",
+                bottom: "96px",
+                left: "96px",
             },
             printBackground: true,
-            displayHeaderFooter:true,
-            pageRanges: '1-999',
-headerTemplate: `
+            displayHeaderFooter: true,
+            pageRanges: "1-999",
+            headerTemplate: `
   <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 96px;">
     <img src="${base64Logo}" style="width: 160px;" />
     <img src="${base64Logo3}" style="width: 160px;" />
   </div>
 `,
-footerTemplate: `
+            footerTemplate: `
   <div style="width: 100%; text-align: center; margin-top: 20px; opacity: 0.5;">
     <img src="${base64Logo2}" style="width: 20%; margin: 0 auto;" />
     <div style="display: flex; justify-content:space-between; padding-left: 60px; padding-right: 60px;">
-        <span style="font-size: 12px; margin-top: 10px;">Generado por Reutrack el: ${moment().utcOffset(-6).format('DD/MM/YYYY HH:mm')}</span>
+        <span style="font-size: 12px; margin-top: 10px;">Generado por Reutrack el: ${moment()
+                    .utcOffset(-6)
+                    .format("DD/MM/YYYY HH:mm")}</span>
         <span style="font-size: 12px; margin-top: 10px;">Página <span class="pageNumber"></span> de <span class="totalPages"></span></span>
     </div>
   </div>
 `,
-
-
         });
-        
+
         await browser.close();
-
-const safeName = reunion.nombre.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-const pdfBuffer = Buffer.from(pdf);
-
-console.log('pdf es buffer:', Buffer.isBuffer(pdfBuffer));
-console.log('pdf tamaño:', pdfBuffer.length);
-console.log('primeros bytes pdf:', pdfBuffer.slice(0, 4));
-
-res.set({
-  'Content-Type': 'application/pdf',
-  'Content-Disposition': `inline; filename=reunion_${safeName}.pdf`,
-  'Content-Length': pdfBuffer.length
-});
-res.end(pdfBuffer);
-
-
-
+        const pdfBuffer = Buffer.from(pdf);
+        
+        if (res){
+            const safeName = reunion.nombre.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+            res.set({
+                "Content-Type": "application/pdf",
+                "Content-Disposition": `inline; filename=reunion_${safeName}.pdf`,
+                "Content-Length": pdfBuffer.length,
+            });
+            res.end(pdfBuffer);
+        }
+        else {
+              return pdfBuffer;
+        }
     } catch (error) {
-        console.error('Error generando PDF:', {
+        console.error("Error generando PDF:", {
             message: error.message,
             stack: error.stack,
         });
-        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Error generando PDF' });
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR)
+        res.json({ error: "Error generando PDF" });
     }
+};
+
+
+exports.emailPDF = async (req, res) => {
+    
+    const transporter = nodemailer.createTransport({
+        service: process.env.MAIL_SERVICE,
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
+        secure: true,
+        auth: {
+            user: process.env.MAIL_USER, 
+            pass: process.env.MAIL_PASS,
+        }
+    });
+    
+    try {
+        
+        const asistentes = req.body.asistentes
+        pdf_minuta= await this.generatePDF(req)
+        
+        const mailOptions = {
+                from: '"Notificación Requerimientos" '+ process.env.MAIL_FROM,
+                to: asistentes,
+                subject: 'Minuta de reunión',
+                html: `
+                    <div style="text-align: left; font-family: Arial, sans-serif;">
+                            <p>Se adjunta el documento correspondiente a la reunión sostenida.</p>
+                        </div>
+                    </div>
+                `,
+                attachments: [
+                    {
+                        filename: 'minuta.pdf',
+                        content: pdf_minuta,
+                        contentType: 'application/pdf'
+                    }
+                ]
+            };
+        await transporter.sendMail(mailOptions);
+        res.status(HttpCode.HTTP_OK).json({exito: 'Se ha enviado un correo electrónico'});
+        return
+    } catch (error) {
+         console.error(error);
+        throw error;
+    }
+              
 }

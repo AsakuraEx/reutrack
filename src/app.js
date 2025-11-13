@@ -10,6 +10,14 @@ const { swaggerUi, swaggerDocs } = require('./docs/swagger/swagger');
 
 var app = express();
 
+<<<<<<< HEAD
+=======
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+>>>>>>> cbee2de73b8d7f53c4aabbfb8a11f3d1f3bf5081
 let origen = "";
 
 if (process.env.NODE_ENV === "production") {
@@ -18,6 +26,12 @@ if (process.env.NODE_ENV === "production") {
   origen = `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`;
 }
 
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> cbee2de73b8d7f53c4aabbfb8a11f3d1f3bf5081
 app.use(cors({
   origin: [origen],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],

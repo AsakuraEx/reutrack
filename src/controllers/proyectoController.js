@@ -84,6 +84,29 @@ exports.index = async (req, res) => {
     }
 }
 
+exports.eliminados = async (req, res) => {
+
+    try {
+
+        const proyectos = await db.bitacora_proyecto_eliminacion.findAll({
+            include: [
+                {
+                    model: db.users,
+                    as: 'usuario',
+                    attributes: ['nombre'],
+                    required: true
+                }
+            ]
+        })
+    
+        res.status(HttpCode.HTTP_OK).json(proyectos);
+    
+    } catch(e) {
+        res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'ocurrio un error'})
+    }
+
+}
+
 exports.indexWithVersion = async (req, res) => {
     const limit = parseInt(req.query.limit) || null
     const page = parseInt(req.query.page) || 1
@@ -193,13 +216,11 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     const { id } = req.params;
     const {
-        nombre,
-        id_usuario
+        nombre
     } = req.body
     try {
         await table.update({
-            nombre,
-            id_usuario
+            nombre
         }, {where: {id: id}});
 
         const updatedData = await table.findByPk(id)

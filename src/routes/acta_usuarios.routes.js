@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const acta = require('../controllers/acta_usuarios.controller');
+const { verifyToken } = require('../middlewares/verifyToken');
 
 // Para manejar los archivos
 const multer = require("multer");
-const upload = multer({dest: "C:/Users/frane/Documents/tmp"})
+const upload = multer({dest: "../tmp"})
 
 
 router.get('/documentos', acta.getOneByDocument);
@@ -13,6 +14,7 @@ router.get('/:id', acta.getOneByPk);
 
 router.post('/', upload.fields([{name: "documento_identidad", maxCount: 1}, {name: "documento_institucional", maxCount: 1} ]), acta.create);
 
+router.delete('/:id', [verifyToken], acta.delete);
 
 
 module.exports = router;

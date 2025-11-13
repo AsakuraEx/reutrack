@@ -1,6 +1,9 @@
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer'); 
+const path = require('path');
+
 
 exports.getOne = async (req,res) => {
     try {
@@ -52,33 +55,86 @@ exports.index = async (req, res) => {
 
 
 exports.create = async (req, res) => {
-    const {nombre, email, password} = req.body;
+    
+    //Variable utilizada para el envio de correos
+    const transporter = nodemailer.createTransport({
+        service: process.env.MAIL_SERVICE,
+        host: process.env.MAIL_HOST,
+        port: process.env.MAIL_PORT,
+        secure: true,
+        auth: {
+            user: process.env.MAIL_USER, 
+            pass: process.env.MAIL_PASS,
+        }
+    });
+
+    const {nombre, email, password, telefono, documento} = req.body;
+
+    const newPassword = password;
 
     try {
         const newUser = await db.users.create({ 
             nombre,
             email,
-            password: bcrypt.hashSync(password, 12),
+            telefono,
+            documento,
+            password: bcrypt.hashSync(newPassword, 12),
             id_estado: 4,
             id_rol: 2,
             first_session: 1
         });
+
+        const mailOptions = {
+                    from: '"Notificación Requerimientos" '+ process.env.MAIL_FROM,
+                    to: newUser.email,
+                    subject: 'REUTRACK - Usuario creado',
+                    html: `
+                        <div style="text-align: center; font-family: Arial, sans-serif;">
+                            <div style="background-color: #f9f9f9; border-radius: 10px">
+                                <img src="cid:logo_reutrack" style="width: 300px;">
+                            </div>    
+                            <div style="background-color: #F6EDFF; border-radius: 10px; margin-top: 12px; padding-top:8px; padding-bottom: 8px">
+                                <h2>Se ha creado su cuenta asociada a su correo, su contraseña temporal es la siguiente:</h2>
+                                <center>
+                                    <div style="width: 6.5rem;">
+                                        <p style="font-size: 24px; font-weight: bold; color: #A855F7; border: 2px solid #A855F7; ">${password}</p>
+                                    </div>
+                                </center>
+                                
+                                <p>Inicie sesión con su contraseña temporal en el sitio web.</p>
+                            </div>
+                        </div>
+                    `,
+                    attachments: [
+                        {
+                            filename: 'Logo-reutrack-fondo-blanco.png',
+                            path: path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png'), 
+                            cid: 'logo_reutrack'
+                        }
+                    ]
+                };
+        await transporter.sendMail(mailOptions);
+
         res.status(HttpCode.HTTP_CREATED).json(newUser);
     } catch (error) {
-        console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
 
 exports.update = async (req, res) => {
     const { id } = req.params;
-    const {nombre, email, password} = req.body;
+    const {nombre, email, password, telefono, documento} = req.body;
     
+    console.log('creando usuario...')
+    console.log(req.body)
+
     try {
         if(password){
             await db.users.update({ 
                 nombre,
                 email,
+                telefono,
+                documento,
                 password: bcrypt.hashSync(password, 12),
                 first_session: 1
             }, {where: {id: id}});
@@ -86,6 +142,8 @@ exports.update = async (req, res) => {
         await db.users.update({ 
             nombre,
             email,
+            telefono,
+            documento
         }, {where: {id: id}});
 
         const updatedData = await db.users.findByPk(id)
@@ -103,6 +161,26 @@ exports.update = async (req, res) => {
 exports.updatePassword = async (req, res) => {
     const { id_usuario, password, oldpassword, first_session } = req.body;
     
+    // Flujo de recuperacion de contraseña
+    if(oldpassword==='temporal') {
+
+        try {
+            if(first_session == 1){
+                await db.users.update({ first_session: 2 },
+                { where: { id: id_usuario } }
+            )}
+            await db.users.update({ password: bcrypt.hashSync(password, 12) },
+            { where: { id: id_usuario }});
+            res.status(HttpCode.HTTP_OK).json({exito: 'Contraseña actualizada con exito'});
+            return
+        }catch (error) {
+            console.error('Error', error.message || error);
+            res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json('Internal server error');
+        }
+
+    }
+
+    // Flujo de cambio de contraseña común
     const oldPassword = await db.users.findByPk(id_usuario); 
     try {
         if (!bcrypt.compareSync(oldpassword, oldPassword.password)) {
