@@ -8,7 +8,7 @@ app.post('/email_pdf', reunionController.emailPDF);
 
 app.get('/',[verifyToken] , reunionController.index);
 app.get('/ultima', [verifyToken] ,reunionController.ultima);
-app.get('/pdf', reunionController.generatePDF);
+app.post('/pdf', reunionController.generatePDF);
 app.get('/reactivadas', [verifyToken], reunionController.verReactivadas)
 
 app.post('/create', [verifyToken] ,reunionController.create);

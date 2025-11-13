@@ -1,6 +1,9 @@
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer'); 
+const path = require('path');
+
 
 exports.getOne = async (req,res) => {
     try {
@@ -65,10 +68,9 @@ exports.create = async (req, res) => {
         }
     });
 
-    const {nombre, email, flat_password, telefono, documento} = req.body;
+    const {nombre, email, password, telefono, documento} = req.body;
 
-    console.log('creando usuario...')
-    console.log(req.body)
+    const newPassword = password;
 
     try {
         const newUser = await db.users.create({ 
@@ -76,14 +78,15 @@ exports.create = async (req, res) => {
             email,
             telefono,
             documento,
-            password: bcrypt.hashSync(flat_password, 12),
+            password: bcrypt.hashSync(newPassword, 12),
             id_estado: 4,
             id_rol: 2,
             first_session: 1
         });
+
         const mailOptions = {
                     from: '"Notificación Requerimientos" '+ process.env.MAIL_FROM,
-                    to: user.email,
+                    to: newUser.email,
                     subject: 'REUTRACK - Usuario creado',
                     html: `
                         <div style="text-align: center; font-family: Arial, sans-serif;">
@@ -94,11 +97,11 @@ exports.create = async (req, res) => {
                                 <h2>Se ha creado su cuenta asociada a su correo, su contraseña temporal es la siguiente:</h2>
                                 <center>
                                     <div style="width: 6.5rem;">
-                                        <p style="font-size: 24px; font-weight: bold; color: #A855F7; border: 2px solid #A855F7; ">${flat_password}</p>
+                                        <p style="font-size: 24px; font-weight: bold; color: #A855F7; border: 2px solid #A855F7; ">${password}</p>
                                     </div>
                                 </center>
                                 
-                                <p>Inicie sesión con su contraseña temporal .</p>
+                                <p>Inicie sesión con su contraseña temporal en el sitio web.</p>
                             </div>
                         </div>
                     `,
@@ -110,10 +113,10 @@ exports.create = async (req, res) => {
                         }
                     ]
                 };
-                await transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions);
+
         res.status(HttpCode.HTTP_CREATED).json(newUser);
     } catch (error) {
-        console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 }
