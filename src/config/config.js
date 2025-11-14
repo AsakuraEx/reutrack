@@ -10,6 +10,7 @@ module.exports = {
     host: process.env.DEV_DB_HOST,
     port: process.env.DEV_DB_PORT,
     dialect: 'mariadb',
+    dialectModule: MariaDbDialect,
     connectTimeout: 1000,
   },
   production: {
