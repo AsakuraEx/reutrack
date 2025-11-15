@@ -421,24 +421,32 @@ exports.generatePDF = async (req, res) => {
     const logoPath3 = path.join(__dirname, "../public/images/logo-dtic.png");
 
     formatearTelefono = (telefono) => {
-        if (telefono.length > 0 && telefono.length < 9) {
-            cadena = telefono.substring(0, 4) + "-" + telefono.substring(4, 8);
-            return cadena;
-        } else if (telefono.length === 9) {
-            return telefono;
+        if(telefono){
+            if (telefono.length > 0 && telefono.length < 9) {
+                cadena = telefono.substring(0, 4) + "-" + telefono.substring(4, 8);
+                return cadena;
+            } else if (telefono.length === 9) {
+                return telefono;
+            } else {
+                return telefono;
+            }
         } else {
-            return telefono;
+            return '-'
         }
     };
 
     formatearDUI = (dui) => {
-        if (dui.length > 0 && dui.length < 10) {
-            cadena = dui.substring(0, 8) + "-" + dui.substring(8, 9);
-            return cadena;
-        } else if (dui.length === 10) {
-            return dui;
+        if(dui){
+            if (dui.length > 0 && dui.length < 10) {
+                cadena = dui.substring(0, 8) + "-" + dui.substring(8, 9);
+                return cadena;
+            } else if (dui.length === 10) {
+                return dui;
+            } else {
+                return dui;
+            }
         } else {
-            return dui;
+            return '-'
         }
     };
 
