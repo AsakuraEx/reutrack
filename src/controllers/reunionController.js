@@ -111,7 +111,7 @@ exports.detalle = async (req, res) => {
                     {
                         model: db.users,
                         as: 'usuario',
-                        attributes: ['nombre']
+                        attributes: ['nombre', 'email']
                     }
                 ],
                 where: { visitante: false } // Filtrar solo encargados que no son visitantes
@@ -781,12 +781,13 @@ exports.emailPDF = async (req, res) => {
     try {
         
         const asistentes = req.body.asistentes
+        const nombreReunion = req.body.nombre
         pdf_minuta= await this.generatePDF(req)
         
         const mailOptions = {
                 from: '"Notificación Requerimientos" '+ process.env.MAIL_FROM,
                 to: asistentes,
-                subject: 'Minuta de reunión',
+                subject: 'Minuta de reunión: ' + nombreReunion,
                 html: `
                     <div style="text-align: left; font-family: Arial, sans-serif;">
                             <p>Se adjunta el documento correspondiente a la reunión sostenida.</p>
