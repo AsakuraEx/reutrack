@@ -7,7 +7,11 @@
     "server": "nodemon ./src/bin/www",
     "start:prod": "cross-env NODE_ENV=production node ./src/bin/www",
     "start:dev": "cross-env NODE_ENV=development node ./src/bin/www",
-    "migrate": "sh -c 'export $(grep -v '^#' .env | xargs) && npx sequelize db:migrate --url \"mysql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME\"'"
+    "migrate": "npx sequelize-cli db:migrate",
+    "migration:generate": "npx sequelize-cli migration:generate --name",
+    "seed": "npx sequelize-cli db:seed:all",
+    "seed:undo": "npx sequelize-cli db:seed:undo:all",
+    "seed:gen": "npx sequelize-cli seed:generate --name"
   },
   "dependencies": {
     "@sequelize/mariadb": "^7.0.0-alpha.46",

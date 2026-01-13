@@ -20,6 +20,6 @@ module.exports = {
     port: process.env.DB_PORT,
     dialect: 'mariadb',
     connectTimeout: 3000,
-    logging: false, // Desactiva logs de SQL en producción
+    logging: false,
   },
 };

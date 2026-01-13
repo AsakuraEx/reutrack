@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_estado',
         as: 'estado'
       })
+      reunion.belongsTo(models.ctl_motivos_reunion,{
+        foreignKey: 'id_motivo',
+        as: 'motivo'
+      })
       reunion.belongsTo(models.users,{
         foreignKey: 'id_usuario',
         as: 'user'
