@@ -15,11 +15,13 @@ exports.index = async (req, res) => {
 };
 
 exports.create = async (req, res) => {
-    const {minuta, id_reunion} = req.body;
+    const {minuta, id_reunion, virtual, id_motivo } = req.body;
     try {
         const newMinuta = await db.minutareunion.create({
             minuta,
             id_reunion,
+            virtual,
+            id_motivo
         });  
         res.status(HttpCode.HTTP_CREATED).json(newMinuta);
     } catch (error) {
@@ -31,10 +33,22 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const minuta = req.body.minuta; 
+        const id_motivo = req.body.id_motivo;
+        const isvirtual = req.body.virtual;
         const id_reunion = req.params.id_reunion
 
+        console.log(req.body);
+        if(id_motivo === null || id_motivo === 0){
+            res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'El campo motivo de la reunión es obligatorio.' });
+            return;
+        }
+        
+        await db.reunion.update({ 
+            'id_motivo': id_motivo, 
+            'virtual': isvirtual
+        }, { where: {id: id_reunion } });
 
-        await db.minutareunion.update({ 'minuta': minuta }, { where: { id_reunion: id_reunion } });
+        await db.minutareunion.update({ 'minuta': minuta }, { where: { id_reunion: id_reunion } });        
         const updatedData = await db.minutareunion.findOne(
             { where: { id_reunion: id_reunion } }
         ); 

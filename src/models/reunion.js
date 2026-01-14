@@ -64,7 +64,9 @@ module.exports = (sequelize, DataTypes) => {
     reactivado: DataTypes.BOOLEAN,
     id_usuario: DataTypes.INTEGER,
     id_version: DataTypes.INTEGER,
-    id_estado: DataTypes.INTEGER
+    id_estado: DataTypes.INTEGER,
+    id_motivo: DataTypes.INTEGER,
+    virtual: DataTypes.BOOLEAN
   }, {
     sequelize: db,
     freezeTableName: true,
