@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const HttpCode  = require('../../configs/httpCode');
 const db = require('../models');
 
@@ -13,13 +14,18 @@ exports.getOne = async (req,res) => {
 }
 
 exports.index = async (req, res) => {
-    try {
-        const estado = await db.ctl_estado.findAll();
-        res.status(HttpCode.HTTP_OK).json(estado);
-    } catch (err) {
-        console.error('Error', err.message || err);
-        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
-    }
+  const { tipo } = req.body;
+  try {
+    const where = tipo === "version"
+    ? { id: { [Op.between]: [11, 21] } }
+    : { id: { [Op.notBetween]: [11, 21] } }; //cambiar los ID por los que se tengan en base
+
+    const estado = await db.ctl_estado.findAll({ where });
+    res.status(HttpCode.HTTP_OK).json(estado);
+  } catch (err) {
+    console.error("Error", err.message || err);
+    res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
+  }
 };
 
 exports.create = async (req, res) => {
