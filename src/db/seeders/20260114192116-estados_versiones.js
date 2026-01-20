@@ -3,6 +3,7 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('ctl_estado', [
+      { nombre: 'Programado', createdAt: new Date(), updatedAt: new Date() },
       { nombre: 'Toma de requerimiento', createdAt: new Date(), updatedAt: new Date() },
       { nombre: 'Reunión Pendiente', createdAt: new Date(), updatedAt: new Date() },
       { nombre: 'Validación pendiente', createdAt: new Date(), updatedAt: new Date() },

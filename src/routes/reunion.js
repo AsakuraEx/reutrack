@@ -14,6 +14,7 @@ app.get('/reactivadas', [verifyToken], reunionController.verReactivadas)
 app.post('/create', [verifyToken] ,reunionController.create);
 
 app.patch('/reactivar', [verifyToken] ,reunionController.reactivar);
+app.patch('/iniciar/:id', [verifyToken], reunionController.iniciar);
 app.patch('/cancelar/:id', [verifyToken] ,reunionController.cancelar);
 app.patch('/finalizar/:id', [verifyToken] ,reunionController.finalizar);
 app.get('/detalle/:id', [verifyToken] ,reunionController.detalle);

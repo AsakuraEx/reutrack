@@ -332,12 +332,13 @@ exports.create = async (req, res) => {
     nombre,
     lugar,
     codigo,
+    virtual,
+    motivo,
+    fecha_reunion,
     expiracion,
     id_usuario,
     id_estado,
-    id_version,
-    id_motivo,
-    id_virtual,
+    id_version
   } = req.body;
 
   const idUsuarioInt = parseInt(id_usuario, 10);
@@ -351,14 +352,36 @@ exports.create = async (req, res) => {
       id_usuario: idUsuarioInt,
       id_estado,
       id_version,
-      id_motivo,
-      id_virtual,
+      id_motivo: motivo,
+      virtual,
     };
 
-    await db.reunion.create(reunion);
-    res.status(HttpCode.HTTP_CREATED).json(reunion);
+    if(fecha_reunion) {
+      reunion.createdAt = fecha_reunion;
+      reunion.id_estado = 8;
+    }
+
+    const newReunion = await db.reunion.create(reunion);
+
+    res.status(HttpCode.HTTP_CREATED).json(newReunion);
+
   } catch (error) {
     console.error("Error", error);
+    res
+      .status(HttpCode.HTTP_INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal server error" });
+  }
+};
+
+exports.iniciar = async (req, res) => {
+
+  const id_reunion = req.params.id;
+  try {
+    await db.reunion.update({ id_estado: 1 }, { where: { id: id_reunion } });
+    const reunion = await db.reunion.findByPk(id_reunion);
+    res.status(HttpCode.HTTP_OK).json(reunion);
+  } catch (error) {
+    console.error("Error", error.message || error);
     res
       .status(HttpCode.HTTP_INTERNAL_SERVER_ERROR)
       .json({ error: "Internal server error" });

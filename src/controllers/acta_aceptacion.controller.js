@@ -290,7 +290,7 @@ exports.createPdf = async (req, res) => {
                 <h2>
                   <b>Fecha de apertura: </b>${acta.createdAt}<br>
                   <b>Aperturado por: </b>${acta.usuario.nombre}<br>
-                  <b>Estado: </b>${acta.estado.nombre}
+                  <b>Estado: </b>Aprobado
                 </h2>
             </div>
 

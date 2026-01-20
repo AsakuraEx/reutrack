@@ -16,73 +16,81 @@ exports.getOne = async (req,res) => {
 }
 
 exports.index = async (req, res) => {
-    const limit = parseInt(req.query.limit) || null
-    const page = parseInt(req.query.page) || 1
-    const {estado} = req.query
+    const limit = parseInt(req.query.limit) || null;
+    const page = parseInt(req.query.page) || 1;
+    const { estado } = req.query;
 
-    
     try {
-        
+        // 1. CORRECCIÓN: Esto no es "options", es la configuración de "attributes"
+        // Aquí definimos qué columnas traer (incluyendo el conteo extra)
+        const attributes = {
+            include: [
+                [
+                    db.sequelize.literal(`(
+                        SELECT COUNT(*) 
+                        FROM version AS v 
+                        WHERE v.id_proyecto = proyecto.id and v.id_estado = 1
+                    )`),
+                    'cantidad_versiones'
+                ]
+            ],
+            exclude: ['id_usuario', 'updatedAt'],
+        };
 
-        const options = {
-            attributes: {
-                exclude: ['id_usuario','id_estado', 'updatedAt'],
-                
-
-            }, 
-        }
+        // 2. Definimos los JOINs (tablas relacionadas)
         const include = [
-            
-                { 
-                    model: db.users,
-                    as: 'usuario',
-                    attributes: ['nombre'],
-                    required: true,
-                },    
-        ]
-        if(estado) {
-            options.distinct= true,
-            options.col= 'id',
-            include.push(
-                {
-                    model: db.version,
-                    as: 'version',
-                    attributes: ['id'],
-                    required: true,
-                    where: {id_estado: estado}
-                    
-                },
-            )   
-        }
+            {
+                model: db.users,
+                as: 'usuario',
+                attributes: ['nombre'],
+                required: true,
+            },
+        ];
 
-        const {count, rows} = await table.findAndCountAll({
-            options,
-            include,
-            
+        // Objeto de configuración principal para la consulta
+        const queryOptions = {
+            attributes, // <--- Aquí pasamos los atributos definidos arriba
+            include,    // <--- Aquí pasamos los includes definidos arriba
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],
+        };
+
+        // 3. Lógica del filtro (Corrección de sintaxis)
+        if (estado) {
+            queryOptions.distinct = true;
+            queryOptions.col = 'id';
             
-        });
+            // Agregamos el filtro al array de includes existente
+            queryOptions.include.push({
+                model: db.version,
+                as: 'version',
+                attributes: ['id'],
+                required: true,
+                where: { id_estado: estado }
+            });
+        }
+
+        // 4. Ejecutamos la consulta pasando el objeto queryOptions limpio
+        const { count, rows } = await table.findAndCountAll(queryOptions);
 
         const start = (page - 1) * limit + 1;
         const end = Math.min(start + rows.length - 1, count);
-        
-
 
         res.status(HttpCode.HTTP_OK).json({
             totalRecords: count,
-            totalPages: Math.ceil(count / limit),
+            totalPages: limit ? Math.ceil(count / limit) : 1,
             currentPage: page,
             start: start,
             end: end,
             data: rows,
         });
+
     } catch (error) {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
-}
+};
 
 exports.eliminados = async (req, res) => {
 
