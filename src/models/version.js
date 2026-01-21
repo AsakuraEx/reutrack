@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_estado',
         as: 'estado'
       }),
+      version.belongsTo(models.ctl_estado,{
+        foreignKey: 'id_estado_req',
+        as: 'estado_requerimiento'
+      }),
       version.belongsTo(models.users,{
         foreignKey: 'id_usuario',
         as: 'usuario'
@@ -37,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     id_proyecto: DataTypes.INTEGER,
     id_usuario: DataTypes.INTEGER,
     id_estado: DataTypes.INTEGER,
+    id_estado_req: DataTypes.INTEGER,
     acta_aceptacion: DataTypes.STRING
   }, {
     sequelize: db,

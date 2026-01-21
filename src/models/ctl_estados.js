@@ -27,6 +27,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_estado',
         as: 'estado version'
       })
+      ctl_estados.hasMany(models.version, {
+        foreignKey: 'id_estado_req',
+        as: 'estado_requerimiento'
+      })
     }
   }
   ctl_estados.init({

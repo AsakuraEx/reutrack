@@ -14,11 +14,11 @@ exports.getOne = async (req,res) => {
 }
 
 exports.index = async (req, res) => {
-  const { tipo } = req.body;
+  const { tipo } = req.params;
   try {
     const where = tipo === "version"
-    ? { id: { [Op.between]: [11, 21] } }
-    : { id: { [Op.notBetween]: [11, 21] } }; //cambiar los ID por los que se tengan en base
+    ? { id: { [Op.between]: [9, 20] } }
+    : { id: { [Op.notBetween]: [9, 20] } }; //cambiar los ID por los que se tengan en base
 
     const estado = await db.ctl_estado.findAll({ where });
     res.status(HttpCode.HTTP_OK).json(estado);
