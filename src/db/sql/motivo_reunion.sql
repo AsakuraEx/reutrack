@@ -20,17 +20,21 @@ ALTER TABLE reunion ADD COLUMN id_motivo INT;
 ALTER TABLE reunion ADD FOREIGN KEY (id_motivo) REFERENCES ctl_motivos_reunion(id);
 ALTER TABLE reunion ADD COLUMN `virtual` TINYINT;
 
-INSERT INTO ctl_estado (nombre, createdAt, updatedAt) values
-    ('Programado', NOW(), NOW()),
-    ('Toma de requerimientos', NOW(), NOW()),
-    ('Reunión Pendiente', NOW(), NOW()),
-    ('Validación pendiente', NOW(), NOW()),
-    ('Prototipo pendiente', NOW(), NOW()),
-    ('Documento pendiente', NOW(), NOW()),
-    ('Requerimiento en desarrollo', NOW(), NOW()),
-    ('Requerimiento en QA', NOW(), NOW()),
-    ('Requerimiento documentado en espera', NOW(), NOW()),
-    ('Requerimiento detenido', NOW(), NOW()),
-    ('Pendiente de publicar', NOW(), NOW()),
-    ('Requerimiento en piloto', NOW(), NOW()),
-    ('Soporte', NOW(), NOW());
+INSERT INTO ctl_estado (id, nombre, createdAt, updatedAt) values
+    (11,'Validación pendiente', NOW(), NOW()),
+    (12,'Prototipo pendiente', NOW(), NOW()),
+    (13,'Documento pendiente', NOW(), NOW()),
+    (14,'Requerimiento en desarrollo', NOW(), NOW()),
+    (15,'Requerimiento en QA', NOW(), NOW()),
+    (16,'Requerimiento documentado en espera', NOW(), NOW()),
+    (17,'Requerimiento detenido', NOW(), NOW()),
+    (18,'Pendiente de publicar', NOW(), NOW()),
+    (19,'Requerimiento en piloto', NOW(), NOW()),
+    (20,'Soporte', NOW(), NOW());
+
+
+UPDATE ctl_estado SET nombre = 'Pendiente' WHERE id = 6;
+UPDATE ctl_estado SET nombre = 'Aprobado' WHERE id = 7;
+UPDATE ctl_estado SET nombre = 'Programado' WHERE id = 8;
+UPDATE ctl_estado SET nombre = 'Toma de requerimientos' WHERE id = 9;
+UPDATE ctl_estado SET nombre = 'Reunión pendiente' WHERE id = 10;

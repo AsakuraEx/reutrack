@@ -1,3 +1,10 @@
+INSERT INTO ctl_motivos_reunion (nombre, createdAt, updatedAt) values
+    ('Definición de requerimientos', NOW(), NOW()),
+    ('Revisión de avances', NOW(), NOW()),
+    ('Aceptación de prototipo', NOW(), NOW()),
+    ('Administrativo', NOW(), NOW()),
+    ('Logística', NOW(), NOW());
+
 ALTER TABLE version
 ADD COLUMN id_estado_req INT NULL;
 

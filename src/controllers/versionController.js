@@ -12,6 +12,11 @@ exports.getOne = async (req,res) => {
                     as: 'proyecto',
                     model: db.proyecto,
                     atributes: ['id', 'nombre']
+                },
+                {
+                    as: 'estado_requerimiento',
+                    model: db.ctl_estado,
+                    atributes: ['id', 'nombre']
                 }
             ]
         });
@@ -52,6 +57,11 @@ exports.index = async (req, res) => {
                     as: 'proyecto',
                     attributes: ['id', 'nombre'],
                     required: true,
+                },
+                {
+                    as: 'estado_requerimiento',
+                    model: db.ctl_estado,
+                    atributes: ['id', 'nombre']
                 }
             ],
             limit: limit,
@@ -149,7 +159,8 @@ exports.update = async (req, res) => {
         id_proyecto,
         id_usuario,
         id_estado,
-        acta_aceptacion
+        acta_aceptacion,
+        id_estado_req
     } = req.body
     try {
         await table.update({
@@ -158,7 +169,8 @@ exports.update = async (req, res) => {
             id_proyecto,
             id_usuario,
             id_estado,
-            acta_aceptacion
+            acta_aceptacion,
+            id_estado_req
         }, {where: {id: id}});
 
         const updatedData = await table.findByPk(id)
