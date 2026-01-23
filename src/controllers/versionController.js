@@ -160,9 +160,21 @@ exports.update = async (req, res) => {
         id_usuario,
         id_estado,
         acta_aceptacion,
-        id_estado_req
+        id_estado_req,
+        updatedby
     } = req.body
     try {
+        let updatedData = await table.findByPk(id)
+
+        if (updatedData.id_estado != id_estado || updatedData.id_estado_req != id_estado_req) {
+            await db.bitacora_estados_version.create({
+                id_proyecto: id_proyecto,
+                id_version: id,
+                id_estado_nuevo: id_estado_req,
+                id_estado_anterior: updatedData.id_estado_req,
+                id_usuario: updatedby,
+            })
+        }
         await table.update({
             nombre,
             descripcion,
@@ -173,7 +185,7 @@ exports.update = async (req, res) => {
             id_estado_req
         }, {where: {id: id}});
 
-        const updatedData = await table.findByPk(id)
+        updatedData = await table.findByPk(id)
         
         if (!updatedData){
             return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'Proyecto not found'})
