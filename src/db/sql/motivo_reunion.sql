@@ -1,4 +1,4 @@
-CREATE TABLE bitacora_estado_version (
+CREATE TABLE bitacora_estados_version (
     id int primary key auto_increment,
     id_proyecto int not null,
     id_version int not null,

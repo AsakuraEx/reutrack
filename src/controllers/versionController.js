@@ -133,6 +133,7 @@ exports.create = async (req, res) => {
         id_proyecto,
         id_usuario,
         id_estado,
+        id_estado_req,
         acta_aceptacion
     } = req.body;
 
@@ -143,6 +144,7 @@ exports.create = async (req, res) => {
             id_proyecto,
             id_usuario,
             id_estado,
+            id_estado_req,
             acta_aceptacion
         });
         res.status(HttpCode.HTTP_CREATED).json(newData);
@@ -171,10 +173,11 @@ exports.update = async (req, res) => {
                 id_proyecto: id_proyecto,
                 id_version: id,
                 id_estado_nuevo: id_estado_req,
-                id_estado_anterior: updatedData.id_estado_req,
+                id_estado_anterior: updatedData.id_estado_req || 9,
                 id_usuario: updatedby,
             })
         }
+
         await table.update({
             nombre,
             descripcion,

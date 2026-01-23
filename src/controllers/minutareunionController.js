@@ -37,7 +37,6 @@ exports.update = async (req, res) => {
         const isvirtual = req.body.virtual;
         const id_reunion = req.params.id_reunion
 
-        console.log(req.body);
         if(id_motivo === null || id_motivo === 0){
             res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'El campo motivo de la reunión es obligatorio.' });
             return;
