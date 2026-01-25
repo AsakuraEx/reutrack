@@ -165,6 +165,9 @@ exports.update = async (req, res) => {
         id_estado_req,
         updatedby
     } = req.body
+
+    console.log(req.body.updatedby)
+
     try {
         let updatedData = await table.findByPk(id)
 
