@@ -18,11 +18,11 @@ module.exports = (sequelize, DataTypes) => {
       }),
       bitacora_proyecto_fusion.belongsTo(models.proyecto,{
         foreignKey: 'id_proyecto_a',
-        as: 'id_proyecto_a'
+        as: 'id_proyecto_vigente'
       }),
       bitacora_proyecto_fusion.belongsTo(models.proyecto,{
         foreignKey: 'id_proyecto_b',
-        as: 'id_proyecto_b'
+        as: 'id_proyecto_eliminado'
       })
     }
   }

@@ -25,13 +25,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_proyecto',
         as: 'version'
       }),
-      users.hasMany(models.bitacora_proyecto_fusion, {
+      proyecto.hasMany(models.bitacora_proyecto_fusion, {
         foreignKey: 'id_proyecto_a',
-        as: 'id_proyecto_a'
+        as: 'id_proyecto_vigente'
       }),
-      users.hasMany(models.bitacora_proyecto_fusion, {
+      proyecto.hasMany(models.bitacora_proyecto_fusion, {
         foreignKey: 'id_proyecto_b',
-        as: 'id_proyecto_b'
+        as: 'id_proyecto_eliminado'
       })
 
     }
