@@ -317,6 +317,10 @@ exports.fusion = async (req, res) => {
             id_proyecto_b: id_proyecto_b,
             id_usuario: id_usuario
         })
+        await table.update(
+            {eliminado: 1},
+            {where: {id_proyecto: id_proyecto_b}}
+        )
         return res.status(HttpCode.HTTP_OK).json("Fusión de proyectos realizada")
     } catch (error) {
         console.error('Error', error.message || error)
