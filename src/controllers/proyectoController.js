@@ -268,11 +268,9 @@ exports.finalizar = async (req, res) => {
 // Autor: Walter Romero
 // Fecha: 2025-07-08 hora: 09:51a.m
 exports.delete = async (req, res) => {
-    console.log(req.body)
     const {id, nombre_proyecto, id_usuario} = req.body;
      // Valida que exista el id_proyecto body de la petición
     if(!id) {
-        console.log("El id del proyecto no existe")
         return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: 'ID de proyecto es requerido' });
     }
     if(!id_usuario) {
@@ -292,12 +290,34 @@ exports.delete = async (req, res) => {
                 nombre_proyecto: nombre_proyecto,
                 id_usuario: id_usuario
             })
-            console.log(proyecto)
             await db.proyecto.destroy({where: {id:id}})
             return res.status(HttpCode.HTTP_OK).json("Registro eliminado con exito")
             
         }
         return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'El proyecto no puede eliminarse porque ya cuenta con versiones creadas' })
+    } catch (error) {
+        console.error('Error', error.message || error)
+        return res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'Internal server error'})
+    }
+}
+
+exports.fusion = async (req, res) => {
+    const {id_proyecto_a, id_proyecto_b, id_usuario} = req.body
+
+    if(id_proyecto_a == id_proyecto_b){
+        return res.status(HttpCode.HTTP_BAD_REQUEST).json({ error:'Los proyectos eliminados no pueden ser iguales'})
+    }
+    try {
+        await db.version.update(
+            {id_proyecto: id_proyecto_a},
+            {where: {id_proyecto: id_proyecto_b}}
+        )
+        await db.bitacora_proyecto_fusion.create({
+            id_proyecto_a: id_proyecto_a,
+            id_proyecto_b: id_proyecto_b,
+            id_usuario: id_usuario
+        })
+        return res.status(HttpCode.HTTP_OK).json("Fusión de proyectos realizada")
     } catch (error) {
         console.error('Error', error.message || error)
         return res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'Internal server error'})

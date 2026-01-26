@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
       users.hasMany(models.bitacora_proyecto_eliminacion, {
         foreignKey: 'id_usuario',
         as: 'proyectos_eliminados'
+      }),
+      users.hasMany(models.bitacora_proyecto_fusion, {
+        foreignKey: 'id_usuario',
+        as: 'proyecto_fusion'
       })
     }
   }

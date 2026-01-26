@@ -24,6 +24,14 @@ module.exports = (sequelize, DataTypes) => {
       proyecto.hasMany(models.version,{
         foreignKey: 'id_proyecto',
         as: 'version'
+      }),
+      users.hasMany(models.bitacora_proyecto_fusion, {
+        foreignKey: 'id_proyecto_a',
+        as: 'id_proyecto_a'
+      }),
+      users.hasMany(models.bitacora_proyecto_fusion, {
+        foreignKey: 'id_proyecto_b',
+        as: 'id_proyecto_b'
       })
 
     }
@@ -31,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
   proyecto.init({
     nombre: DataTypes.STRING,
     id_usuario: DataTypes.INTEGER,
+    eliminado: DataTypes.INTEGER
   }, {
     sequelize: db,
     freezeTableName: true,
