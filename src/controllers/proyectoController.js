@@ -54,6 +54,7 @@ exports.index = async (req, res) => {
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],
+            where: {eliminado: { [Op.ne]: 1 }}
         };
 
         // 3. Lógica del filtro (Corrección de sintaxis)
@@ -148,7 +149,7 @@ exports.indexWithVersion = async (req, res) => {
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],
-            
+            where: {eliminado: { [Op.ne]: 1 }}
         });
 
         const start = (page - 1) * limit + 1;
@@ -191,7 +192,8 @@ exports.byStatus = async (req, res) => {
                 }
             ],
             where: {
-                id_estado: estado 
+                id_estado: estado,
+                eliminado: { [Op.ne]: 1 } 
             }
         });
         res.status(HttpCode.HTTP_OK).json(proyecto);
