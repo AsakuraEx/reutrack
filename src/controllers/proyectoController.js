@@ -54,7 +54,7 @@ exports.index = async (req, res) => {
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],
-            where: {eliminado: { [Op.ne]: 1 }}
+            where: {eliminado: 0 }
         };
 
         // 3. Lógica del filtro (Corrección de sintaxis)
@@ -149,7 +149,7 @@ exports.indexWithVersion = async (req, res) => {
             limit: limit,
             offset: (page - 1) * limit,
             order: [['id', 'DESC']],
-            where: {eliminado: { [Op.ne]: 1 }}
+            where: {eliminado: 0 }
         });
 
         const start = (page - 1) * limit + 1;
@@ -321,7 +321,7 @@ exports.fusion = async (req, res) => {
         })
         await table.update(
             {eliminado: 1},
-            {where: {id_proyecto: id_proyecto_b}}
+            {where: {id: id_proyecto_b}}
         )
         return res.status(HttpCode.HTTP_OK).json("Fusión de proyectos realizada")
     } catch (error) {
