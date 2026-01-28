@@ -288,8 +288,10 @@ exports.createPdf = async (req, res) => {
               ${acta.version.nombre}</div>
             <div class="section">
                 <h2>
-                  <b>Fecha de apertura: </b>${acta.createdAt}<br>
-                  <b>Aperturado por: </b>${acta.usuario.nombre}<br>
+                  <b>Fecha de creación: </b>${moment(acta.createdAt).format(
+                                        "DD/MM/YYYY HH:mm"
+                                      )}<br>
+                  <b>Creado por: </b>${acta.usuario.nombre}<br>
                 </h2>
             </div>
 

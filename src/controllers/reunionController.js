@@ -112,7 +112,9 @@ exports.detalle = async (req, res) => {
 
   try {
     const whereClause = {};
+
     whereClause.id = id;
+
     let include = [
       {
         model: db.version,
@@ -186,6 +188,9 @@ exports.detalle = async (req, res) => {
       include,
       where: whereClause,
     });
+
+    console.log(reunion)
+
     if (!reunion) {
       return res
         .status(HttpCode.HTTP_NOT_FOUND)

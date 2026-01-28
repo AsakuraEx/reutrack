@@ -30,7 +30,8 @@ INSERT INTO ctl_estado (id, nombre, createdAt, updatedAt) values
     (17,'Requerimiento detenido', NOW(), NOW()),
     (18,'Pendiente de publicar', NOW(), NOW()),
     (19,'Requerimiento en piloto', NOW(), NOW()),
-    (20,'Soporte', NOW(), NOW());
+    (20,'Requerimiento publicado', NOW(), NOW()),
+    (21,'Soporte', NOW(), NOW());
 
 
 UPDATE ctl_estado SET nombre = 'Pendiente' WHERE id = 6;
@@ -38,3 +39,4 @@ UPDATE ctl_estado SET nombre = 'Aprobado' WHERE id = 7;
 UPDATE ctl_estado SET nombre = 'Programado' WHERE id = 8;
 UPDATE ctl_estado SET nombre = 'Toma de requerimientos' WHERE id = 9;
 UPDATE ctl_estado SET nombre = 'Reunión pendiente' WHERE id = 10;
+UPDATE ctl_estado SET nombre = 'Requerimiento publicado' WHERE id = 20;
