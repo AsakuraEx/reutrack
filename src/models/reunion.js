@@ -60,12 +60,16 @@ module.exports = (sequelize, DataTypes) => {
     nombre: DataTypes.STRING,
     lugar: DataTypes.STRING,
     codigo: DataTypes.STRING,
+    justificacion_cancelar: DataTypes.STRING,
+    fecha_programacion: DataTypes.DATE,
     expiracion: DataTypes.DATE,
     reactivado: DataTypes.BOOLEAN,
     id_usuario: DataTypes.INTEGER,
     id_version: DataTypes.INTEGER,
     id_estado: DataTypes.INTEGER,
     id_motivo: DataTypes.INTEGER,
+    usuario_cancela: DataTypes.INTEGER,
+    usuario_reprograma: DataTypes.INTEGER,
     virtual: DataTypes.BOOLEAN
   }, {
     sequelize: db,

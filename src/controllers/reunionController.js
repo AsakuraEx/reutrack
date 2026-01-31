@@ -395,9 +395,20 @@ exports.iniciar = async (req, res) => {
 
 exports.cancelar = async (req, res) => {
   try {
-    const id = req.params.id;
-    await db.reunion.update({ id_estado: 2 }, { where: { id: id } });
-    const reunion = await db.reunion.findByPk(id);
+    const {id_reunion, justificacion, id_usuario} = req.body;
+
+    console.log(justificacion)
+
+    await db.reunion.update(
+      { 
+        id_estado: 2,
+        justificacion_cancelar: justificacion,
+        usuario_cancela: id_usuario
+      }, 
+      { 
+        where: { id: id_reunion } 
+      });
+    const reunion = await db.reunion.findByPk(id_reunion);
     res.status(HttpCode.HTTP_OK).json(reunion);
   } catch (error) {
     console.error("Error", error.message || error);

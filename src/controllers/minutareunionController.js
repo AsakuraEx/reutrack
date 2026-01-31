@@ -17,6 +17,7 @@ exports.index = async (req, res) => {
 exports.create = async (req, res) => {
     const {minuta, id_reunion, virtual, id_motivo } = req.body;
     try {
+        
         const newMinuta = await db.minutareunion.create({
             minuta,
             id_reunion,
@@ -35,6 +36,8 @@ exports.update = async (req, res) => {
         const minuta = req.body.minuta; 
         const id_motivo = req.body.id_motivo;
         const isvirtual = req.body.virtual;
+        const nombre_reunion = req.body.nombre_reunion;
+        const lugar_reunion = req.body.lugar_reunion;
         const id_reunion = req.params.id_reunion
 
         if(id_motivo === null || id_motivo === 0){
@@ -44,7 +47,9 @@ exports.update = async (req, res) => {
         
         await db.reunion.update({ 
             'id_motivo': id_motivo, 
-            'virtual': isvirtual
+            'virtual': isvirtual,
+            'nombre': nombre_reunion,
+            'lugar': lugar_reunion
         }, { where: {id: id_reunion } });
 
         await db.minutareunion.update({ 'minuta': minuta }, { where: { id_reunion: id_reunion } });        
