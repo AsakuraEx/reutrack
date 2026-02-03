@@ -70,6 +70,7 @@ module.exports = (sequelize, DataTypes) => {
     id_motivo: DataTypes.INTEGER,
     usuario_cancela: DataTypes.INTEGER,
     usuario_reprograma: DataTypes.INTEGER,
+    reprogramado: DataTypes.BOOLEAN,
     virtual: DataTypes.BOOLEAN
   }, {
     sequelize: db,

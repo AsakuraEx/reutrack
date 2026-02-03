@@ -432,6 +432,47 @@ exports.finalizar = async (req, res) => {
   }
 };
 
+// Reprograma una reunión
+// Autor: Francisco Escobar
+// Fecha: 2026-02-03 hora: 02:10 p.m
+exports.reprogramar = async (req, res) => {
+
+  const { id, fecha_reprogramada, id_usuario } = req.body;
+
+
+  // Valida datos requeridos
+  if(!id)  res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'El id de la reunión es requerido' })
+  if(!fecha_reprogramada) res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'La fecha de reprogramación de la reunión es requerido' })
+  if(!id_usuario) res.status(HttpCode.HTTP_BAD_REQUEST).json({ error: 'El id del usuario que reprograma la reunión es requerido' })
+
+    try {
+      //Busca la reunión a reprogramar
+      const reunion = await db.reunion.findByPk(id);
+
+      if(!reunion) res.status(HttpCode.HTTP_NOT_FOUND).json({error: 'No se encontró la reunión solicitada'});
+    
+      const fecha_original = reunion.createdAt;
+
+      //Actualizamos la fecha programada original, la nueva fecha, la bandera de reprogramacion y el usuario que reprogramó
+      await db.reunion.update({
+        fecha_programacion: fecha_original,
+        reprogramado: 1,
+        usuario_reprograma: id_usuario,
+        createdAt: fecha_reprogramada
+      },
+      {
+        where: { id: id }
+      });
+    
+      res.status(HttpCode.HTTP_OK).json({message: 'La reunión se reprogramó con éxito'})
+    } catch (e) {
+      //Devuelve un error en caso que falle
+      res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json('Ocurrio el siguiente error al intentar procesar la solicitud: ' + e)
+    }
+
+  
+}
+
 // Reactivar una reunión e inserta registro en bitacora de reactivación
 // Autor: Francisco Escobar
 // Fecha: 2024-01-15 hora: 07:27 a.m

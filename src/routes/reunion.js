@@ -13,7 +13,7 @@ app.get('/reactivadas', [verifyToken], reunionController.verReactivadas)
 
 app.post('/create', [verifyToken] ,reunionController.create);
 
-//app.patch('/reprogramar', [verifyToken] ,reunionController.reprogramar);
+app.patch('/reprogramar', [verifyToken] ,reunionController.reprogramar);
 
 app.patch('/reactivar', [verifyToken] ,reunionController.reactivar);
 app.patch('/iniciar/:id', [verifyToken], reunionController.iniciar);
