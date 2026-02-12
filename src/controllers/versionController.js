@@ -3,6 +3,49 @@ const db = require('../models');
 
 const table = db.version
 
+exports.findBitacora = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const cambiosRegistrados = await db.bitacora_estados_version.findAll({
+            include: [
+                {   model: db.version,
+                    as: 'version',
+                    attributes: ['id', 'nombre', 'createdAt'],
+                    required: true,
+                },
+                { model: db.proyecto,
+                    as: 'proyecto',
+                    attributes: ['id', 'nombre'],
+                    required: true,
+                },
+                { model: db.users,
+                    as: 'usuario',
+                    attributes: ['id', 'nombre'],
+                    required: true,
+                },
+                { model: db.ctl_estado,
+                    as: 'estado_nuevo',
+                    attributes: ['id', 'nombre'],
+                    required: true,
+                },
+                { model: db.ctl_estado,
+                    as: 'estado_anterior',
+                    attributes: ['id', 'nombre'],
+                    required: true,
+                },
+            ],
+            where: {
+                id_version: id
+            }
+        })
+        res.status(HttpCode.HTTP_OK).json(cambiosRegistrados)
+
+    } catch(e) {
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'Ocurrió un error inesperado'})
+        console.error(e)
+    }
+}
+
 exports.getOne = async (req,res) => {
     try {
         const id = req.params.id;
@@ -28,7 +71,7 @@ exports.getOne = async (req,res) => {
 }
 
 exports.index = async (req, res) => {
-    const {id_proyecto, id_estado} = req.query
+    const {id_proyecto, id_estado, id_req} = req.query
     const limit = parseInt(req.query.limit) || null
     const page = parseInt(req.query.page) || 1 
     try {
@@ -38,6 +81,9 @@ exports.index = async (req, res) => {
         }
         if (id_estado) {
             whereClause.id_estado = id_estado;
+        }
+        if (id_req) {
+            whereClause.id_estado_req = id_req;
         }
 
         const {count, rows} = await table.findAndCountAll({

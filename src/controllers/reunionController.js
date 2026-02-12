@@ -1,8 +1,7 @@
 const HttpCode = require("../../configs/httpCode");
 const db = require("../models");
 const moment = require("moment");
-const { Op, where } = require("sequelize");
-
+const { Op, where, QueryTypes } = require("sequelize");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
@@ -1004,3 +1003,57 @@ exports.emailPDF = async (req, res) => {
     throw error;
   }
 };
+
+exports.reunionPorVersion = async (req, res) => {
+
+try {
+
+    const { id_proyecto, id_estado } = req.query; 
+
+    let querySQL = `
+      SELECT 
+        p.nombre as proyecto, 
+        v.nombre as version, 
+        COUNT(r.id) as cantidad_reuniones 
+      FROM proyecto p 
+      JOIN version v ON p.id = v.id_proyecto 
+      JOIN reunion r ON v.id = r.id_version 
+    `;
+
+    const replacements = {};
+
+    if (id_proyecto && !id_estado) {
+      querySQL += ` WHERE p.id = :id_proyecto `;
+      replacements.id_proyecto = id_proyecto;
+    }
+
+    if (!id_proyecto && id_estado) {
+      querySQL += ` WHERE r.id_estado = :id_estado`;
+      replacements.id_estado = id_estado;
+    }
+
+    if (id_proyecto && id_estado) {
+      querySQL += ` WHERE p.id = :id_proyecto and r.id_estado = :id_estado`;
+      replacements.id_proyecto = id_proyecto;
+      replacements.id_estado = id_estado;
+    }
+
+    querySQL += ` 
+      GROUP BY p.id, v.id, p.nombre, v.nombre 
+      ORDER BY p.nombre ASC
+    `;
+
+
+    const data = await db.sequelize.query(querySQL, {
+      replacements: replacements,
+      type: QueryTypes.SELECT
+    });
+
+    res.json(data);
+
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Error al consultar", error: e.message });
+  }
+
+}

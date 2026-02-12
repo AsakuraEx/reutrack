@@ -17,8 +17,12 @@ module.exports = (sequelize, DataTypes) => {
         as: 'version'
       }),
       bitacora_estados_version.belongsTo(models.ctl_estado,{
-        foreignKey: 'id_estado',
-        as: 'estado'
+        foreignKey: 'id_estado_nuevo',
+        as: 'estado_nuevo'
+      }),
+      bitacora_estados_version.belongsTo(models.ctl_estado,{
+        foreignKey: 'id_estado_anterior',
+        as: 'estado_anterior'
       }),
       bitacora_estados_version.belongsTo(models.users,{
         foreignKey: 'id_usuario',
