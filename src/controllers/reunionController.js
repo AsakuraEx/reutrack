@@ -781,7 +781,7 @@ exports.generatePDF = async (req, res) => {
                     <h2>
                     <b>Nombre de reunión: </b>${reunion.nombre}
                     <br>Lugar: </b>${reunion.lugar}
-                    <br> <b>Fecha:</b> ${moment(reunion.expiracion).format(
+                    <br> <b>Fecha:</b> ${moment(reunion.createdAt).format(
                       "DD/MM/YYYY HH:mm"
                     )}
                     </h2>
