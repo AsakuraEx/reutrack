@@ -22,6 +22,39 @@ const imageToBase64 = async (filePath) => {
   });
 };
 
+//Obtiene reuniones por id_motivo recibido en un body, retorna todas las reuniones o en su defecto filtradas por id_motivo
+exports.motivo = async (req, res) => {
+  const id = req.body.id_motivo
+  try {
+    const whereClause = {};
+    if (id) whereClause.id_motivo = id
+    
+    let include = [
+      {
+        model: db.ctl_motivos_reunion,
+        as: "motivo_reunion",
+        atributes: ["nombre"],
+      }
+    ]
+
+    const reunion = await db.reunion.findAll({
+      include,
+      where: whereClause,
+    })
+    if (!reunion) {
+      return res
+        .status(HttpCode.HTTP_NOT_FOUND)
+        .json({ error: "No se han encontrado reuniones" });
+    }
+    res.status(HttpCode.HTTP_OK).json(reunion);
+  } catch (error) {
+    console.error("Error: ", error.message || error);
+    res
+      .status(HttpCode.HTTP_INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal server error" });
+  }
+}
+
 //Obtiene un registro mediante el id recibido en el parametro de la ruta
 exports.getOne = async (req, res) => {
   try {
@@ -187,8 +220,6 @@ exports.detalle = async (req, res) => {
       include,
       where: whereClause,
     });
-
-    console.log(reunion)
 
     if (!reunion) {
       return res

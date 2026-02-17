@@ -10,7 +10,7 @@ app.get('/',[verifyToken] , reunionController.index);
 app.get('/ultima', [verifyToken] ,reunionController.ultima);
 app.post('/pdf', reunionController.generatePDF);
 app.get('/reactivadas', [verifyToken], reunionController.verReactivadas)
-
+app.get('/motivo', [verifyToken], reunionController.motivo)
 app.post('/create', [verifyToken] ,reunionController.create);
 
 app.patch('/reprogramar', [verifyToken] ,reunionController.reprogramar);
