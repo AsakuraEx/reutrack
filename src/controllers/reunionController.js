@@ -24,7 +24,11 @@ const imageToBase64 = async (filePath) => {
 
 //Obtiene reuniones por id_motivo recibido en un body, retorna todas las reuniones o en su defecto filtradas por id_motivo
 exports.motivo = async (req, res) => {
-  const id = req.body.id_motivo
+  const id = req.query.id_motivo
+  const limit = parseInt(req.query.limit) || null;
+  const page = parseInt(req.query.page) || 1;
+  const offset = (page - 1) * limit;
+
   try {
     const whereClause = {};
     if (id) whereClause.id_motivo = id
@@ -32,21 +36,43 @@ exports.motivo = async (req, res) => {
     let include = [
       {
         model: db.ctl_motivos_reunion,
-        as: "motivo_reunion",
+        as: "motivo",
         atributes: ["nombre"],
+      },
+      {
+        model: db.version,
+        as: "version",
+        atributes: ["nombre"]
       }
     ]
-
-    const reunion = await db.reunion.findAll({
+    // Búsqueda en la base de datos
+    const { count, rows } = await db.reunion.findAndCountAll({
       include,
       where: whereClause,
-    })
-    if (!reunion) {
+      limit,
+      offset,
+      order: [["createdAt", "DESC"]],
+    });
+
+    if (!rows) {
       return res
         .status(HttpCode.HTTP_NOT_FOUND)
         .json({ error: "No se han encontrado reuniones" });
     }
-    res.status(HttpCode.HTTP_OK).json(reunion);
+
+    // Paginación
+    const start = offset + 1;
+    const end = Math.min(start + rows.length - 1, count);
+
+    return res.status(HttpCode.HTTP_OK).json({
+      totalRecords: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      start,
+      end,
+      data: rows,
+    });
+
   } catch (error) {
     console.error("Error: ", error.message || error);
     res
