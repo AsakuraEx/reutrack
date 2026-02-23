@@ -131,12 +131,14 @@ exports.delete = async (req, res) => {
         console.log('El archivo no pudo eliminarse');
       }
 
-      const filePath2 = path.join(__dirname, '../uploads', row.documento_institucional);
-      if (fs.existsSync(filePath2)) {
-        fs.unlinkSync(filePath2);
-        console.log(`Archivo eliminado: ${filePath2}`);
-      } else {
-        console.log('El archivo no pudo eliminarse');
+      if(row.documento_institucional){
+        const filePath2 = path.join(__dirname, '../uploads', row.documento_institucional);
+        if (fs.existsSync(filePath2)) {
+          fs.unlinkSync(filePath2);
+          console.log(`Archivo eliminado: ${filePath2}`);
+        } else {
+          console.log('El archivo no pudo eliminarse');
+        }
       }
     }
 
