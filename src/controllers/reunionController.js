@@ -959,7 +959,6 @@ exports.generatePDF = async (req, res) => {
     });
 
     const page = await browser.newPage(); // Create a new page instance
-    console.log("Nueva página creada");
     await page.setContent(html, { waitUntil: "networkidle0" });
     const pdf = await page.pdf({
       format: "letter",
@@ -1039,6 +1038,7 @@ exports.emailPDF = async (req, res) => {
       html: `
                     <div style="text-align: left; font-family: Arial, sans-serif;">
                             <p>Se adjunta el documento correspondiente a la reunión sostenida.</p>
+                            <p>No responder, este es un correo automático. En caso de consultas comunicarse con el responsable de la reunión.</p>
                         </div>
                     </div>
                 `,
