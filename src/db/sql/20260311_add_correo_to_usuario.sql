@@ -1,0 +1,2 @@
+ALTER TABLE acta_usuarios
+ADD COLUMN correo VARCHAR(200);
