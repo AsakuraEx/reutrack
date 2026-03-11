@@ -1,7 +1,7 @@
 const HttpCode = require("../../configs/httpCode");
 const db = require("../models");
 const moment = require("moment");
-const { Op, where, QueryTypes } = require("sequelize");
+const { Op } = require("sequelize");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
@@ -959,7 +959,6 @@ exports.generatePDF = async (req, res) => {
     });
 
     const page = await browser.newPage(); // Create a new page instance
-    console.log("Nueva página creada");
     await page.setContent(html, { waitUntil: "networkidle0" });
     const pdf = await page.pdf({
       format: "letter",
@@ -1039,6 +1038,7 @@ exports.emailPDF = async (req, res) => {
       html: `
                     <div style="text-align: left; font-family: Arial, sans-serif;">
                             <p>Se adjunta el documento correspondiente a la reunión sostenida.</p>
+                            <p>No responder, este es un correo automático. En caso de consultas comunicarse con el responsable de la reunión.</p>
                         </div>
                     </div>
                 `,
@@ -1066,44 +1066,45 @@ exports.reunionPorVersion = async (req, res) => {
 try {
 
     const { id_proyecto, id_estado } = req.query; 
-
-    let querySQL = `
-      SELECT 
-        p.nombre as proyecto, 
-        v.nombre as version, 
-        COUNT(r.id) as cantidad_reuniones 
-      FROM proyecto p 
-      JOIN version v ON p.id = v.id_proyecto 
-      JOIN reunion r ON v.id = r.id_version 
-    `;
-
-    const replacements = {};
-
-    if (id_proyecto && !id_estado) {
-      querySQL += ` WHERE p.id = :id_proyecto `;
-      replacements.id_proyecto = id_proyecto;
+    const whereReunion = {};
+    if (id_estado) {
+      whereReunion.id_estado = id_estado;
     }
 
-    if (!id_proyecto && id_estado) {
-      querySQL += ` WHERE r.id_estado = :id_estado`;
-      replacements.id_estado = id_estado;
-    }
+    const include = [
+      {
+        model: db.version,
+        as: "version",
+        attributes: [],
+        required: true,
+        include: [
+          {
+            model: db.proyecto,
+            as: "proyecto",
+            attributes: [],
+            required: true,
+            ...(id_proyecto ? { where: { id: id_proyecto } } : {}),
+          },
+        ],
+      },
+    ];
 
-    if (id_proyecto && id_estado) {
-      querySQL += ` WHERE p.id = :id_proyecto and r.id_estado = :id_estado`;
-      replacements.id_proyecto = id_proyecto;
-      replacements.id_estado = id_estado;
-    }
-
-    querySQL += ` 
-      GROUP BY p.id, v.id, p.nombre, v.nombre 
-      ORDER BY p.nombre ASC
-    `;
-
-
-    const data = await db.sequelize.query(querySQL, {
-      replacements: replacements,
-      type: QueryTypes.SELECT
+    const data = await db.reunion.findAll({
+      attributes: [
+        [db.sequelize.col("version.proyecto.nombre"), "proyecto"],
+        [db.sequelize.col("version.nombre"), "version"],
+        [db.sequelize.fn("COUNT", db.sequelize.col("reunion.id")), "cantidad_reuniones"],
+      ],
+      where: Object.keys(whereReunion).length ? whereReunion : undefined,
+      include,
+      group: [
+        "version.proyecto.id",
+        "version.id",
+        "version.proyecto.nombre",
+        "version.nombre",
+      ],
+      order: [[db.sequelize.col("version.proyecto.nombre"), "ASC"]],
+      raw: true,
     });
 
     res.json(data);

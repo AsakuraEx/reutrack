@@ -153,30 +153,19 @@ const imageToBase64 = async (filePath) => {
 
 exports.createPdf = async (req, res) => {
   
-  console.log('generatePDF: función invocada');
   const logoPath = path.join(__dirname, '../public/images/logo-minsal.png');
   const logoPath2 = path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png');
   const logoPath3 = path.join(__dirname, '../public/images/logo-dtic.png');
 
-  console.log("¿Existe logo 1?", fs.existsSync(logoPath));
-  console.log("¿Existe logo 2?", fs.existsSync(logoPath2));
-  console.log("¿Existe logo 3?", fs.existsSync(logoPath3));
-  
   let base64Logo, base64Logo2, base64Logo3;
   
   try {
-    console.log('Convirtiendo logo 1');
     base64Logo = await imageToBase64(logoPath);
-    console.log('Logo 1 convertido');
-  
-    console.log('Convirtiendo logo 2');
+    
     base64Logo2 = await imageToBase64(logoPath2);
-    console.log('Logo 2 convertido');
-  
-    console.log('Convirtiendo logo 3');
+    
     base64Logo3 = await imageToBase64(logoPath3);
-    console.log('Logo 3 convertido');
-  
+    
     if (!base64Logo || !base64Logo2 || !base64Logo3) {
       throw new Error('No se pudo convertir uno o más logos a base64');
     }
@@ -347,19 +336,15 @@ exports.createPdf = async (req, res) => {
     </body>
         </html>
             `
-            
-    console.log('Lanzando navegador...');
-           const browser = await puppeteer.launch({
+
+      const browser = await puppeteer.launch({
       headless: 'new',
       args: [
         '--no-sandbox', '--disable-setuid-sandbox'
       ],
     });
     
-     
-    console.log('Navegador lanzado');
             const page = await browser.newPage(); // Create a new page instance
-    console.log('Nueva página creada');
             await page.setContent(html, { waitUntil: 'networkidle0' })
             const pdf = await page.pdf({
                 format: 'letter',
@@ -396,9 +381,6 @@ exports.createPdf = async (req, res) => {
     const safeName = acta.version.nombre.replace(/[^a-z0-9]/gi, '_').toLowerCase();
     const pdfBuffer = Buffer.from(pdf);
     
-    console.log('pdf es buffer:', Buffer.isBuffer(pdfBuffer));
-    console.log('pdf tamaño:', pdfBuffer.length);
-    console.log('primeros bytes pdf:', pdfBuffer.slice(0, 4));
     
     res.set({
       'Content-Type': 'application/pdf',
@@ -412,4 +394,51 @@ exports.createPdf = async (req, res) => {
     res.status(500).json({ error: e.message})
   }
 
+}
+
+exports.emailActa = async (req, res) => {
+  const transporter = nodemailer.createTransport({
+      service: process.env.MAIL_SERVICE,
+      host: process.env.MAIL_HOST,
+      port: process.env.MAIL_PORT,
+      secure: true,
+      auth: {
+        user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
+      },
+    });
+  
+  try {
+    const usuarios = req.body.usuarios;
+    const acta = req.body.acta;
+    pdf_acta = await this.createPdf(req);
+
+    const mailOptions = {
+      from: '"Notificación Requerimientos" ' + process.env.MAIL_FROM,
+      to: usuarios,
+      subject: "Acta de aceptación: " + acta.version.proyecto.nombre + acta.version.nombre,
+      html: `
+                    <div style="text-align: left; font-family: Arial, sans-serif;">
+                            <p>Se adjunta el documento correspondiente a la reunión sostenida.</p>
+                            <p>No responder, este es un correo automático. En caso de consultas comunicarse con el responsable de la reunión.</p>
+                        </div>
+                    </div>
+                `,
+      attachments: [
+        {
+          filename: "acta_aceptacion.pdf",
+          content: pdf_acta,
+          contentType: "application/pdf",
+        },
+      ],
+    };
+    await transporter.sendMail(mailOptions);
+    res
+      .status(HttpCode.HTTP_OK)
+      .json({ exito: "Se ha enviado un correo electrónico" });
+    return;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
