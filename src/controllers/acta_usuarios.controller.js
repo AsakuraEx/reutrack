@@ -71,7 +71,7 @@ exports.getOneByDocument = async (req, res) => {
 exports.create = async (req, res) => {
   try {
 
-    console.log(req.files)
+    console.log(req.body)
 
     const { documento } = req.body
 

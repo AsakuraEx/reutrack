@@ -19,4 +19,7 @@ router.get('/actual/:id', actaCtrl.getOnePk);
 
 router.get('/pdf/:id', actaCtrl.createPdf);
 
+router.post('/enviarPdf', actaCtrl.emailActa);
+
+
 module.exports = router;

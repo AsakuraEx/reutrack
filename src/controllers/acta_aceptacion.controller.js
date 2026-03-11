@@ -5,6 +5,7 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
+const nodemailer = require('nodemailer');
 
 
 // Obtener todas
@@ -391,7 +392,7 @@ exports.createPdf = async (req, res) => {
     
 
   }catch(e) {
-    res.status(500).json({ error: e.message})
+    console.log('Error generando PDF:', e.message);
   }
 
 }
@@ -410,8 +411,36 @@ exports.emailActa = async (req, res) => {
   
   try {
     const usuarios = req.body.usuarios;
-    const acta = req.body.acta;
-    pdf_acta = await this.createPdf(req);
+    const id_acta = req.body.acta;
+    
+    pdf_acta = await this.createPdf({ params: { id: id_acta }});
+
+    const acta = await db.acta_aceptacion.findByPk(id_acta, {
+      include: [
+        {
+            model: db.version,
+            as: 'version',
+            attributes: ['id', 'nombre', 'id_proyecto'],
+            include: [
+              {
+                model: db.proyecto,
+                as: 'proyecto',
+                attributes: ['id', 'nombre']
+              }
+            ]
+        },
+        {
+            model: db.users,
+            as: 'usuario',
+            attributes: ['id', 'nombre']
+        },
+        {
+            model: db.ctl_estado,
+            as: 'estado',
+            attributes: ['id', 'nombre']
+        },
+      ]
+    });
 
     const mailOptions = {
       from: '"Notificación Requerimientos" ' + process.env.MAIL_FROM,
@@ -419,7 +448,7 @@ exports.emailActa = async (req, res) => {
       subject: "Acta de aceptación: " + acta.version.proyecto.nombre + acta.version.nombre,
       html: `
                     <div style="text-align: left; font-family: Arial, sans-serif;">
-                            <p>Se adjunta el documento correspondiente a la reunión sostenida.</p>
+                            <p>Se adjunta el acta de aceptación correspondiente a la validación de requerimiento.</p>
                             <p>No responder, este es un correo automático. En caso de consultas comunicarse con el responsable de la reunión.</p>
                         </div>
                     </div>
