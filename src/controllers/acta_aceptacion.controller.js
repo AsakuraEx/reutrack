@@ -152,67 +152,69 @@ const imageToBase64 = async (filePath) => {
     });
   };
 
-exports.createPdf = async (req, res) => {
-  
+// helper that returns PDF buffer and filename for a given acta id
+const generatePdfBuffer = async (id) => {
+  // convert logos to base64 first
   const logoPath = path.join(__dirname, '../public/images/logo-minsal.png');
   const logoPath2 = path.join(__dirname, '../public/images/Logo-reutrack-fondo-blanco.png');
   const logoPath3 = path.join(__dirname, '../public/images/logo-dtic.png');
 
   let base64Logo, base64Logo2, base64Logo3;
-  
   try {
     base64Logo = await imageToBase64(logoPath);
-    
     base64Logo2 = await imageToBase64(logoPath2);
-    
     base64Logo3 = await imageToBase64(logoPath3);
-    
+
     if (!base64Logo || !base64Logo2 || !base64Logo3) {
       throw new Error('No se pudo convertir uno o más logos a base64');
     }
   } catch (e) {
     console.error('Error convirtiendo imagen a base64:', e.message);
-    return res.status(500).json({ error: 'Error al convertir imagen a base64' });
+    throw e; // let caller handle the HTTP response
   }
 
-  try {
-    const id = req.params.id;
-    const acta = await db.acta_aceptacion.findByPk(req.params.id, {
-      include: [
-        {
-            model: db.version,
-            as: 'version',
-            attributes: ['id', 'nombre', 'id_proyecto'],
-            include: [
-              {
-                model: db.proyecto,
-                as: 'proyecto',
-                attributes: ['id', 'nombre']
-              }
-            ]
-        },
-        {
-            model: db.users,
-            as: 'usuario',
-            attributes: ['id', 'nombre']
-        },
-        {
-            model: db.ctl_estado,
-            as: 'estado',
-            attributes: ['id', 'nombre']
-        },
-      ]
-    });
-  
-    const funcionalidades = await db.acta_funcionalidades.findAll({
-      where: { id_acta: id }
-    });
+  // fetch acta along with related data
+  const acta = await db.acta_aceptacion.findByPk(id, {
+    include: [
+      {
+        model: db.version,
+        as: 'version',
+        attributes: ['id', 'nombre', 'id_proyecto'],
+        include: [
+          {
+            model: db.proyecto,
+            as: 'proyecto',
+            attributes: ['id', 'nombre'],
+          },
+        ],
+      },
+      {
+        model: db.users,
+        as: 'usuario',
+        attributes: ['id', 'nombre'],
+      },
+      {
+        model: db.ctl_estado,
+        as: 'estado',
+        attributes: ['id', 'nombre'],
+      },
+    ],
+  });
 
-    const usuarios = await db.acta_usuarios.findAll({
-      where: {id_acta: id}
-    });
+  if (!acta) {
+    throw new Error('Acta no encontrada');
+  }
 
-            const html = `
+  const funcionalidades = await db.acta_funcionalidades.findAll({
+    where: { id_acta: id },
+  });
+
+  const usuarios = await db.acta_usuarios.findAll({
+    where: { id_acta: id },
+  });
+
+  // build HTML content
+  const html = `
             <html>
             <head>
                 <style>
@@ -320,13 +322,14 @@ exports.createPdf = async (req, res) => {
                       <th style="width:40%;">Nombre</th>
                       <th style="width:20%;">Institución</th>
                       <th style="width:20%;">Cargo</th>
-                      <th style="width:20%;">Documento de Identidad</th>
+                      <th style="width:20%;">Correo</th>
                     </tr>
                     ${usuarios && usuarios.length > 0 ? usuarios.map(usuario => `
                     <tr>
                         <td>${ usuario.nombre }</td>
                         <td>${ usuario.institucion }</td>
                         <td>${ usuario.cargo }</td>
+                        <td>${ usuario.correo }</td>
                         <td>${ usuario.documento }</td>
                     </tr>
                     `).join('') : ''}
@@ -336,28 +339,26 @@ exports.createPdf = async (req, res) => {
         </main>
     </body>
         </html>
-            `
+            `;
 
-      const browser = await puppeteer.launch({
-      headless: 'new',
-      args: [
-        '--no-sandbox', '--disable-setuid-sandbox'
-      ],
-    });
-    
-            const page = await browser.newPage(); // Create a new page instance
-            await page.setContent(html, { waitUntil: 'networkidle0' })
-            const pdf = await page.pdf({
-                format: 'letter',
-                margin: {
-                    top: '96px',
-                    right: '96px',
-                    bottom: '96px',
-                    left: '96px',
-                },
-                printBackground: true,
-                displayHeaderFooter:true,
-                pageRanges: '1-999',
+  const browser = await puppeteer.launch({
+    headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  const page = await browser.newPage();
+  await page.setContent(html, { waitUntil: 'networkidle0' });
+  const pdf = await page.pdf({
+    format: 'letter',
+    margin: {
+      top: '96px',
+      right: '96px',
+      bottom: '96px',
+      left: '96px',
+    },
+    printBackground: true,
+    displayHeaderFooter: true,
+    pageRanges: '1-999',
     headerTemplate: `
       <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 8px 96px;">
         <img src="${base64Logo}" style="width: 160px;" />
@@ -373,28 +374,33 @@ exports.createPdf = async (req, res) => {
         </div>
       </div>
     `,
-    
-    
-            });
-            
-            await browser.close();
-    
-    const safeName = acta.version.nombre.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    const pdfBuffer = Buffer.from(pdf);
-    
-    
+  });
+
+  await browser.close();
+
+  const pdfBuffer = Buffer.from(pdf);
+  const safeName = acta.version.nombre.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  return { pdfBuffer, safeName };
+};
+
+// express handler that uses helper
+exports.createPdf = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { pdfBuffer, safeName } = await generatePdfBuffer(id);
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `inline; filename=acta_${safeName}.pdf`,
-      'Content-Length': pdfBuffer.length
+      'Content-Length': pdfBuffer.length,
     });
     res.end(pdfBuffer);
-    
-
-  }catch(e) {
-    console.log('Error generando PDF:', e.message);
+  } catch (error) {
+    console.error('Error generando PDF (handler):', error);
+    if (error.message === 'Acta no encontrada') {
+      return res.status(HttpCode.HTTP_NOT_FOUND).json({ error: error.message });
+    }
+    res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Error generando PDF' });
   }
-
 }
 
 exports.emailActa = async (req, res) => {
@@ -410,10 +416,11 @@ exports.emailActa = async (req, res) => {
     });
   
   try {
-    const usuarios = req.body.usuarios;
+    const correosDestinatarios = req.body.usuarios.map(u => u.correo);
     const id_acta = req.body.acta;
-    
-    pdf_acta = await this.createPdf({ params: { id: id_acta }});
+
+    // generate PDF buffer without an HTTP response object
+    const { pdfBuffer } = await generatePdfBuffer(id_acta);
 
     const acta = await db.acta_aceptacion.findByPk(id_acta, {
       include: [
@@ -444,7 +451,7 @@ exports.emailActa = async (req, res) => {
 
     const mailOptions = {
       from: '"Notificación Requerimientos" ' + process.env.MAIL_FROM,
-      to: usuarios,
+      to: correosDestinatarios,
       subject: "Acta de aceptación: " + acta.version.proyecto.nombre + acta.version.nombre,
       html: `
                     <div style="text-align: left; font-family: Arial, sans-serif;">
@@ -456,7 +463,7 @@ exports.emailActa = async (req, res) => {
       attachments: [
         {
           filename: "acta_aceptacion.pdf",
-          content: pdf_acta,
+          content: pdfBuffer,
           contentType: "application/pdf",
         },
       ],
@@ -467,7 +474,7 @@ exports.emailActa = async (req, res) => {
       .json({ exito: "Se ha enviado un correo electrónico" });
     return;
   } catch (error) {
-    console.error(error);
-    throw error;
+    console.error('Error enviando acta por email:', error);
+    res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: error.message || 'Error enviando correo' });
   }
 }

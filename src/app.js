@@ -82,8 +82,8 @@ app.use(function(err, req, res, next) {
   });
 });
 
-const port = process.env.PORT;
-const host = process.env.HOST
+const port = process.env.BACKEND_PORT;
+const host = process.env.BACKEND_HOST
 
 app.listen(port, host, () => {
   console.log(`RUNNING SERVER`);
