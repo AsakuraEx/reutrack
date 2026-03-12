@@ -237,23 +237,23 @@ const generatePdfBuffer = async (id) => {
                     .asistentes {
                         border-collapse: collapse;
                         width: 100%;
-                        margin: 20px 0;
+                        margin: 10px 0;
                         table-layout: fixed;
                     }
                     .asistentes th, .asistentes td {
                         border: 1px solid black;
                         padding: 8px;
+                        line-height: 1.2;
                         overflow: hidden;
                         word-wrap: break-word;
                         text-align: left;
                         font-size: 12px;
-                        width: 16.66%;
+                    }
+                    .asistentes th {
+                      background-color: #f0f0f0;
                     }
                     p {
                         font-size: 14px;
-                    }
-                    .asistentes th {
-                        background-color: #f0f0f0;
                     }
                     .puntos-reunion {
                         list-style: none;
@@ -281,8 +281,8 @@ const generatePdfBuffer = async (id) => {
             <div class="section">
                 <h2>
                   <b>Fecha de creación: </b>${moment(acta.createdAt).format(
-                                        "DD/MM/YYYY HH:mm"
-                                      )}<br>
+                    "DD/MM/YYYY HH:mm",
+                  )}<br>
                   <b>Creado por: </b>${acta.usuario.nombre}<br>
                 </h2>
             </div>
@@ -301,13 +301,21 @@ const generatePdfBuffer = async (id) => {
                     <th style="width:15%;">Estado de aprobación</th>
                     <th style="width:35%;">Cambio solicitado</th>
                   </tr>
-                  ${funcionalidades && funcionalidades.length > 0 ? funcionalidades.map(funcionalidad => `
+                  ${
+                    funcionalidades && funcionalidades.length > 0
+                      ? funcionalidades
+                          .map(
+                            (funcionalidad) => `
                   <tr>
-                      <td>${ funcionalidad.descripcion }</td>
-                      <td>${ funcionalidad.aprobado ? 'Aprobado': 'No aprobado' }</td>
-                      <td>${ funcionalidad.cambio_solicitado ? funcionalidad.cambio_solicitado : '' }</td>
+                      <td>${funcionalidad.descripcion}</td>
+                      <td>${funcionalidad.aprobado ? "Aprobado" : "No aprobado"}</td>
+                      <td>${funcionalidad.cambio_solicitado ? funcionalidad.cambio_solicitado : ""}</td>
                   </tr>
-                  `).join('') : ''}
+                  `,
+                          )
+                          .join("")
+                      : ""
+                  }
               </table>
             </div>
 
@@ -319,20 +327,27 @@ const generatePdfBuffer = async (id) => {
               <div class="table">
                 <table class="asistentes">
                     <tr>
-                      <th style="width:40%;">Nombre</th>
+                      <th style="width:20%;">Nombre</th>
                       <th style="width:20%;">Institución</th>
                       <th style="width:20%;">Cargo</th>
-                      <th style="width:20%;">Correo</th>
+                      <th style="width:40%;">Correo</th>
                     </tr>
-                    ${usuarios && usuarios.length > 0 ? usuarios.map(usuario => `
+                    ${
+                      usuarios && usuarios.length > 0
+                        ? usuarios
+                            .map(
+                              (usuario) => `
                     <tr>
-                        <td>${ usuario.nombre }</td>
-                        <td>${ usuario.institucion }</td>
-                        <td>${ usuario.cargo }</td>
-                        <td>${ usuario.correo }</td>
-                        <td>${ usuario.documento }</td>
+                        <td>${usuario.nombre}</td>
+                        <td>${usuario.institucion}</td>
+                        <td>${usuario.cargo}</td>
+                        <td>${usuario.correo}</td>
                     </tr>
-                    `).join('') : ''}
+                    `,
+                            )
+                            .join("")
+                        : ""
+                    }
                 </table>
               </div>
             </div>
