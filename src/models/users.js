@@ -75,12 +75,12 @@ module.exports = (sequelize, DataTypes) => {
   },
   telefono: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     unique: false,
   },
   documento: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
     unique: false,
   },
   password: {
