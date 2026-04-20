@@ -43,6 +43,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_rol',
         as: 'rol usuario'
       }),
+      users.belongsTo(models.ctl_cargos,{
+        foreignKey: 'id_cargo',
+        as: 'cargo'
+      }),
       users.hasMany(models.bitacora_reactivaciones, {
         foreignKey: 'id_usuario',
         as: 'reactivaciones'
@@ -104,6 +108,16 @@ module.exports = (sequelize, DataTypes) => {
     },
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
+  },
+  id_cargo: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'ctl_cargo',
+      key: 'id',
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
   },
   id_rol: {
     type: DataTypes.INTEGER,

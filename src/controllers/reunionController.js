@@ -721,6 +721,14 @@ exports.generatePDF = async (req, res) => {
               model: db.users,
               as: "usuario",
               attributes: ["nombre", "email", "documento", "telefono"],
+              include: [
+                {
+                  model: db.ctl_cargos,
+                  as: "cargo",
+                  attributes: ["nombre"],
+                }
+              ]
+
             },
           ],
           where: { visitante: false }, // Filtrar solo encargados que no son visitantes
@@ -915,7 +923,11 @@ exports.generatePDF = async (req, res) => {
                             <td>${formatearDUI(
                               encargado.usuario.documento
                             )}</td>
-                            <td>Técnico Informático</td>
+                            <td>
+                              ${
+                                encargado.usuario.cargo?.nombre || "No especificado"
+                              }
+                            </td>
                             <td>${formatearTelefono(
                               encargado.usuario.telefono
                             )}</td>
