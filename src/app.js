@@ -85,8 +85,8 @@ app.use(function(err, req, res, next) {
 const port = process.env.PORT;
 const host = process.env.HOST
 
-app.listen(port, host, () => {
-  console.log(`RUNNING SERVER`);
-});
+// app.listen(port, host, () => {
+//   console.log(`RUNNING SERVER`);
+// });
 
 module.exports = app;

@@ -7,6 +7,15 @@ exports.index = async (req, res) => {
         const minuta = await db.minutareunion.findAll({
             where: { id_reunion: id}
         });
+
+        // Flujo de socket para ver la minuta en tiempo real
+        const io = req.app.get('io');
+        const nombreSala = "reunion-"+minuta[0].id_reunion;
+        io.to(nombreSala).emit('ver-minuta', {
+            mensaje: 'Minuta de la reunión',
+            data: minuta[0].minuta,
+        });
+
         res.status(HttpCode.HTTP_OK).json(minuta);
     } catch (err) {
         console.error('Error', err.message || err);
@@ -24,6 +33,16 @@ exports.create = async (req, res) => {
             virtual,
             id_motivo
         });  
+
+        const io = req.app.get('io');
+        const nombreSala = "reunion-" + id_reunion;
+        if(io) {
+            io.to(nombreSala).emit('ver-minuta', {
+                mensaje: 'Nueva minuta creada',
+                data: minuta[0].minuta,
+            });
+        }
+
         res.status(HttpCode.HTTP_CREATED).json(newMinuta);
     } catch (error) {
         console.error('Error', error.message || error);
@@ -56,6 +75,16 @@ exports.update = async (req, res) => {
         const updatedData = await db.minutareunion.findOne(
             { where: { id_reunion: id_reunion } }
         ); 
+
+        const io = req.app.get('io');
+        const nombreSala = "reunion-" + id_reunion;
+        if(io) {
+            io.to(nombreSala).emit('ver-minuta', {
+                mensaje: 'Minuta actualizada',
+                data: minuta,
+            });
+        }
+        
         res.status(HttpCode.HTTP_OK).json(updatedData)
     } catch (err) {
         console.error('Error', err.message || err);

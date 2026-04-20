@@ -22,13 +22,50 @@ const port = process.env.PORT || 3000;
 
 var server = http.createServer(app);
 
+if (process.env.NODE_ENV === "production") {
+  origen = "https://reutrack.salud.gob.sv";
+} else {
+  origen = `http://${process.env.FRONTEND_HOST}:${process.env.FRONTEND_PORT}`;
+}
+
+
+const { Server } = require('socket.io');
+const io = new Server(server, {
+  cors: {
+    origin: origen,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true,
+  }
+})
+
+app.set('io', io);
+
+io.on('connection', (socket) => {
+  console.log('Cliente conectado:', socket.id);
+
+  socket.on('join-reunion', (minutaId) => {
+    const nombreSala = "reunion-"+minutaId;
+    socket.join(nombreSala);
+    console.log(`Cliente ${socket.id} se unió a la sala: ${nombreSala}`);
+  })
+
+  socket.on('dejar-minuta', (minutaId) => {
+    socket.leave("reunion-"+minutaId);
+    console.log(`Cliente ${socket.id} dejó la sala: reunion-${minutaId}`);
+  })
+
+  socket.on('escribiendo', (payload) => {
+    const nombreSala = "reunion-"+payload.minutaId;
+    socket.to(nombreSala).emit('estado_escritura', payload);
+  })
+});
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-//server.listen(port, host, () => {
-  //console.log(`Servidor escuchando en http://${host}:${port}`);
-//});
+server.listen(port, host, () => {
+  console.log(`Servidor escuchando en http://${host}:${port}`);
+});
 server.on('error', onError);
 server.on('listening', onListening);
 

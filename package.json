@@ -45,6 +45,7 @@
     "sequelize": "^6.37.5",
     "sequelize-cli": "^6.6.2",
     "sharp": "^0.34.4",
+    "socket.io": "^4.8.3",
     "speakeasy": "^2.0.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1"
@@ -52,7 +53,7 @@
   "devDependencies": {
     "cross-env": "^7.0.3"
   },
-    "overrides": {
+  "overrides": {
     "tar": "^7.5.11",
     "serialize-javascript": "^7.0.3"
   }
