@@ -12,6 +12,8 @@ app.post('/create', [verifyToken], usuariosController.create)
 app.patch('/updatepassword', usuariosController.updatePassword)
 app.patch('/updateStatus', [verifyToken], usuariosController.status)
 
+app.get('/cargos', [verifyToken], usuariosController.findCargos)
+
 app.patch('/:id', [verifyToken], usuariosController.update)
 app.get('/:id', [verifyToken],  usuariosController.getOne)
  

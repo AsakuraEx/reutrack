@@ -27,6 +27,12 @@ exports.index = async (req, res) => {
             attributes: {
                 exclude: ['password', 'first_session', 'remember_token']
             },
+            include: [
+                {
+                    model: db.ctl_cargos,
+                    as: 'cargo'
+                }
+            ],
             limit: limit,
             offset: (page - 1) * limit,
             order: [
@@ -68,7 +74,7 @@ exports.create = async (req, res) => {
         }
     });
 
-    const {nombre, email, password, telefono, documento} = req.body;
+    const {nombre, email, password, telefono, documento, cargo} = req.body;
 
     const newPassword = password;
 
@@ -81,6 +87,7 @@ exports.create = async (req, res) => {
             password: bcrypt.hashSync(newPassword, 12),
             id_estado: 4,
             id_rol: 2,
+            id_cargo: cargo,
             first_session: 1
         });
 
@@ -123,7 +130,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     const { id } = req.params;
-    const {nombre, email, password, telefono, documento} = req.body;
+    const {nombre, email, password, telefono, documento, cargo} = req.body;
     
     console.log('creando usuario...')
     console.log(req.body)
@@ -135,6 +142,7 @@ exports.update = async (req, res) => {
                 email,
                 telefono,
                 documento,
+                id_cargo: cargo,
                 password: bcrypt.hashSync(password, 12),
                 first_session: 1
             }, {where: {id: id}});
@@ -143,7 +151,8 @@ exports.update = async (req, res) => {
             nombre,
             email,
             telefono,
-            documento
+            documento,
+            id_cargo: cargo
         }, {where: {id: id}});
 
         const updatedData = await db.users.findByPk(id)
@@ -208,4 +217,18 @@ exports.status = async (req, res) => {
         console.error('Error', error.message || error);
         res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
+}
+
+exports.findCargos = async (req, res) => {
+
+    try {
+        const cargos = await db.ctl_cargos.findAll({
+            where: { activo: 1 }
+        });
+        res.status(HttpCode.HTTP_OK).json(cargos);
+    } catch (error) {
+        console.error('Error', error.message || error);
+        res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
+    }
+
 }
