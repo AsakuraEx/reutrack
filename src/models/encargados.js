@@ -24,10 +24,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_usuario',
         as: 'usuario'
       })
-      encargado.belongsTo(models.ctl_cargos,{
-        foreignKey: 'id_cargo',
-        as: 'cargo'
-      })
+      // encargado.belongsTo(models.ctl_cargos,{
+      //   foreignKey: 'id_cargo',
+      //   as: 'cargo'
+      // })
     }
   }
   encargado.init({
