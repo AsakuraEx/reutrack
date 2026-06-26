@@ -209,6 +209,15 @@ const generatePdfBuffer = async (id) => {
     where: { id_acta: id },
   });
 
+  const funcionalidad_actualizada = await db.acta_funcionalidades.findOne({
+    where: {
+      id_acta: id
+    },
+    order: [
+      ['updatedAt', 'DESC']
+    ]
+  })
+
   const usuarios = await db.acta_usuarios.findAll({
     where: { id_acta: id },
   });
@@ -280,9 +289,8 @@ const generatePdfBuffer = async (id) => {
               ${acta.version.nombre}</div>
             <div class="section">
                 <h2>
-                  <b>Fecha de creación: </b>${moment(acta.createdAt).format(
-                    "DD/MM/YYYY HH:mm",
-                  )}<br>
+                  <b>Fecha de creación: </b>${moment(acta.createdAt).format("DD/MM/YYYY HH:mm:ss")}<br>
+                  <b>Fecha de última actualización: </b>${moment(funcionalidad_actualizada.updatedAt).format("DD/MM/YYYY HH:mm:ss")}<br>
                   <b>Creado por: </b>${acta.usuario.nombre}<br>
                 </h2>
             </div>
@@ -300,6 +308,7 @@ const generatePdfBuffer = async (id) => {
                     <th style="width:50%;">Funcionalidad</th>
                     <th style="width:15%;">Estado de aprobación</th>
                     <th style="width:35%;">Cambio solicitado</th>
+                    <th style="width:35%;">Fecha registro</th>
                   </tr>
                   ${
                     funcionalidades && funcionalidades.length > 0
@@ -310,6 +319,7 @@ const generatePdfBuffer = async (id) => {
                       <td>${funcionalidad.descripcion}</td>
                       <td>${funcionalidad.aprobado ? "Aprobado" : "No aprobado"}</td>
                       <td>${funcionalidad.cambio_solicitado ? funcionalidad.cambio_solicitado : ""}</td>
+                      <td>${moment(funcionalidad.createdAt).format("DD/MM/YYYY HH:mm:ss") }</td>
                   </tr>
                   `,
                           )
