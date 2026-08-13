@@ -16,9 +16,9 @@ const authRouter = require('../routes/auth')
 const actaAceptacionRouter = require('../routes/acta_aceptacion.routes')
 const actaFuncionalidades = require('../routes/acta_funcionalidades.routes')
 const actaUsuarios = require('../routes/acta_usuarios.routes')
+const instanciasRouter = require('../routes/instancias_reutrack.routes')
 const motivoRouter = require('../routes/motivo_reunion.routes')
 const { verifyToken } = require('../middlewares/verifyToken');
-
 
 app.use('/auth', authRouter),
 app.use('/reuniones', reunionRouter);
@@ -28,6 +28,8 @@ app.use('/acta_aceptacion', actaAceptacionRouter);
 app.use('/usuarios', usersRouter);
 
 app.use('/motivo', motivoRouter)
+
+app.use('/instancias_reutrack', instanciasRouter);
 
 app.use('/',[verifyToken],indexRouter);
 app.use('/estado', [verifyToken], estadoRouter);

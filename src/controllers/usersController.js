@@ -232,3 +232,41 @@ exports.findCargos = async (req, res) => {
     }
 
 }
+
+exports.indexApi = async (req, res) => {
+    const limit = parseInt(req.query.limit) || null
+    const page = parseInt(req.query.page) || 1
+    
+    try {
+        const { count, rows } = await db.users.findAndCountAll({
+            attributes: {
+                exclude: ['password', 'first_session', 'remember_token', 'email', 'telefono', 'documento', 'id_estado', 'id_cargo', 'two_factor_secret', 'createdAt', 'updatedAt']
+            },
+            limit: limit,
+            offset: (page - 1) * limit,
+            order: [
+                ['id_rol', 'DESC'],
+                ['createdAt', 'DESC']
+            ],
+            where: {
+                id_rol: 2
+            }
+        });
+
+        const start = (page - 1) * limit + 1;
+        const end = Math.min(start + rows.length - 1, count);
+
+        res.status(200).json({
+            totalRecords: count,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+            start: start,
+            end: end,
+            data: rows,
+        });
+
+    } catch (error) {
+        console.error('Error:', error.message || error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

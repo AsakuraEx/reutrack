@@ -17,6 +17,7 @@
     "@sequelize/mariadb": "^7.0.0-alpha.46",
     "ajv": "^8.17.1",
     "ajv-errors": "^3.0.0",
+    "axios": "^1.19.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cookie-parser": "~1.4.4",
@@ -52,7 +53,7 @@
   "devDependencies": {
     "cross-env": "^7.0.3"
   },
-    "overrides": {
+  "overrides": {
     "tar": "^7.5.11",
     "serialize-javascript": "^7.0.3"
   }
