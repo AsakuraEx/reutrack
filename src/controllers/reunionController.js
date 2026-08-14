@@ -1,7 +1,7 @@
 const HttpCode = require("../../configs/httpCode");
 const db = require("../models");
 const moment = require("moment");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const puppeteer = require("puppeteer");
 const fs = require("fs");
 const path = require("path");
@@ -1124,5 +1124,121 @@ try {
     console.error(e);
     res.status(500).json({ message: "Error al consultar", error: e.message });
   }
+
+}
+
+exports.aceptarReunionCompartida = async (req, res) => {
+  
+  const { 
+    id_reunion_compartida,
+    id_usuario,
+    id_version 
+  } = req.body;
+
+  try {
+
+    // Son los apartados principales de la tabla
+    const {reunion, enviado_por, instancia_origen, eliminada, aceptado_por, user} = await db.reuniones_recibidas.findOne({
+      where: { id: id_reunion_compartida },
+      include: [
+        {
+          model: db.users,
+          as: "user",
+          attributes: ["id","nombre"],
+        },
+      ],
+    });
+
+    // Se evita llamar la data como reunion.reunion
+    const detalleReunion = reunion.reunion;
+
+    const reunionAceptada = {
+      nombre: detalleReunion.nombre,
+      lugar: detalleReunion.lugar,
+      codigo: detalleReunion.codigo+'-SHARED',
+      expiracion: new Date(),
+      id_usuario: id_usuario,
+      id_estado: 1,
+      id_version: id_version,
+      id_motivo: detalleReunion.id_motivo,
+      virtual: detalleReunion.virtual,
+      id_reunion_recibida: id_reunion_compartida,
+      createdAt: detalleReunion.createdAt,
+      updatedAt: detalleReunion.updatedAt,
+    };
+
+    // Crea la reunión
+    const newReunion = await db.reunion.create(reunionAceptada);
+    await db.reuniones_recibidas.update({aceptado_por: id_usuario}, { where: { id: id_reunion_compartida }})
+    const id_nueva_reunion = newReunion.id;
+
+    console.log('Reunion creada')
+
+    // Agrega la lista de asistencia
+    const lista_asistencia = detalleReunion["asistencia reunion"];
+    const lista_asistencia_modificada = lista_asistencia.map(m => {
+      return {
+        ...m,
+        id_reunion: id_nueva_reunion
+      };
+    });
+    await db.listaasistencia.bulkCreate(lista_asistencia_modificada);
+
+    console.log('Lista de asistencia creada')
+    
+    //Agrega el usuario que acepta como encargado de reunión
+    const encargado = {
+      id_usuario:id_usuario,
+      id_reunion:id_nueva_reunion,
+      visitante: false
+    }
+    await db.encargado.create(encargado);
+
+    console.log('Encargado creado')
+
+    // Agrega los puntos de reunion
+    const puntos_reunion = detalleReunion["puntos de reunion"];
+    const puntos_reunion_modificada = puntos_reunion.map(m => {
+      return {
+        ...m,
+        id_reunion: id_nueva_reunion
+      };
+    });
+    await db.puntoreunion.bulkCreate(puntos_reunion_modificada);
+
+    console.log('Puntos de reunion creados')
+
+    // Agrega los acuerdos de reunion
+    const acuerdos_reunion = detalleReunion["acuerdos de reunion"];
+    const acuerdos_reunion_modificada = acuerdos_reunion.map(m => {
+      return {
+        ...m,
+        id_reunion: id_nueva_reunion
+      };
+    });
+    await db.acuerdocompromiso.bulkCreate(puntos_reunion_modificada);
+
+    console.log('Acuerdos creados')
+
+    // MInuta de reunión
+    const minuta_reunion = detalleReunion["minutadereunion"];
+    const minuta_modificada = minuta_reunion.map(m => {
+      return {
+        ...m,
+        id_reunion: id_nueva_reunion
+      }
+    });
+    await db.minutareunion.bulkCreate(minuta_modificada);
+
+    console.log('Minuta creada')
+
+    res.status(HttpCode.HTTP_OK).json({
+      msj: 'La reunión se agrego correctamente a sus reuniones como una reunión iniciada.'
+    });    
+
+  } catch (err) {
+    res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'No se pudo aceptar la reunión: ' + err.message})
+  }
+
 
 }

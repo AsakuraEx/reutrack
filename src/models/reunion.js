@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'id_estado',
         as: 'estado'
       })
+      reunion.belongsTo(models.reuniones_recibidas,{
+        foreignKey: 'id_reunion_recibida',
+        as: 'reunion_recibida'
+      })
       reunion.belongsTo(models.ctl_motivos_reunion,{
         foreignKey: 'id_motivo',
         as: 'motivo'
@@ -68,10 +72,13 @@ module.exports = (sequelize, DataTypes) => {
     id_version: DataTypes.INTEGER,
     id_estado: DataTypes.INTEGER,
     id_motivo: DataTypes.INTEGER,
+    id_reunion_recibida: DataTypes.INTEGER,
     usuario_cancela: DataTypes.INTEGER,
     usuario_reprograma: DataTypes.INTEGER,
     reprogramado: DataTypes.BOOLEAN,
-    virtual: DataTypes.BOOLEAN
+    virtual: DataTypes.BOOLEAN,
+    reunion_compartida: DataTypes.BOOLEAN,
+    id_reunion_recibida: DataTypes.INTEGER
   }, {
     sequelize: db,
     freezeTableName: true,

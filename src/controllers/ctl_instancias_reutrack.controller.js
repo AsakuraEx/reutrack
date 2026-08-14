@@ -63,9 +63,6 @@ exports.obtenerUsuarios = async (req, res) => {
 
 exports.enviarReunion = async (req, res) => {
 
-
-  // Datos esperados en el endpoint:
-  // id de la reunion, instancia a enviar, nombre de usuario que envia
   const {
     id_reunion,
     host,
@@ -166,10 +163,9 @@ exports.enviarReunion = async (req, res) => {
     }
 
     const data = {
-      reunion: reunion,
+      reunion: {reunion},
       enviado_por: usuario,
-      backend_origen: backend_url,
-      backend_destino: host
+      instancia_origen: backend_url
     }
 
     const url = `${host}/api/instancias_reutrack/recibirReunion`;
@@ -177,7 +173,9 @@ exports.enviarReunion = async (req, res) => {
       headers: {
         'x-api-key': process.env.API_KEY
       }
-    })
+    });
+
+    await db.reunion.update({ reunion_compartida: 1 }, { where: { id: reunion.id } });
 
     res.status(HttpCode.HTTP_OK).json({
       msj: 'Se ha enviado la reunión exitosamente',
@@ -194,35 +192,15 @@ exports.enviarReunion = async (req, res) => {
 
 exports.guardarReunionCompartida = async (req, res) => {
 
-  const {
-    reunion,
-    enviado_por,
-    backend_origen,
-    backend_destino
-  } = req.body;
-
-  const nuevoCodigo = reunion.codigo + '-C';
-
   try {
-    const nuevaReunion = {
-      nombre: reunion.nombre,
-      lugar: reunion.lugar,
-      codigo: nuevoCodigo,
-      virtual: reunion.virtual,
-      motivo: reunion.id_motivo,
-      expiracion: new Date(),
-      id_usuario: 1,
-      id_estado: reunion.id_estado,
-      id_version: 5,
-      createdAt: reunion.createdAt
-    }
-
-    const newReunion = await db.reunion.create(nuevaReunion);
-
-    res.status(HttpCode.HTTP_CREATED).json(newReunion);
+    const data = req.body;
+    const newReunion = await db.reuniones_recibidas.create(data);
+    res.status(HttpCode.HTTP_CREATED).json({
+      row:newReunion,
+      msg: 'Reunión recibida exitosamente'
+    });
 
   } catch (error) {
-    console.error("Error", error);
     res
       .status(HttpCode.HTTP_INTERNAL_SERVER_ERROR)
       .json({ error: "Internal server error" });
