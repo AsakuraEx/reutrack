@@ -71,6 +71,17 @@ exports.enviarReunion = async (req, res) => {
   
   try {
 
+    const reunionEnviada = await db.bit_reuniones_enviadas.findOne({
+      where: {
+        id_reunion,
+        instancia_destino: host
+      }
+    })
+
+    if(reunionEnviada) {
+      return res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'La reunión ya ha sido enviada a este destino'})
+    }
+
     const { frontend_url } = await db.ctl_instancias_reutrack.findOne({
       where: { id: process.env.API_KEY }
     });
@@ -168,8 +179,6 @@ exports.enviarReunion = async (req, res) => {
       instancia_origen: frontend_url
     }
 
-    console.log(data)
-
     const url = `${host}/api/instancias_reutrack/recibirReunion`;
     const response = await axios.post(url, data, {
       headers: {
@@ -178,6 +187,17 @@ exports.enviarReunion = async (req, res) => {
     });
 
     await db.reunion.update({ reunion_compartida: 1 }, { where: { id: reunion.id } });
+
+
+    // Registrar en la bitácora
+    const bitacora = {
+      id_reunion: id_reunion,
+      enviado_por: usuario,
+      instancia_origen: frontend_url,
+      instancia_destino: host
+    }
+
+    await db.bit_reuniones_enviadas.create(bitacora);
 
     res.status(HttpCode.HTTP_OK).json({
       msj: 'Se ha enviado la reunión exitosamente',
