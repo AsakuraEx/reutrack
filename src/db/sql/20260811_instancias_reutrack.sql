@@ -15,9 +15,11 @@ create table reuniones_recibidas(
 	createdAt timestamp default current_timestamp,
 	updatedAt timestamp default current_timestamp ON UPDATE CURRENT_TIMESTAMP,
 	eliminada tinyint default 0,
-	aceptado_por int
+	aceptado_por int,
+	cancelado_por int
 );
 alter table reuniones_recibidas add constraint fK_aceptado_por foreign key (aceptado_por) references users(id);
+alter table reuniones_recibidas add constraint fK_cancelado_por foreign key (cancelado_por) references users(id);
 alter table reunion add column id_reunion_recibida int;
 alter table reunion add constraint fk_reunion_recibida foreign key (id_reunion_recibida) references reuniones_recibidas(id);
 alter table reunion add column reunion_compartida tinyint default 0;

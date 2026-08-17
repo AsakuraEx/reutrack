@@ -71,7 +71,7 @@ exports.enviarReunion = async (req, res) => {
   
   try {
 
-    const { backend_url } = await db.ctl_instancias_reutrack.findOne({
+    const { frontend_url } = await db.ctl_instancias_reutrack.findOne({
       where: { id: process.env.API_KEY }
     });
     
@@ -165,8 +165,10 @@ exports.enviarReunion = async (req, res) => {
     const data = {
       reunion: {reunion},
       enviado_por: usuario,
-      instancia_origen: backend_url
+      instancia_origen: frontend_url
     }
+
+    console.log(data)
 
     const url = `${host}/api/instancias_reutrack/recibirReunion`;
     const response = await axios.post(url, data, {

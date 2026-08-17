@@ -13,7 +13,9 @@ app.get('/reactivadas', [verifyToken], reunionController.verReactivadas)
 app.get('/motivo', [verifyToken], reunionController.motivo)
 app.post('/create', [verifyToken] ,reunionController.create);
 
-app.post('/aceptarReunion', [verifyToken], reunionController.aceptarReunionCompartida)
+app.post('/aceptarReunion', [verifyToken], reunionController.aceptarReunionCompartida);
+app.post('/rechazarReunion', [verifyToken], reunionController.rechazarReunionCompartida);
+app.get('/reuniones-recibidas', [verifyToken], reunionController.mostrarReunionesCompartidas);
 
 app.patch('/reprogramar', [verifyToken] ,reunionController.reprogramar);
 app.get('/reunion-version', [verifyToken], reunionController.reunionPorVersion)

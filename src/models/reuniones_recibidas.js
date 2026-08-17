@@ -22,6 +22,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'aceptado_por',
         as: 'user'
       })
+      reuniones_recibidas.belongsTo(models.users,{
+        foreignKey: 'cancelado_por',
+        as: 'user_cancelado'
+      })
     }
   }
   reuniones_recibidas.init({
@@ -29,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
     enviado_por: DataTypes.STRING(500),
     instancia_origen: DataTypes.STRING(500),
     eliminada: DataTypes.BOOLEAN,
-    aceptado_por: DataTypes.INTEGER
+    aceptado_por: DataTypes.INTEGER,
+    cancelado_por: DataTypes.INTEGER
   }, {
     sequelize: db,
     freezeTableName: true,

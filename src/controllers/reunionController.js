@@ -1172,8 +1172,6 @@ exports.aceptarReunionCompartida = async (req, res) => {
     await db.reuniones_recibidas.update({aceptado_por: id_usuario}, { where: { id: id_reunion_compartida }})
     const id_nueva_reunion = newReunion.id;
 
-    console.log('Reunion creada')
-
     // Agrega la lista de asistencia
     const lista_asistencia = detalleReunion["asistencia reunion"];
     const lista_asistencia_modificada = lista_asistencia.map(m => {
@@ -1184,7 +1182,6 @@ exports.aceptarReunionCompartida = async (req, res) => {
     });
     await db.listaasistencia.bulkCreate(lista_asistencia_modificada);
 
-    console.log('Lista de asistencia creada')
     
     //Agrega el usuario que acepta como encargado de reunión
     const encargado = {
@@ -1193,8 +1190,6 @@ exports.aceptarReunionCompartida = async (req, res) => {
       visitante: false
     }
     await db.encargado.create(encargado);
-
-    console.log('Encargado creado')
 
     // Agrega los puntos de reunion
     const puntos_reunion = detalleReunion["puntos de reunion"];
@@ -1206,8 +1201,6 @@ exports.aceptarReunionCompartida = async (req, res) => {
     });
     await db.puntoreunion.bulkCreate(puntos_reunion_modificada);
 
-    console.log('Puntos de reunion creados')
-
     // Agrega los acuerdos de reunion
     const acuerdos_reunion = detalleReunion["acuerdos de reunion"];
     const acuerdos_reunion_modificada = acuerdos_reunion.map(m => {
@@ -1218,7 +1211,6 @@ exports.aceptarReunionCompartida = async (req, res) => {
     });
     await db.acuerdocompromiso.bulkCreate(puntos_reunion_modificada);
 
-    console.log('Acuerdos creados')
 
     // MInuta de reunión
     const minuta_reunion = detalleReunion["minutadereunion"];
@@ -1230,15 +1222,104 @@ exports.aceptarReunionCompartida = async (req, res) => {
     });
     await db.minutareunion.bulkCreate(minuta_modificada);
 
-    console.log('Minuta creada')
-
     res.status(HttpCode.HTTP_OK).json({
-      msj: 'La reunión se agrego correctamente a sus reuniones como una reunión iniciada.'
+      msj: 'La reunión se agregó a reutrack satisfactoriamente.'
     });    
 
   } catch (err) {
-    res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'No se pudo aceptar la reunión: ' + err.message})
+    res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'La reunión que intenta aceptar ya existe'})
   }
 
 
+}
+
+exports.rechazarReunionCompartida = async (req,res) => {
+  
+  const { id, cancelado_por } = req.body;
+
+  try {
+    const existeReunion = await db.reuniones_recibidas.findOne({where: {id}});
+  
+    if(!existeReunion) {
+      return res.status(HttpCode.HTTP_NOT_FOUND).json({error: 'La reunión que intenta eliminar no existe'});
+    }
+  
+    await db.reuniones_recibidas.update(
+      { 
+        eliminada: 1,
+        cancelado_por
+      }, 
+      { 
+        where: { id } 
+      }
+    );
+  
+    return res.status(HttpCode.HTTP_OK).json({msj: 'La reunión se rechazó exitosamente'});
+  } catch(err) {
+    return res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'Ocurrio un error inesperado al rechazar la reunión'});
+  }
+
+
+}
+
+exports.mostrarReunionesCompartidas = async (req,res) => {
+  try {
+
+    const {remitente, fechaInicio, fechaFin, soloAceptadas} = req.query;
+    const limit = parseInt(req.query.limit) || null;
+    const page = parseInt(req.query.page) || 1;
+    const offset = (page - 1) * limit;
+
+    const whereClause = {
+      eliminada: 0,
+    };
+
+    if (remitente) whereClause.enviado_por = {
+      [Op.like]: `%${remitente}%`
+    };;
+    if (soloAceptadas) whereClause.aceptado_por = {
+      [Op.ne]: null
+    };;
+
+    if (fechaInicio || fechaFin) {
+      whereClause.createdAt = {};
+      if (fechaInicio)
+        whereClause.createdAt[Op.gte] = moment(fechaInicio).startOf("day").toDate();
+      if (fechaFin)
+        whereClause.createdAt[Op.lte] = moment(fechaFin).endOf("day").toDate();
+    }
+
+
+    const { count, rows } = await db.reuniones_recibidas.findAndCountAll({
+      where: {eliminada: 0},
+      limit: limit, 
+      offset: offset,
+      where: whereClause,
+      include: [
+        {
+          as: "user",
+          model: db.users,
+          attributes: ["id", "nombre"],
+        },
+      ]
+    })
+
+    // Paginación
+    const start = offset + 1;
+    const end = Math.min(start + rows.length - 1, count);
+
+    return res.status(HttpCode.HTTP_OK).json({
+      totalRecords: count,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+      start,
+      end,
+      data: rows,
+    });
+
+    //return res.status(HttpCode.HTTP_OK).json(reunionesCompartidas);
+
+  } catch(e) {
+    return res.status(500).json({error: "No se pudo mostrar las reuniones: " + e.message })
+  }
 }
