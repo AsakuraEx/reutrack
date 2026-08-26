@@ -1295,6 +1295,7 @@ exports.mostrarReunionesCompartidas = async (req,res) => {
       limit: limit, 
       offset: offset,
       where: whereClause,
+      order: [["createdAt", "DESC"]],
       include: [
         {
           as: "user",
