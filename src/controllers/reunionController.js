@@ -1021,7 +1021,7 @@ exports.generatePDF = async (req, res) => {
       stack: error.stack,
     });
     res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR);
-    res.json({ error: "Error generando PDF" });
+    res.json({ error: error + ", no pudo generarse el PDF" });
   }
 };
 
