@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   acuerdocompromiso.init({
-    nombre: DataTypes.STRING(256),
+    nombre: DataTypes.STRING,
     id_reunion: DataTypes.INTEGER
   }, {
     sequelize: db,
