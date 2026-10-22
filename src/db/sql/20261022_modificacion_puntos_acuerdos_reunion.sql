@@ -1,0 +1,2 @@
+ALTER TABLE acuerdocompromiso MODIFY COLUMN nombre varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE puntoreunion MODIFY COLUMN nombre varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;

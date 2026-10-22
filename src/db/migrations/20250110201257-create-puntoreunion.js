@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       nombre: {
-        type: Sequelize.STRING(256),
+        type: Sequelize.STRING(1000),
         allowNull: false
       },
       id_reunion: {
