@@ -1149,6 +1149,17 @@ exports.aceptarReunionCompartida = async (req, res) => {
       ],
     });
 
+    // Validación para no aceptar la misma reunión varias veces
+    const reunionEnviada = await db.reunion.findOne({
+      where: {
+        codigo: reunion.reunion.codigo+'-SHARED',
+      }
+    })
+
+    if(reunionEnviada) {
+      return res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'Esta reunión ya ha sido almacenada con anterioridad'})
+    }
+
     // Se evita llamar la data como reunion.reunion
     const detalleReunion = reunion.reunion;
 

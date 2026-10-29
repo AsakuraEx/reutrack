@@ -71,16 +71,16 @@ exports.enviarReunion = async (req, res) => {
   
   try {
 
-    const reunionEnviada = await db.bit_reuniones_enviadas.findOne({
-      where: {
-        id_reunion,
-        instancia_destino: host
-      }
-    })
+    // const reunionEnviada = await db.bit_reuniones_enviadas.findOne({
+    //   where: {
+    //     id_reunion,
+    //     instancia_destino: host
+    //   }
+    // })
 
-    if(reunionEnviada) {
-      return res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'La reunión ya ha sido enviada a este destino'})
-    }
+    // if(reunionEnviada) {
+    //   return res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'La reunión ya ha sido enviada a este destino'})
+    // }
 
     const instancia = await db.ctl_instancias_reutrack.findOne({
       where: { id: process.env.API_KEY }
