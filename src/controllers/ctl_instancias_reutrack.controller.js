@@ -190,8 +190,7 @@ exports.enviarReunion = async (req, res) => {
     const url = `${host}/api/instancias_reutrack/recibirReunion`;
     const response = await axios.post(url, data, {
       headers: {
-        'x-api-key': process.env.API_KEY,
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36'
+        'x-api-key': process.env.API_KEY
       }
     });
 
