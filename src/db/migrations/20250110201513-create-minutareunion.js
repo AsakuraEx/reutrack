@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       minuta: {
-        type: Sequelize.STRING(5000),
+        type: Sequelize.STRING,
         allowNull: true
       },
       id_reunion: {

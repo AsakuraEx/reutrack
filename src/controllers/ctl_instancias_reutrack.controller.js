@@ -82,6 +82,14 @@ exports.enviarReunion = async (req, res) => {
       return res.status(HttpCode.HTTP_BAD_REQUEST).json({error: 'La reunión ya ha sido enviada a este destino'})
     }
 
+    const instancia = await db.ctl_instancias_reutrack.findOne({
+      where: { id: process.env.API_KEY }
+    });
+
+    if (!instancia) {
+      return res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ error: "No se encontró la instancia local configurada (API_KEY inválida)" });
+    }
+    
     const { frontend_url } = await db.ctl_instancias_reutrack.findOne({
       where: { id: process.env.API_KEY }
     });
@@ -146,7 +154,7 @@ exports.enviarReunion = async (req, res) => {
       {
         model: db.ctl_motivos_reunion,
         as: "motivo",
-        atributes: ["id", "nombre"],
+        attributes: ["id", "nombre"],
       },
     ];
 
@@ -154,7 +162,7 @@ exports.enviarReunion = async (req, res) => {
       attributes: {
         exclude: [
           "id_usuario",
-          "id_version",,
+          "id_version",
           "justificacion_cancelar",
           "fecha_programacion",
           "reactivado",
@@ -206,7 +214,11 @@ exports.enviarReunion = async (req, res) => {
     });
 
   } catch(err) {
-    res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({error: 'No pudo enviarse la reunión, error: ' + err})
+    const errorMessage = err.response?.data?.error || err.response?.data || err.message || err;
+    return res.status(HttpCode.HTTP_INTERNAL_SERVER_ERROR).json({ 
+      error: 'No pudo enviarse la reunión',
+      detalle: errorMessage 
+    });
   }
 
 
